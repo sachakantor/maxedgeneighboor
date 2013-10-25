@@ -18,14 +18,14 @@
                         \emph{clique} no es otra cosa que un conjunto de v\'ertices, con la
                         caracter\'istica de inducir un grafo completo en $G$.} en $G$, calcula
                         el cardinal de su frontera\footnote{Como ya se explic\'o, sea $K$ una
-                        \emph{clique} de $G$, entonces: $\delta(K) = - |K|(|K|-1) + \displaystyle\sum_{v \in
-                        K} d(v)$}.
+                        \emph{clique} de $G$, entonces: $\delta(K) = - |K|(|K|-1) +
+                        \displaystyle\sum_{v \in K} d(v)$}.
 
                 \end{itemize}
             \Statex
+            \Ensure Una \emph{clique} $K$ de $G$ con una frontera $\delta(K)$ de m\'axima
+                cardinalidad.
 
-            \Ensure Una \emph{clique} $K$ de $G$ con una frontera 
-                $\delta(K)$ de m\'axima cardinalidad.
             \Statex
 
             \If{$m = \frac{n(n-1)}{2}$} \Comment{Si $G$ es un $K_n$}
