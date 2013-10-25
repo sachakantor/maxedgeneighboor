@@ -1,73 +1,76 @@
-\renewcommand{\thefootnote}{\alph{footnote}}
-\begin{algorithm}[H]
-    \caption{Algoritmo Exacto para \emph{CMF} - Descriptivo}
-    \begin{algorithmic}[1]
-        \Require\Statex
-            \begin{itemize}
-                \item Un grafo $G$ de $n$ v\'ertices\footnotemark[1] y $m$ aristas.
+\begin{minipage}{\textwidth}%Uso una minipage para poder usar los comentarios
+    \begin{algorithm}[H]
+        \caption{Algoritmo Exacto para \emph{CMF} - Descriptivo}
+        \begin{algorithmic}[1]
+            \Require\Statex
+                \begin{itemize}
+                    \item Un grafo $G$ de $n$ v\'ertices\footnote{Asumimos, sin p\'erdida 
+                        de generalidad, que los v\'ertices est\'an numerados de 1 a $n$.}
+                        y $m$ aristas.
 
-                \item Una funci\'on $candidatos(K)$, que dado un conjunto de v\'ertices
-                    $K$, devuelve el conjunto de v\'ertices de $G$ que son adjacentes
-                    a todos los elementos de $K$, cuyo grado es al menos $2|K|$ y tales
-                    que su n\'umero de v\'ertice sea mayor al mayor de todos los elementos
-                    de $K$.
+                    \item Una funci\'on $candidatos(K)$, que dado un conjunto de v\'ertices
+                        $K$, devuelve el conjunto de v\'ertices de $G$ que son adjacentes
+                        a todos los elementos de $K$, cuyo grado es mayor $2|K|$ y tales
+                        que su n\'umero de v\'ertice sea mayor al mayor de todos los elementos
+                        de $K$.
 
-                \item Una funci\'on $\delta(K)$, que dada una \emph{clique} $K$\footnotemark[2]
-                    en $G$, calcula el cardinal de su frontera\footnotemark[3].
+                    \item Una funci\'on $\delta(K)$, que dada una \emph{clique} $K$\footnote{Una
+                        \emph{clique} no es otra cosa que un conjunto de v\'ertices, con la
+                        caracter\'istica de inducir un grafo completo en $G$.} en $G$, calcula
+                        el cardinal de su frontera\footnote{Como ya se explic\'o, sea $K$ una
+                        \emph{clique} de $G$, entonces: $\delta(K) = - |K|(|K|-1) + \displaystyle\sum_{v \in
+                        K} d(v)$}.
 
-            \end{itemize}\Statex
-        \Ensure Una \emph{clique} $K$ de $G$ con una frontera 
-            $\delta(K)$ de m\'axima cardinalidad.
+                \end{itemize}
+            \Statex
 
-        \Statex
-        \State $K \gets \emptyset$, $K' \gets \emptyset$
-        \State $MaximaFrontera \gets 0$
-        \For{$nodo$}{$1$}{$n$}
-            \State $K' \gets \{nodo\}$
-            \State $YaProcesados(K')$\footnotemark[4]$ \gets \emptyset$
-            \NoEndIf{$MaximaFrontera < \delta(K')$}
-                \State $K \gets K'$
+            \Ensure Una \emph{clique} $K$ de $G$ con una frontera 
+                $\delta(K)$ de m\'axima cardinalidad.
+            \Statex
 
-            \While{$K' \neq \emptyset$}
-                \If{$candidatos(K') \setminus YaProcesados(K') \neq \emptyset$}
-                    \State Sea $nodo' \in candidatos(K') \setminus YaProcesados(K')$
-                    \State $K' \gets K' \cup \{nodo'\}$
-                    \NoEndIf{$YaProcesados(K' \setminus \{nodo'\}) = \emptyset$}
-                        \State $YaProcesados(K') \gets \emptyset$ \footnotemark[5]
+            \If{$m = \frac{n(n-1)}{2}$} \Comment{Si $G$ es un $K_n$}
+                \State $K \gets \{1;\dots;\left\lfloor\frac{n}{2}\right\rfloor\}$
 
-                    \NoEndIf{$MaximaFrontera < \delta(K')$}
+            \Else
+            \State $K \gets \emptyset$, $K' \gets \emptyset$
+                \State $\delta_{max} \gets 0$
+                \For{$v$}{$1$}{$n$}
+                    \State $K' \gets \{v\}$
+                    \State $YaProcesados(K')$\footnote{$YaProcesados(K')$ representar\'a a
+                        los v\'ertices de $candidatos(K')$ que ya fueron tenidos en cuenta
+                        para la \emph{clique} $K'$.}$ \gets \emptyset$
+
+                    \NoEndIf{$\delta_{max} < \delta(K')$}
                         \State $K \gets K'$
 
-                \Else \Comment{Ac\'a est\'a el \emph{Backtracking}}
-                    \State $nodoProcesado \gets ultimo(K')$\footnotemark[6]
-                    \State $K' \gets K' \setminus \{nodoProcesado\}$
-                    \State $YaProcesados(K') \gets YaProcesados(K') \cup \{nodoProcesado\}$
+                    \While{$K' \neq \emptyset$}\label{existe_ultimo}
+                        \If{$candidatos(K') \setminus YaProcesados(K') \neq \emptyset$}
+                            \State Sea $v' \in candidatos(K') \setminus YaProcesados(K')$
+                            \State $K' \gets K' \cup \{v'\}$
+                            \NoEndIf{$YaProcesados(K' \setminus \{v'\}) = \emptyset$}
+                                \State $YaProcesados(K') \gets \emptyset$\footnote{Inicializo
+                                    $YaProcesados(K')$ s\'olo si no fue ya inicializado.}
 
-                \EndIf
+                            \NoEndIf{$\delta_{max} < \delta(K')$}
+                                \State $K \gets K'$
 
-            \EndWhile
+                        \Else \Comment{Ac\'a est\'a el \emph{Backtracking}}
+                            \State $v' \gets ultimo(K')$\footnote{Donde $ultimo(K')$
+                                es el \'ulitmo v\'ertice agregado a $K'$, y sabemos que no se
+                                indefine pues la guarda del ciclo \emph{mientras} de la
+                                l\'inea~\ref{existe_ultimo} nos lo asegura.}
 
-        \EndFor
+                            \State $K' \gets K' \setminus \{v'\}$
+                            \State $YaProcesados(K') \gets YaProcesados(K') \cup \{v'\}$
 
-        \State \Return{$K$}
-    \end{algorithmic}
-\end{algorithm}
+                        \EndIf
 
-%Footnotes del pseudoc\'odigo
-\footnotetext[1]{Asumimos, sin p\'erdida de generalidad, que los v\'ertices est\'an
-    numerados de 1 a $n$.}
+                    \EndWhile
 
-\footnotetext[2]{Una \emph{clique} no es otra cosa que un conjunto de v\'ertices, con
-    la caracter\'istica de inducir un grafo completo en $G$.}
+                \EndFor
+            \EndIf
 
-\footnotetext[3]{Como ya se explic\'o, sea $K$ una \emph{clique} de $G$, entonces:
-    $\delta(K) = - |K|(|K|-1) + \sum_{v \in K} d(v)$}
-
-\footnotetext[4]{$YaProcesados(K')$ representar\'a a los v\'ertices de $candidatos(K')$
-    que ya fueron tenidos en cuenta para el \emph{clique} $K'$.}
-
-\footnotetext[5]{Inicializo $YaProcesados(K')$ s\'olo si no fue ya inicializado.}
-
-\footnotetext[6]{Donde $ultimo(K')$ es el \'ulitmo v\'ertice agregado a $K'$, y sabemos
-    que no se indefine pues la guarda del ciclo \emph{While} nos lo asegura.}
-\renewcommand{\thefootnote}{\arabic{footnote}}
+            \State \Return{$K$}
+        \end{algorithmic}
+    \end{algorithm}
+\end{minipage}
