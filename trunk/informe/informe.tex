@@ -19,7 +19,7 @@
 \usepackage{caratula}
 
 %este paquete es innecesario para el TP, aca lo uso para recuadrar
-\usepackage{framed}
+%\usepackage{framed}
 
 %Paquetes para opciones comunes
 \usepackage[pdftex]{graphicx}
@@ -34,6 +34,7 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{comment}
+%\usepackage{footnote}
 
 % url – Ver­ba­tim with URL-sen­si­tive line breaks - para el formato de referencias
 \usepackage{url}
@@ -73,6 +74,15 @@
 \usepackage{algpseudocode}
 \usepackage{fixltx2e}
 \MakeRobust{\Call} %Para poder hacer llamadas a funciones como par\'ametro de funciones
+
+%Para usar cuadros split'eables para los pseudocodigos
+\usepackage[framemethod=tikz]{mdframed}
+\surroundwithmdframed[%
+    linecolor = black!70,%
+    linewidth=1pt,%
+    roundcorner=15pt,%
+    backgroundcolor = gray!15%
+]{algorithm}
 
 %configuro el paquete listings para C++
 \usepackage{listings}
@@ -125,14 +135,16 @@
     \algrenewcommand\algorithmicif{\textbf{si}}
     \algrenewcommand\algorithmicthen{\textbf{entonces}}
     \algrenewcommand\algorithmicelse{\textbf{en otro caso}}
+    \algrenewcommand\algorithmicrepeat{\textbf{repetir}}
+    \algrenewcommand\algorithmicuntil{\textbf{hasta}}
     \algrenewcommand\algorithmicrequire{\textbf{Entrada: }}
     \algrenewcommand\algorithmicensure{\textbf{Salida: }}
     \algrenewcommand\algorithmicreturn{\textbf{devuelvo}}
     \algrenewcommand\algorithmicfunction{\textbf{funci\'on}}
-    \algrenewtext{For}[3]{\algorithmicfor\ #1 \gets #2 \algorithmicto\ #3 \algorithmicdo}
-    \algrenewtext{EndFor}{\algorithmicend}
-    \algrenewtext{EndIf}{\algorithmicend}
-    \algrenewtext{EndWhile}{\algorithmicend}
+    \algrenewtext{For}[3]{\algorithmicfor\ #1 $\gets$ #2 \algorithmicto\ #3 \algorithmicdo}
+    \algrenewtext{EndFor}{\algorithmicend\ \algorithmicfor}
+    \algrenewtext{EndIf}{\algorithmicend\ \algorithmicif}
+    \algrenewtext{EndWhile}{\algorithmicend\ \algorithmicwhile}
     \algblockdefx{ForEach}{EndForEach}[1]{\algorithmicfor\ \textbf{cada}\ #1 \algorithmicdo}{\algorithmicend}
     \algloopdefx{NoEndIf}[1]{\algorithmicif\ #1 \algorithmicthen}
     \algloopdefx{NoEndForEach}[1]{\algorithmicfor\ \textbf{cada}\ #1 \algorithmicdo}
