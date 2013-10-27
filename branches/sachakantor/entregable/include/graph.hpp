@@ -6,17 +6,17 @@
 using namespace std;
 
 /* Forward declaration */
-//struct node;
+struct node;
 
 /* Renombres y Structs */
 typedef unsigned int uint;
 typedef unsigned int degree;
-typedef vector<node* const> adjacent_nodes_ptr;
+typedef vector<const node*> adjacent_nodes_ptr;
 typedef vector<vector<bool> > adjacency_matrix;
 
 typedef struct node{
     /*Constructores y Destructores*/
-    node();
+    node(uint id);
     node(uint id,degree d);
     node(const node&);
     ~node();
@@ -70,6 +70,8 @@ class graph{
         /*Metodos privados*/
 
         /*Atributos*/
+        const uint _quant_nodes;
+        const uint _quant_edges;
         adjacency_matrix _adjacency_matrix;
         vector<node> _nodes;
         vector<edge> _edges;
