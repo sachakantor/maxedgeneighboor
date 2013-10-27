@@ -19,7 +19,7 @@
 \usepackage{caratula}
 
 %este paquete es innecesario para el TP, aca lo uso para recuadrar
-\usepackage{framed}
+%\usepackage{framed}
 
 %Paquetes para opciones comunes
 \usepackage[pdftex]{graphicx}
@@ -74,6 +74,15 @@
 \usepackage{algpseudocode}
 \usepackage{fixltx2e}
 \MakeRobust{\Call} %Para poder hacer llamadas a funciones como par\'ametro de funciones
+
+%Para usar cuadros split'eables para los pseudocodigos
+\usepackage[framemethod=tikz]{mdframed}
+\surroundwithmdframed[%
+    linecolor = black!70,%
+    linewidth=1pt,%
+    roundcorner=15pt,%
+    backgroundcolor = gray!15%
+]{algorithm}
 
 %configuro el paquete listings para C++
 \usepackage{listings}
