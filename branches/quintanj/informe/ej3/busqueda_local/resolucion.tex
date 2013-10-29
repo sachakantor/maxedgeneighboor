@@ -1,15 +1,10 @@
-\begin{minipage}{\textwidth}%Uso una minipage para poder usar los comentarios
-    \begin{algorithm}[H]
-        \caption{Heur\'istica Golosa Constructiva para \emph{CMF} - Descriptivo}
-        \begin{algorithmic}[1]
-            \Require Un grafo $G$ de $n$ v\'ertices\footnote{Asumimos, sin p\'erdida 
-                de generalidad, que los v\'ertices est\'an numerados de 1 a $n$.}
-                y $m$ aristas.
-            \Ensure Una \emph{clique} $K$ de $G$ con una frontera 
-                $\delta(K)$ de m\'axima cardinalidad.
-            \Statex
+\begin{pseudocodigo}[Heur\'istica Golosa Constructiva para \emph{CMF} - Descriptivo]
+    \Require Un grafo $G$ de $n$ v\'ertices\footnote{Asumimos, sin p\'erdida 
+        de generalidad, que los v\'ertices est\'an numerados de 1 a $n$.}
+        y $m$ aristas.
+    \Ensure Una \emph{clique} $K$ de $G$ con una frontera 
+        $\delta(K)$ de m\'axima cardinalidad.
+    \Statex
 
-            \State \Return{$K$}
-        \end{algorithmic}
-    \end{algorithm}
-\end{minipage}
+    \State \Return{$K$}
+\end{pseudocodigo}

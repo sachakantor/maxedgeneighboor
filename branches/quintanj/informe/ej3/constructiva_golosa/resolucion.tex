@@ -1,57 +1,51 @@
-\begin{algorithm}[H]
-    \caption{Heur\'istica Golosa Constructiva 1 para \emph{CMF} - Descriptivo}
-    \begin{algorithmic}[1]
-        \Require\Statex
-            \begin{itemize}
-                \item Un grafo $G$ de $n$ v\'ertices y $m$ aristas.
+\begin{pseudocodigo}[Heur\'istica Golosa Constructiva 1 para \emph{CMF} - Descriptivo]
+    \Require\Statex
+        \begin{itemize}
+            \item Un grafo $G$ de $n$ v\'ertices y $m$ aristas.
 
-                \item Una funci\'on $candidatos(K)$, que dado un conjunto de v\'ertices
-                    $K$, devuelve el conjunto de v\'ertices de $G$ que son adjacentes
-                    a todos los elementos de $K$, cuyo grado es mayor $2|K|$.
-            \end{itemize}
+            \item Una funci\'on $candidatos(K)$, que dado un conjunto de v\'ertices
+                $K$, devuelve el conjunto de v\'ertices de $G$ que son adjacentes
+                a todos los elementos de $K$, cuyo grado es mayor $2|K|$.
+        \end{itemize}
 
-        \Statex
+    \Statex
 
-        \Ensure Una \emph{clique} $K$ de $G$ con una frontera $\delta(K)$ que se
-            espera que sea de cardinalidad cercana o igual a la de $\delta(K')$,
-            siendo $K'$ la \emph{clique} de m\'axima frontera de $G$.
+    \Ensure Una \emph{clique} $K$ de $G$ con una frontera $\delta(K)$ que se
+        espera que sea de cardinalidad cercana o igual a la de $\delta(K')$,
+        siendo $K'$ la \emph{clique} de m\'axima frontera de $G$.
 
-        \Statex
+    \Statex
 
-        \State Sea $v$ el v\'ertice de mayor grado en $G$.
-        \State $K \gets \{v\}$
-        \While{$candidatos(K) \neq \emptyset$}
-            \State Sea $v'$ el v\'ertice de mayor grado en $candidatos(K)$.
-            \State $K \gets K \cup \{v'\}$
-        \EndWhile
+    \State Sea $v$ el v\'ertice de mayor grado en $G$.
+    \State $K \gets \{v\}$
+    \While{$candidatos(K) \neq \emptyset$}
+        \State Sea $v'$ el v\'ertice de mayor grado en $candidatos(K)$.
+        \State $K \gets K \cup \{v'\}$
+    \EndWhile
 
-        \State \Return{$K$}
-    \end{algorithmic}
-\end{algorithm}
+    \State \Return{$K$}
+\end{pseudocodigo}
 
-\begin{algorithm}[H]
-    \caption{Heur\'istica Golosa Constructiva 2 para \emph{CMF} - Descriptivo}
-    \begin{algorithmic}[1]
-        \Require Un grafo $G$ de $n$ v\'ertices y $m$ aristas.
-        \Ensure Una \emph{clique} $K$ de $G$ con una frontera $\delta(K)$ que se
-            espera que sea de cardinalidad cercana o igual a la de $\delta(K')$,
-            siendo $K'$ la \emph{clique} de m\'axima frontera de $G$.
+\begin{pseudocodigo}[Heur\'istica Golosa Constructiva 2 para \emph{CMF} - Descriptivo]
+    \Require Un grafo $G$ de $n$ v\'ertices y $m$ aristas.
+    \Ensure Una \emph{clique} $K$ de $G$ con una frontera $\delta(K)$ que se
+        espera que sea de cardinalidad cercana o igual a la de $\delta(K')$,
+        siendo $K'$ la \emph{clique} de m\'axima frontera de $G$.
 
-        \Statex
+    \Statex
 
-        \State $K \gets \emptyset$
-        \State $\delta_{max} \gets 0$
-        \State $Ks \gets $ Todos los conjuntos de 2 o 3 v\'ertices de $G$ que
-            forman una \emph{clique}.
-        \ForEach{$K' \in Ks$}
-            \If{$\delta(K') > \delta_{max}$}
-                \State $\delta_{max} \gets \delta(K')$
-                \State $K \gets K'$
+    \State $K \gets \emptyset$
+    \State $\delta_{max} \gets 0$
+    \State $Ks \gets $ Todos los conjuntos de 2 o 3 v\'ertices de $G$ que
+        forman una \emph{clique}.
+    \ForEach{$K' \in Ks$}
+        \If{$\delta(K') > \delta_{max}$}
+            \State $\delta_{max} \gets \delta(K')$
+            \State $K \gets K'$
 
-            \EndIf
+        \EndIf
 
-        \EndForEach
+    \EndForEach
 
-        \State \Return{$K$}
-    \end{algorithmic}
-\end{algorithm}
+    \State \Return{$K$}
+\end{pseudocodigo}
