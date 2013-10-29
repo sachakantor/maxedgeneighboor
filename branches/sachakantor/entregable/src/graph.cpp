@@ -1,9 +1,10 @@
-#include <algorithm>
+//#include<algorithm>
 //#include <list>
 //#include <ctime>
-#include <vector>
+#include<iostream>
+#include<vector>
 //#include <union_find_by_rank.hpp> /*define union_find_set*/
-#include <graph.hpp> /*define node,edge,graph*/
+#include<graph.hpp> /*define node,edge,graph*/
 
 using namespace std;
 
@@ -138,11 +139,11 @@ graph::graph(uint quant_nodes,uint quant_edges,vector<node_id>::const_iterator& 
 }
 
 graph::~graph(){
-    for(vector<node*>::iterator it; it<this->_nodes.end();++it)
-        delete *it;
+    for(uint i = 0; i < this->_quant_nodes;++i)
+        delete this->_nodes[i];
 
-    for(vector<edge*>::iterator it; it<this->_edges.end();++it)
-        delete *it;
+    for(uint i = 0; i < this->_quant_edges;++i)
+        delete this->_edges[i];
 }
 
 /*Getters*/
@@ -162,4 +163,63 @@ adjacent_nodes_id graph::cmf_busqueda_local() const{
 
 adjacent_nodes_id graph::cmf_tabu_search() const{
     return adjacent_nodes_id();
+}
+
+/*Metodos Privados*/
+
+/*Sobrecarga de operadores*/
+ostream& operator<<(ostream& output, const graph& G){
+    output << "Matriz de adyacencia:" << endl;
+
+    /*Imprimo la cabecera de la matriz*/
+    output << "X";
+    output << "|| ";
+    for(uint i = 1; i<=G._quant_nodes;++i)
+        output << i << " | ";
+    output << endl;
+
+    output << "=++=";
+    for(uint i = 1; i<G._quant_nodes;++i)
+        output << "=" << "===";
+    output << "==+" << endl;
+
+    /*Imprimo la matriz propiamente dicha*/
+    for(adjacency_matrix::const_iterator row = G._adjacency_matrix.cbegin();
+        row < G._adjacency_matrix.cend();
+        ++row)
+    {
+        output << distance(G._adjacency_matrix.cbegin(),row)+1 << "|| ";
+        for(vector<bool>::const_iterator col = row->cbegin();
+            col < row->end();
+            ++col)
+        {
+            output << *col << " | ";
+        }
+        output << endl;
+
+        output << "-++-";
+        for(uint i = 1; i<G._quant_nodes;++i)
+            output << "-" << "-+-";
+        output << "--+" << endl;
+    }
+    cout << endl;
+
+    /*Imprimo los vecinos de todos los nodos*/
+    cout << "Datos de los nodos: " << endl;
+    for(uint i = 0; i<G._quant_nodes;++i){
+        cout << "ID: " << G._nodes[i]->_id << " Grado: " << G._nodes[i]->_degree << " Vecinos: ";
+        for(uint j = 0; j<G._nodes[i]->_degree; ++j){
+            cout << G._nodes[i]->_neighbors[j] << ", ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    /*Imprimo los ejes*/
+    cout << "Datos de los ejes: " << endl;
+    for(uint i = 0; i<G._quant_edges;++i)
+        cout << "e" << i+1 << ": " << G._edges[i]->_node_id_A << "--" << G._edges[i]->_node_id_B << endl;
+
+
+    return output;
 }

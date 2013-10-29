@@ -1,7 +1,8 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
-#include <vector>
+#include<iostream>
+#include<vector>
 
 using namespace std;
 
@@ -69,6 +70,9 @@ class graph{
 
     private:
         /*Metodos privados*/
+
+        /*Sobrecarga de operadores*/
+        friend ostream& operator<<(ostream &output, const graph& G);
 
         /*Atributos*/
         const uint _quant_nodes;
