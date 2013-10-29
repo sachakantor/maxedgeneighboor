@@ -1,6 +1,7 @@
 //#include<algorithm>
 //#include <list>
 //#include <ctime>
+#include<cmath>
 #include<iostream>
 #include<vector>
 //#include <union_find_by_rank.hpp> /*define union_find_set*/
@@ -149,20 +150,55 @@ graph::~graph(){
 /*Getters*/
 
 /*Métodos publicos*/
-adjacent_nodes_id graph::cmf_backtracking() const{
-    return adjacent_nodes_id();
+uint graph::cmf_backtracking(vector<node_id>& clique) const{
+    /*Variables locales*/
+    vector<vector<node_id> > ya_procesados(this->_quant_nodes,vector<node_id>(this->_quant_nodes,0));
+    uint frontera_max = 0;
+    uint r;
+    double n2;
+    bool stop;
+
+    /*Comenzamos*/
+    if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)>>1){
+        /*El grafo de entrada es un Kn*/
+        clique = vector<node_id>(this->_quant_nodes>>1,0);
+        clique.reserve(this->_quant_nodes>>1);
+        for(uint i=0;i<this->_quant_nodes>>1;++i)
+            clique[i] = i+1;
+
+    } else {
+        /*El grafo no es un Kn, proseguimos*/
+
+        /* Buscamos la cota inferior para frontera_max segun
+         * el teorema de Turan
+         */
+        r = this->_quant_nodes-1;
+        stop = false;
+        while(r!=0 && !stop){
+            n2 = pow(this->_quant_nodes,2);
+            if(r<n2/(n2-(this->_quant_edges<<1)))
+                stop=true;
+            --r;
+        }
+        frontera_max = ((r+1)/2)*ceil((float)(r+1)/2);
+
+        /*Vaciamos clique y comenzamos el algoritmo*/
+
+    }
+
+    return 0;
 }
 
-adjacent_nodes_id graph::cmf_golosa() const{
-    return adjacent_nodes_id();
+uint graph::cmf_golosa(vector<node_id>& clique) const{
+    return 0;
 }
 
-adjacent_nodes_id graph::cmf_busqueda_local() const{
-    return adjacent_nodes_id();
+uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
+    return 0;
 }
 
-adjacent_nodes_id graph::cmf_tabu_search() const{
-    return adjacent_nodes_id();
+uint graph::cmf_tabu_search(vector<node_id>& clique) const{
+    return 0;
 }
 
 /*Metodos Privados*/
