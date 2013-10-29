@@ -63,10 +63,10 @@ class graph{
         /*Getters*/
 
         /*Métodos publicos*/
-        adjacent_nodes_id cmf_backtracking() const;
-        adjacent_nodes_id cmf_golosa() const;
-        adjacent_nodes_id cmf_busqueda_local() const;
-        adjacent_nodes_id cmf_tabu_search() const;
+        uint cmf_backtracking(vector<node_id>& clique) const;
+        uint cmf_golosa(vector<node_id>& clique) const;
+        uint cmf_busqueda_local(vector<node_id>& clique) const;
+        uint cmf_tabu_search(vector<node_id>& clique) const;
 
     private:
         /*Metodos privados*/
