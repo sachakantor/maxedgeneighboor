@@ -34,7 +34,6 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{comment}
-%\usepackage{footnote}
 
 % url – Ver­ba­tim with URL-sen­si­tive line breaks - para el formato de referencias
 \usepackage{url}
@@ -75,14 +74,58 @@
 \usepackage{fixltx2e}
 \MakeRobust{\Call} %Para poder hacer llamadas a funciones como par\'ametro de funciones
 
-%Para usar cuadros split'eables para los pseudocodigos
+%Para usar cuadros split'eables para los pseudocodigos y con footnotes lindos
+\usepackage{footnote}
 \usepackage[framemethod=tikz]{mdframed}
-\surroundwithmdframed[%
-    linecolor = black!70,%
-    linewidth=1pt,%
-    roundcorner=15pt,%
-    backgroundcolor = gray!15%
-]{algorithm}
+
+%\mdfdefinestyle{pseudocodigo}{%
+    %linecolor = black!70,%
+    %linewidth=1pt,%
+    %roundcorner=15pt,%
+    %backgroundcolor = gray!15,%
+    %frametitle = {saraza},%
+    %frametitlerule = true,%
+    %repeatframetitle = true,%
+    %footnoteinside = false%
+%}
+
+%\surroundwithmdframed[style=pseudocodigo]{algorithmic}
+
+\newcounter{pseudo}%[section]
+\newenvironment{pseudocodigo}[1][]{%
+    \stepcounter{pseudo}%
+    \ifstrempty{#1}{%
+        \mdfsetup{%
+            frametitle={%
+                \tikz[baseline=(current bounding box.east),outer sep=0pt]
+                \node[anchor=east,rectangle,fill=blue!20]
+                {\strut Pseudocodigo~\thepseudo};
+            },%
+        }
+    }{%
+        \mdfsetup{%
+            frametitle={%
+                \tikz[baseline=(current bounding box.east),outer sep=0pt]
+                \node[anchor=east,rectangle,fill=blue!20]
+                {\strut Pseudocodigo~\thepseudo:~#1};
+            }
+        }
+    }%
+    \mdfsetup{%
+        innertopmargin=10pt,%
+        linecolor=blue!20,%
+        linewidth=2pt,%
+        topline=true,
+        frametitleaboveskip=\dimexpr-\ht\strutbox\relax,%
+    }
+    \savenotes
+    \begin{mdframed}[footnoteinside=false]\relax%
+        \begin{algorithmic}[1]
+}{%
+        \end{algorithmic}
+    \end{mdframed}
+    \spewnotes
+}
 
 %configuro el paquete listings para C++
 \usepackage{listings}
