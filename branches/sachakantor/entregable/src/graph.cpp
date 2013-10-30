@@ -106,7 +106,7 @@ graph::graph(const graph& copy) :
 graph::graph(uint quant_nodes,uint quant_edges,vector<node_id>::const_iterator& it_edges_nodes) :
     _quant_nodes(quant_nodes),
     _quant_edges(quant_edges),
-    _adjacency_matrix(quant_nodes,vector<bool>(quant_nodes,false)),
+    _adjacency_matrix(quant_nodes,vector<uchar>(quant_nodes,(uchar)false)),
     _nodes(quant_nodes,NULL),
     _edges(quant_edges,NULL)
 {
@@ -128,8 +128,8 @@ graph::graph(uint quant_nodes,uint quant_edges,vector<node_id>::const_iterator& 
 
         /*Creamos el eje y actualizamos la matriz de adyacencia*/
         this->_edges[edge] = new struct edge(a,b);
-        this->_adjacency_matrix[a-1][b-1] = true;
-        this->_adjacency_matrix[b-1][a-1] = true;
+        this->_adjacency_matrix[a-1][b-1] = (uchar)true;
+        this->_adjacency_matrix[b-1][a-1] = (uchar)true;
 
         /*Actualizamos la info de los nodos*/
         ++this->_nodes[a-1]->_degree;
@@ -152,11 +152,12 @@ graph::~graph(){
 /*Métodos publicos*/
 uint graph::cmf_backtracking(vector<node_id>& clique) const{
     /*Variables locales*/
-    vector<vector<node_id> > ya_procesados(this->_quant_nodes,vector<node_id>(this->_quant_nodes,0));
-    uint frontera_max = 0;
+    vector<vector<node_id> > candidatos(this->_quant_nodes);
+    vector<node_id> partial_solution;
+    uint partial_frontier = 0;
+    uint max_frontier = 0;
     uint r;
-    double n2;
-    bool stop;
+    double turan_number;
 
     /*Comenzamos*/
     if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)>>1){
@@ -167,26 +168,76 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
             clique[i] = i+1;
 
     } else {
-        /*El grafo no es un Kn, proseguimos*/
-
-        /* Buscamos la cota inferior para frontera_max segun
+        /*El grafo no es un Kn, proseguimos
+         *
+         * Buscamos la cota inferior para max_frontier segun
          * el teorema de Turan
          */
-        r = this->_quant_nodes-1;
-        stop = false;
-        while(r!=0 && !stop){
-            n2 = pow(this->_quant_nodes,2);
-            if(r<n2/(n2-(this->_quant_edges<<1)))
-                stop=true;
-            --r;
+        turan_number = pow(this->_quant_nodes,2);
+        turan_number = turan_number/(turan_number-(this->_quant_edges<<1));
+        r = (uint)turan_number;
+        max_frontier = ((r+1)>>1)*(1+(r>>1));
+        cout << "Numero de Turan: " << turan_number << endl;
+        cout << "r: " << r << endl;
+        cout << "Frontera Max Inicial: " << max_frontier << endl;
+
+        /*Inicializamos las variables necesarias*/
+        for(vector<vector<node_id> >::iterator it = candidatos.begin();
+            it < candidatos.end();
+            ++it)
+        {
+            it->reserve(this->_quant_nodes);
         }
-        frontera_max = ((r+1)/2)*ceil((float)(r+1)/2);
+        partial_solution.reserve(this->_quant_nodes);
 
-        /*Vaciamos clique y comenzamos el algoritmo*/
+        /*Algoritmo*/
+        for(uint v = 1;v<=this->_quant_nodes;++v){
+            partial_solution.push_back(v);
 
+            /*Calculo los candidatos del primer nodo de la solucion parcial*/
+            for(vector<node_id>::const_iterator it = this->_nodes[v-1]->_neighbors.cbegin();
+                it < this->_nodes[v-1]->_neighbors.cend();
+                ++it)
+            {
+                if(v<*it)
+                    candidatos[0].push_back(*it);
+            }
+
+            //candidatos[0] = this->_nodes[v-1]->_neighbors;
+            while(!partial_solution.empty()){
+                partial_frontier += -((partial_solution.size()-1)<<1)+this->_nodes[partial_solution.back()-1]->_degree;
+                if(max_frontier < partial_frontier){
+                    max_frontier = partial_frontier;
+                    clique = partial_solution;
+                }
+
+                /*Calculo los candidatos de la solucion parcial*/
+                for(vector<node_id>::const_iterator it = candidatos[partial_solution.size()-1].cbegin();
+                    it<candidatos[partial_solution.size()-1].cend();
+                    ++it)
+                {
+                    if(partial_solution.back()<*it &&
+                        this->_nodes[*it-1]->_degree > partial_solution.size()<<1 &&
+                        (bool)this->_adjacency_matrix[partial_solution.back()-1][*it-1])
+                    {
+                        candidatos[partial_solution.size()].push_back(*it);
+                    }
+                }
+
+                /*Continuo agregando nodos si se puede, sino hago backtracking*/
+                while(candidatos[partial_solution.size()].empty()){
+                    partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
+                    partial_solution.pop_back();
+                }
+                if(!partial_solution.empty() && !candidatos[partial_solution.size()].empty()){
+                    partial_solution.push_back(candidatos[partial_solution.size()].back());
+                    candidatos[partial_solution.size()-1].pop_back();
+                }
+            }
+        }
     }
 
-    return 0;
+    return max_frontier;
 }
 
 uint graph::cmf_golosa(vector<node_id>& clique) const{
@@ -225,11 +276,11 @@ ostream& operator<<(ostream& output, const graph& G){
         ++row)
     {
         output << distance(G._adjacency_matrix.cbegin(),row)+1 << "|| ";
-        for(vector<bool>::const_iterator col = row->cbegin();
+        for(vector<uchar>::const_iterator col = row->cbegin();
             col < row->end();
             ++col)
         {
-            output << *col << " | ";
+            output << (bool)*col << " | ";
         }
         output << endl;
 

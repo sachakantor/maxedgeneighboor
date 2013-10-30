@@ -11,10 +11,11 @@ struct node;
 
 /* Renombres y Structs */
 typedef unsigned int uint;
+typedef unsigned char uchar;
 typedef unsigned int node_id;
 typedef unsigned int degree;
 typedef vector<node_id> adjacent_nodes_id;
-typedef vector<vector<bool> > adjacency_matrix;
+typedef vector<vector<uchar> > adjacency_matrix;
 
 typedef struct node{
     /*Constructores y Destructores*/

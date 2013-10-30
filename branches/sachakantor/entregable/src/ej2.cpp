@@ -2,6 +2,7 @@
 #include<vector>
 #include<algo3InputParser.hpp>
 #include<graph.hpp>
+#include<ej2.hpp>
 
 typedef unsigned int parameter;
 
@@ -35,8 +36,24 @@ int main(int argc,char* argv[]){
         quant_edges = *it_param;
         ++it_param;
 
+        /*Instanciamos e imprimimos el grafo por pantalla*/
         graph grafo(quant_nodes,quant_edges,it_param);
         cout << grafo << endl;;
+
+
+        /*Calculamos su frontera maxima por backtracking*/
+        vector<node_id> clique;
+        cout << "Frontera Max: " << grafo.cmf_backtracking(clique) << endl;
+        cout << "Nodos de la CFM: ";
+        for(vector<node_id>::const_iterator it = clique.cbegin();
+            it<clique.cend();
+            ++it)
+        {
+            cout << *it << ", ";
+        }
+        cout << endl;
+
+        /* Terminamos el bucle*/
         --it_param; //Esto se debe a que el constructor de grafo
                     //deja it_param ya incrementado (que luego indrementa
                     //el for)
