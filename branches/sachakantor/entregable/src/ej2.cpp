@@ -13,6 +13,8 @@ int main(int argc,char* argv[]){
     algo3InputParser<parameter,vector<parameter> > parser(std::cin);
     vector<parameter> input;
     parameter quant_nodes,quant_edges,terminator_char=0;
+    uint frontera;
+    vector<node_id> clique;
 
     /* Leemos toda la entrada hasta encontrar
      * a "terminator" (definido arriba) y guardamos cada
@@ -38,18 +40,17 @@ int main(int argc,char* argv[]){
 
         /*Instanciamos e imprimimos el grafo por pantalla*/
         graph grafo(quant_nodes,quant_edges,it_param);
-        cout << grafo << endl;;
-
+        //cout << grafo << endl;;
 
         /*Calculamos su frontera maxima por backtracking*/
-        vector<node_id> clique;
-        cout << "Frontera Max: " << grafo.cmf_backtracking(clique) << endl;
-        cout << "Nodos de la CFM: ";
+        clique.clear();
+        frontera = grafo.cmf_backtracking(clique);
+        cout << frontera << ' ' << clique.size() << ' ';
         for(vector<node_id>::const_iterator it = clique.cbegin();
             it<clique.cend();
             ++it)
         {
-            cout << *it << ", ";
+            cout << *it << ' ';
         }
         cout << endl;
 

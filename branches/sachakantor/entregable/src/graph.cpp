@@ -1,4 +1,4 @@
-//#include<algorithm>
+#include<algorithm>
 //#include <list>
 //#include <ctime>
 #include<cmath>
@@ -152,16 +152,15 @@ graph::~graph(){
 /*Métodos publicos*/
 uint graph::cmf_backtracking(vector<node_id>& clique) const{
     /*Variables locales*/
-    vector<vector<node_id> > candidatos(this->_quant_nodes);
+    vector<vector<node_id> > candidates(this->_quant_nodes);
     vector<node_id> partial_solution;
-    uint partial_frontier = 0;
-    uint max_frontier = 0;
-    uint r;
+    uint partial_frontier,max_frontier,r;
     double turan_number;
 
     /*Comenzamos*/
     if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)>>1){
         /*El grafo de entrada es un Kn*/
+        max_frontier = ((this->_quant_nodes)>>1)*(1+((this->_quant_nodes-1)>>1));
         clique = vector<node_id>(this->_quant_nodes>>1,0);
         clique.reserve(this->_quant_nodes>>1);
         for(uint i=0;i<this->_quant_nodes>>1;++i)
@@ -177,61 +176,78 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
         turan_number = turan_number/(turan_number-(this->_quant_edges<<1));
         r = (uint)turan_number;
         max_frontier = ((r+1)>>1)*(1+(r>>1));
-        cout << "Numero de Turan: " << turan_number << endl;
-        cout << "r: " << r << endl;
-        cout << "Frontera Max Inicial: " << max_frontier << endl;
+        //cout << "Numero de Turan: " << turan_number << endl;
+        //cout << "r: " << r << endl;
+        //cout << "Frontera Max Inicial: " << max_frontier << endl;
 
         /*Inicializamos las variables necesarias*/
-        for(vector<vector<node_id> >::iterator it = candidatos.begin();
-            it < candidatos.end();
+        for(vector<vector<node_id> >::iterator it = candidates.begin();
+            it < candidates.end();
             ++it)
         {
             it->reserve(this->_quant_nodes);
         }
         partial_solution.reserve(this->_quant_nodes);
+        partial_frontier = 0;
 
         /*Algoritmo*/
-        for(uint v = 1;v<=this->_quant_nodes;++v){
-            partial_solution.push_back(v);
+        for(node_id i = this->_quant_nodes;i>0;--i)
+            candidates[0].push_back(i);
 
-            /*Calculo los candidatos del primer nodo de la solucion parcial*/
-            for(vector<node_id>::const_iterator it = this->_nodes[v-1]->_neighbors.cbegin();
-                it < this->_nodes[v-1]->_neighbors.cend();
-                ++it)
-            {
-                if(v<*it)
-                    candidatos[0].push_back(*it);
-            }
+        while(!candidates[0].empty() || !partial_solution.empty()){
+            if(partial_solution.empty()){
+                /*Generamos una nueva rama agregando el primer nodo*/
+                partial_solution.push_back(candidates[0].back());
+                candidates[0].pop_back();
+                partial_frontier = this->_nodes[partial_solution.back()-1]->_degree;
 
-            //candidatos[0] = this->_nodes[v-1]->_neighbors;
-            while(!partial_solution.empty()){
-                partial_frontier += -((partial_solution.size()-1)<<1)+this->_nodes[partial_solution.back()-1]->_degree;
+                /*Verifico si mejoro mi solucion optima*/
                 if(max_frontier < partial_frontier){
                     max_frontier = partial_frontier;
                     clique = partial_solution;
                 }
 
-                /*Calculo los candidatos de la solucion parcial*/
-                for(vector<node_id>::const_iterator it = candidatos[partial_solution.size()-1].cbegin();
-                    it<candidatos[partial_solution.size()-1].cend();
+                /*Calculo los candidatos de la solucion parcial de 1 solo nodo*/
+                for(vector<node_id>::const_iterator it = candidates[partial_solution.size()-1].cbegin();
+                    it<candidates[partial_solution.size()-1].cend();
+                    ++it)
+                {
+                    if(//partial_solution.back()<*it &&
+                        this->_nodes[*it-1]->_degree > partial_solution.size()<<1 &&
+                        (bool)this->_adjacency_matrix[partial_solution.back()-1][*it-1])
+                    {
+                        candidates[partial_solution.size()].push_back(*it);
+                    }
+                }
+
+            } else if(candidates[partial_solution.size()].empty()){
+                /*Termine con esta rama, hago Backtracking*/
+                partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
+                partial_solution.pop_back();
+
+            } else {
+                /*Tengo opciones validas en candidatos para agrandar la clique*/
+                partial_solution.push_back(candidates[partial_solution.size()].back());
+                candidates[partial_solution.size()-1].pop_back();
+                partial_frontier += -((partial_solution.size()-1)<<1)+this->_nodes[partial_solution.back()-1]->_degree;
+
+                /*Verifico si mejoro mi solucion optima*/
+                if(max_frontier < partial_frontier){
+                    max_frontier = partial_frontier;
+                    clique = partial_solution;
+                }
+
+                /*Calculo los candidatos de la nueva solucion parcial*/
+                for(vector<node_id>::const_iterator it = candidates[partial_solution.size()-1].cbegin();
+                    it<candidates[partial_solution.size()-1].cend();
                     ++it)
                 {
                     if(partial_solution.back()<*it &&
                         this->_nodes[*it-1]->_degree > partial_solution.size()<<1 &&
                         (bool)this->_adjacency_matrix[partial_solution.back()-1][*it-1])
                     {
-                        candidatos[partial_solution.size()].push_back(*it);
+                        candidates[partial_solution.size()].push_back(*it);
                     }
-                }
-
-                /*Continuo agregando nodos si se puede, sino hago backtracking*/
-                while(candidatos[partial_solution.size()].empty()){
-                    partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
-                    partial_solution.pop_back();
-                }
-                if(!partial_solution.empty() && !candidatos[partial_solution.size()].empty()){
-                    partial_solution.push_back(candidatos[partial_solution.size()].back());
-                    candidatos[partial_solution.size()-1].pop_back();
                 }
             }
         }
