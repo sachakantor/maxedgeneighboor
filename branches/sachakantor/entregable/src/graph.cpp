@@ -195,37 +195,7 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
             candidates[0].push_back(i);
 
         while(!candidates[0].empty() || !partial_solution.empty()){
-            if(partial_solution.empty()){
-                /*Generamos una nueva rama agregando el primer nodo*/
-                partial_solution.push_back(candidates[0].back());
-                candidates[0].pop_back();
-                partial_frontier = this->_nodes[partial_solution.back()-1]->_degree;
-
-                /*Verifico si mejoro mi solucion optima*/
-                if(max_frontier < partial_frontier){
-                    max_frontier = partial_frontier;
-                    clique = partial_solution;
-                }
-
-                /*Calculo los candidatos de la solucion parcial de 1 solo nodo*/
-                for(vector<node_id>::const_iterator it = candidates[partial_solution.size()-1].cbegin();
-                    it<candidates[partial_solution.size()-1].cend();
-                    ++it)
-                {
-                    if(//partial_solution.back()<*it &&
-                        this->_nodes[*it-1]->_degree > partial_solution.size()<<1 &&
-                        (bool)this->_adjacency_matrix[partial_solution.back()-1][*it-1])
-                    {
-                        candidates[partial_solution.size()].push_back(*it);
-                    }
-                }
-
-            } else if(candidates[partial_solution.size()].empty()){
-                /*Termine con esta rama, hago Backtracking*/
-                partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
-                partial_solution.pop_back();
-
-            } else {
+            if(!candidates[partial_solution.size()].empty()){
                 /*Tengo opciones validas en candidatos para agrandar la clique*/
                 partial_solution.push_back(candidates[partial_solution.size()].back());
                 candidates[partial_solution.size()-1].pop_back();
@@ -249,6 +219,11 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                         candidates[partial_solution.size()].push_back(*it);
                     }
                 }
+
+            } else {
+                /*Termine con esta rama, hago Backtracking*/
+                partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
+                partial_solution.pop_back();
             }
         }
     }
