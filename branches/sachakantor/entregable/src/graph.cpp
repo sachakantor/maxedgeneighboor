@@ -157,8 +157,8 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
     vector<node_id> partial_solution;
     uint partial_frontier,max_frontier,r;
     double n_pow2;
-    bool stop;
-    uint bound_best_frontier;
+    //bool stop; /*Solo si se trabajan con los nodos ordenados por grado*/
+    uint bound_best_frontier,bound_joinable_nodes; /*Solo para la poda de frontera optima parcial*/
 
     /*Comenzamos*/
     if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)>>1){
@@ -225,10 +225,11 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                 }
 
                 /*Calculo los candidatos de la nueva solucion parcial*/
-                bound_best_frontier = partial_frontier; /*Necesario solo si se aplica la poda correspondiente*/
-                stop = false;
+                bound_joinable_nodes = 0; /*Solo necesario para la poda de frontera optima parcial*/
+                bound_best_frontier = partial_frontier; /*Solo necesario para la poda de frontera optima parcial*/
+                //stop = false; /*Necesario si los nodos estan ordenados por grado*/
                 for(deque<node_id>::const_reverse_iterator rit = candidates[partial_solution.size()-1].crbegin();
-                    rit != candidates[partial_solution.size()-1].crend() && !stop;
+                    rit != candidates[partial_solution.size()-1].crend(); // && !stop; /*Solo si los nodos estan ordenados por grado*/
                     ++rit)
                 {
                     if(this->_nodes[*rit-1]->_degree > partial_solution.size()<<1){
@@ -239,8 +240,10 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                              * Voy recopilando informacion que se usará para aplicar una
                              * poda una vez terminado el ciclo
                              */
-                            if(this->_nodes[*rit-1]->_degree > (partial_solution.size()+candidates[partial_solution.size()].size()-1)<<1)
-                                bound_best_frontier += this->_nodes[*rit-1]->_degree - (candidates[partial_solution.size()].size()<<1);
+                            if(this->_nodes[*rit-1]->_degree > (partial_solution.size()+bound_joinable_nodes)<<1){
+                                bound_best_frontier += this->_nodes[*rit-1]->_degree - ((partial_solution.size()+bound_joinable_nodes)<<1);
+                                ++bound_joinable_nodes;
+                            }
 
                             /* Necesario si se esta trabajando la poda con los nodos
                              * ordenados por grado
@@ -278,7 +281,7 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                  * sería posible (en el mejor de los casos) superar la frontera
                  * de la mejor solución encontrada hasta el momento
                  */
-                if(bound_best_frontier <= max_frontier){
+                if(bound_best_frontier < max_frontier){
                     candidates[partial_solution.size()].clear();
                 }
 
