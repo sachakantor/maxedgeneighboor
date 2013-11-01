@@ -157,24 +157,23 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
     vector<node_id> partial_solution;
     uint partial_frontier,max_frontier,r;
     double n_pow2;
+    bool stop;
+    uint bound_best_frontier;
 
     /*Comenzamos*/
     if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)>>1){
         /*El grafo de entrada es un Kn*/
         max_frontier = ((this->_quant_nodes)>>1)*(1+((this->_quant_nodes-1)>>1));
-        clique = vector<node_id>(this->_quant_nodes>>1,0);
+        clique.clear();
         clique.reserve(this->_quant_nodes>>1);
         for(uint i=0;i<this->_quant_nodes>>1;++i)
-            clique[i] = i+1;
+            clique.push_back(i+1);
 
     } else {
         /*El grafo no es un Kn, proseguimos*/
 
         /*Inicializamos las variables necesarias*/
         for(uint i = 1;i<=this->_quant_nodes;++i){
-            /*Necesario si se trabaja con vector en lugar de deque*/
-            //candidates[i].reserve(this->_quant_nodes);
-
             /* Cargamos los datos iniciales del ciclo de manera que
              * si no ordenamos los nodos segun su grado (de menor a mayor),
              * el algoritmo funcione segun el id de los nodos
@@ -196,16 +195,21 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
 
         /******** Algoritmo ********/
 
-        /* Ordenamos candidates[0] segun su grado, suponiendo
+        /* Necesario si se quiere trabajar con los nodos ordenados
+         * por grados e iterar de mayor a menor.
+         *
+         * Ordenamos candidates[0] segun su grado, suponiendo
          * que yendo de mayor a menor mejorará la eficiencia ya
          * que como comportamiento general, los nodos de mayor
          * grado suelen formar la CMF, permitiendonos podar
          * ramas más rápido una vez llegada a esta.
          */
+        /*
         sort(candidates[0].begin(),
              candidates[0].end(),
              [&](int v,int w){return this->_nodes[v-1]->_degree < this->_nodes[w-1]->_degree;}
             );
+        */
 
         while(!candidates[0].empty() || !partial_solution.empty()){
             if(!candidates[partial_solution.size()].empty()){
@@ -221,22 +225,59 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                 }
 
                 /*Calculo los candidatos de la nueva solucion parcial*/
+                bound_best_frontier = partial_frontier; /*Necesario solo si se aplica la poda correspondiente*/
+                stop = false;
                 for(deque<node_id>::const_reverse_iterator rit = candidates[partial_solution.size()-1].crbegin();
-                    rit != candidates[partial_solution.size()-1].crend();
+                    rit != candidates[partial_solution.size()-1].crend() && !stop;
                     ++rit)
                 {
                     if(this->_nodes[*rit-1]->_degree > partial_solution.size()<<1){
-                        if((bool)this->_adjacency_matrix[partial_solution.back()-1][*rit-1])
+                        if((bool)this->_adjacency_matrix[partial_solution.back()-1][*rit-1]){
                             candidates[partial_solution.size()].push_front(*rit);
 
-                    /*Necesario solo si los nodos estan ordenados por grado*/
-                    } else {
+                            /* Necesario si se aplica la poda de la frontera optima parcial
+                             *
+                             * Voy recopilando informacion que se usará para aplicar una
+                             * poda una vez terminado el ciclo
+                             */
+                            if(this->_nodes[*rit-1]->_degree > (partial_solution.size()+candidates[partial_solution.size()].size()-1)<<1)
+                                bound_best_frontier += ((-partial_solution.size()-candidates[partial_solution.size()].size()+1)<<1) + this->_nodes[*rit-1]->_degree;
+
+                            /* Necesario si se esta trabajando la poda con los nodos
+                             * ordenados por grado
+                             *
+                             * Como los candidatos se agregan manteniendo el orden de los grados,
+                             * si con el ultimo agregado no se incrementa nuestra cota para la frontera,
+                             * ya podemos verificar si por esta rama se puede llegar a una solucion
+                             * optima.
+                             */
+                            /*
+                            else if(bound_best_frontier <= max_frontier){
+                                candidates[partial_solution.size()].clear();
+                                stop = true;
+                            }
+                            */
+                        }
+
+                    /*Necesario si los nodos estan ordenados por grado*/
+                    //} else {
                         /* Como los candidatos estan ordenados por grado de menor a mayor
                          * e iteramos de atras hacia adelante, ya sabemos que la condicion
                          * del if no se cumplira para el resto de los candidatos
                          */
-                        break;
+                    //    stop = true;
                     }
+                }
+
+                /* Necesario si se aplica la poda de frontera optima parcial
+                 * trabajando con los nodos ordenados por id
+                 *
+                 * Verifico, mediante una cota, si con estos candidatos
+                 * sería posible (en el mejor de los casos) superar la frontera
+                 * de la mejor solución encontrada hasta el momento
+                 */
+                if(bound_best_frontier <= max_frontier){
+                    candidates[partial_solution.size()].clear();
                 }
 
             } else {
