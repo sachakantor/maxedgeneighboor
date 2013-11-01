@@ -4,6 +4,7 @@
 #include<cmath>
 #include<iostream>
 #include<vector>
+#include<deque>
 //#include <union_find_by_rank.hpp> /*define union_find_set*/
 #include<graph.hpp> /*define node,edge,graph*/
 
@@ -152,10 +153,10 @@ graph::~graph(){
 /*Métodos publicos*/
 uint graph::cmf_backtracking(vector<node_id>& clique) const{
     /*Variables locales*/
-    vector<vector<node_id> > candidates(this->_quant_nodes);
+    vector<deque<node_id> > candidates(this->_quant_nodes);
     vector<node_id> partial_solution;
     uint partial_frontier,max_frontier,r;
-    double turan_number;
+    double n_pow2;
 
     /*Comenzamos*/
     if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)>>1){
@@ -167,32 +168,44 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
             clique[i] = i+1;
 
     } else {
-        /*El grafo no es un Kn, proseguimos
-         *
-         * Buscamos la cota inferior para max_frontier segun
-         * el teorema de Turan
-         */
-        turan_number = pow(this->_quant_nodes,2);
-        turan_number = turan_number/(turan_number-(this->_quant_edges<<1));
-        r = (uint)turan_number;
-        max_frontier = ((r+1)>>1)*(1+(r>>1));
-        //cout << "Numero de Turan: " << turan_number << endl;
-        //cout << "r: " << r << endl;
-        //cout << "Frontera Max Inicial: " << max_frontier << endl;
+        /*El grafo no es un Kn, proseguimos*/
 
         /*Inicializamos las variables necesarias*/
-        for(vector<vector<node_id> >::iterator it = candidates.begin();
-            it < candidates.end();
-            ++it)
-        {
-            it->reserve(this->_quant_nodes);
+        for(uint i = 1;i<=this->_quant_nodes;++i){
+            /*Necesario si se trabaja con vector en lugar de deque*/
+            //candidates[i].reserve(this->_quant_nodes);
+
+            /* Cargamos los datos iniciales del ciclo de manera que
+             * si no ordenamos los nodos segun su grado (de menor a mayor),
+             * el algoritmo funcione segun el id de los nodos
+             */
+            candidates[0].push_front(i);
         }
         partial_solution.reserve(this->_quant_nodes);
         partial_frontier = 0;
 
-        /*Algoritmo*/
-        for(node_id i = this->_quant_nodes;i>0;--i)
-            candidates[0].push_back(i);
+        /* Buscamos la cota inferior para max_frontier segun
+         * el teorema de Turan
+         */
+        n_pow2 = pow(this->_quant_nodes,2);
+        r = (uint)(ceil(-1 + n_pow2/(n_pow2-(this->_quant_edges<<1))));
+        max_frontier = ((r+1)>>1)*(1+(r>>1));
+        //cout << "Numero de turam: " << (n_pow2/(n_pow2-(this->_quant_edges<<1))) << endl;
+        //cout << "r: " << r << endl;
+        cout << "Frontera Max Inicial: " << max_frontier << endl;
+
+        /******** Algoritmo ********/
+
+        /* Ordenamos candidates[0] segun su grado, suponiendo
+         * que yendo de mayor a menor mejorará la eficiencia ya
+         * que como comportamiento general, los nodos de mayor
+         * grado suelen formar la CMF, permitiendonos podar
+         * ramas más rápido una vez llegada a esta.
+         */
+        sort(candidates[0].begin(),
+             candidates[0].end(),
+             [&](int v,int w){return this->_nodes[v-1]->_degree < this->_nodes[w-1]->_degree;}
+            );
 
         while(!candidates[0].empty() || !partial_solution.empty()){
             if(!candidates[partial_solution.size()].empty()){
@@ -208,15 +221,21 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                 }
 
                 /*Calculo los candidatos de la nueva solucion parcial*/
-                for(vector<node_id>::const_iterator it = candidates[partial_solution.size()-1].cbegin();
-                    it<candidates[partial_solution.size()-1].cend();
-                    ++it)
+                for(deque<node_id>::const_reverse_iterator rit = candidates[partial_solution.size()-1].crbegin();
+                    rit != candidates[partial_solution.size()-1].crend();
+                    ++rit)
                 {
-                    if(partial_solution.back()<*it &&
-                        this->_nodes[*it-1]->_degree > partial_solution.size()<<1 &&
-                        (bool)this->_adjacency_matrix[partial_solution.back()-1][*it-1])
-                    {
-                        candidates[partial_solution.size()].push_back(*it);
+                    if(this->_nodes[*rit-1]->_degree > partial_solution.size()<<1){
+                        if((bool)this->_adjacency_matrix[partial_solution.back()-1][*rit-1])
+                            candidates[partial_solution.size()].push_front(*rit);
+
+                    /*Necesario solo si los nodos estan ordenados por grado*/
+                    } else {
+                        /* Como los candidatos estan ordenados por grado de menor a mayor
+                         * e iteramos de atras hacia adelante, ya sabemos que la condicion
+                         * del if no se cumplira para el resto de los candidatos
+                         */
+                        break;
                     }
                 }
 

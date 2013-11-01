@@ -39,11 +39,11 @@ int main(int argc,char* argv[]){
         ++it_param;
 
         /*Instanciamos e imprimimos el grafo por pantalla*/
+        clique.clear();
         graph grafo(quant_nodes,quant_edges,it_param);
         //cout << grafo << endl;;
 
         /*Calculamos su frontera maxima por backtracking*/
-        clique.clear();
         frontera = grafo.cmf_backtracking(clique);
         cout << frontera << ' ' << clique.size() << ' ';
         for(vector<node_id>::const_iterator it = clique.cbegin();
