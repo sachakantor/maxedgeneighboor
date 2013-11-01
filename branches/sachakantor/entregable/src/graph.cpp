@@ -191,7 +191,7 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
         max_frontier = ((r+1)>>1)*(1+(r>>1));
         //cout << "Numero de turam: " << (n_pow2/(n_pow2-(this->_quant_edges<<1))) << endl;
         //cout << "r: " << r << endl;
-        cout << "Frontera Max Inicial: " << max_frontier << endl;
+        //cout << "Frontera Max Inicial: " << max_frontier << endl;
 
         /******** Algoritmo ********/
 
@@ -233,7 +233,6 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                 {
                     if(this->_nodes[*rit-1]->_degree > partial_solution.size()<<1){
                         if((bool)this->_adjacency_matrix[partial_solution.back()-1][*rit-1]){
-                            candidates[partial_solution.size()].push_front(*rit);
 
                             /* Necesario si se aplica la poda de la frontera optima parcial
                              *
@@ -241,7 +240,7 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                              * poda una vez terminado el ciclo
                              */
                             if(this->_nodes[*rit-1]->_degree > (partial_solution.size()+candidates[partial_solution.size()].size()-1)<<1)
-                                bound_best_frontier += ((-partial_solution.size()-candidates[partial_solution.size()].size()+1)<<1) + this->_nodes[*rit-1]->_degree;
+                                bound_best_frontier += this->_nodes[*rit-1]->_degree - (candidates[partial_solution.size()].size()<<1);
 
                             /* Necesario si se esta trabajando la poda con los nodos
                              * ordenados por grado
@@ -257,6 +256,9 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                                 stop = true;
                             }
                             */
+
+                            /*Agregamos el candidato*/
+                            candidates[partial_solution.size()].push_front(*rit);
                         }
 
                     /*Necesario si los nodos estan ordenados por grado*/
