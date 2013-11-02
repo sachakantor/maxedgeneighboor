@@ -157,8 +157,7 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
     vector<node_id> partial_solution;
     uint partial_frontier,max_frontier,r;
     double n_pow2;
-    //bool stop; /*Solo si se trabajan con los nodos ordenados por grado*/
-    uint bound_best_frontier,bound_joinable_nodes; /*Solo para la poda de frontera optima parcial*/
+    uint bound_best_frontier,bound_joinable_nodes;
 
     /*Comenzamos*/
     if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)>>1){
@@ -182,135 +181,63 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
         //cout << "r: " << r << endl;
         //cout << "Frontera Max Inicial: " << max_frontier << endl;
 
-        /******** Algoritmo ********/
-        /*Inicializamos las variables necesarias*/
-        #ifndef _OPENMP
-        for(uint i = 1;i<=this->_quant_nodes;++i){
-            /* Cargamos los datos iniciales del ciclo de manera que
-             * si no ordenamos los nodos segun su grado (de menor a mayor),
-             * el algoritmo funcione segun el id de los nodos
-             */
+        /* Cargamos los datos iniciales del ciclo de manera que
+         * el algoritmo funcione segun el id de los nodos
+         */
+        for(uint i = 1;i<=this->_quant_nodes;++i)
             candidates[0].push_front(i);
-        }
-        #endif//_OPENMP
         partial_solution.reserve(this->_quant_nodes);
         partial_frontier = 0;
 
-        /* Necesario si se quiere trabajar con los nodos ordenados
-         * por grados e iterar de mayor a menor.
-         *
-         * Ordenamos candidates[0] segun su grado, suponiendo
-         * que yendo de mayor a menor mejorará la eficiencia ya
-         * que como comportamiento general, los nodos de mayor
-         * grado suelen formar la CMF, permitiendonos podar
-         * ramas más rápido una vez llegada a esta.
-         */
-        /*
-        sort(candidates[0].begin(),
-             candidates[0].end(),
-             [&](int v,int w){return this->_nodes[v-1]->_degree < this->_nodes[w-1]->_degree;}
-            );
-        */
+        while(!candidates[0].empty() || !partial_solution.empty()){
+            if(!candidates[partial_solution.size()].empty()){
+                /*Tengo opciones validas en candidatos para agrandar la clique*/
+                partial_solution.push_back(candidates[partial_solution.size()].back());
+                candidates[partial_solution.size()-1].pop_back();
+                partial_frontier += -((partial_solution.size()-1)<<1)+this->_nodes[partial_solution.back()-1]->_degree;
 
-        /*Solo necesario si se usa openmp*/
-        #pragma omp parallel for schedule(static) default(none) collapse(1)\
-            firstprivate(candidates,partial_solution,partial_frontier)\
-            private(bound_joinable_nodes,bound_best_frontier)\
-            shared(max_frontier,clique)
-        #ifdef _OPENMP
-        for(node_id i = 1;i<=this->_quant_nodes;++i){
-            for(node_id j = i;j<=this->_quant_nodes;++j){
-                candidates[0].push_front(j);
-            }
-        #endif//_OPENMP
-
-            while(!candidates[0].empty() || !partial_solution.empty()){
-                if(!candidates[partial_solution.size()].empty()){
-                    /*Tengo opciones validas en candidatos para agrandar la clique*/
-                    partial_solution.push_back(candidates[partial_solution.size()].back());
-                    candidates[partial_solution.size()-1].pop_back();
-                    partial_frontier += -((partial_solution.size()-1)<<1)+this->_nodes[partial_solution.back()-1]->_degree;
-
-                    /*Verifico si mejoro mi solucion optima*/
-                    #pragma omp critical(max_frontier)
+                /*Calculo los candidatos de la nueva solucion parcial*/
+                bound_joinable_nodes = 0;
+                bound_best_frontier = partial_frontier;
+                for(deque<node_id>::const_reverse_iterator rit = candidates[partial_solution.size()-1].crbegin();
+                    rit != candidates[partial_solution.size()-1].crend();
+                    ++rit)
+                {
+                    if((this->_nodes[*rit-1]->_degree > partial_solution.size()<<1) &&
+                        (bool)this->_adjacency_matrix[partial_solution.back()-1][*rit-1])
                     {
-                        if(max_frontier < partial_frontier){
-                            max_frontier = partial_frontier;
-                            clique = partial_solution;
+                        /* Voy recopilando informacion que se usará para aplicar una
+                         * poda una vez terminado el ciclo
+                         */
+                        if(this->_nodes[*rit-1]->_degree > (partial_solution.size()+bound_joinable_nodes)<<1){
+                            bound_best_frontier += this->_nodes[*rit-1]->_degree - ((partial_solution.size()+bound_joinable_nodes)<<1);
+                            ++bound_joinable_nodes;
                         }
+
+                        /*Agregamos el candidato*/
+                        candidates[partial_solution.size()].push_front(*rit);
                     }
-
-                    /*Calculo los candidatos de la nueva solucion parcial*/
-                    bound_joinable_nodes = 0; /*Solo necesario para la poda de frontera optima parcial*/
-                    bound_best_frontier = partial_frontier; /*Solo necesario para la poda de frontera optima parcial*/
-                    //stop = false; /*Necesario si los nodos estan ordenados por grado*/
-                    for(deque<node_id>::const_reverse_iterator rit = candidates[partial_solution.size()-1].crbegin();
-                        rit != candidates[partial_solution.size()-1].crend(); // && !stop; /*Solo si los nodos estan ordenados por grado*/
-                        ++rit)
-                    {
-                        if(this->_nodes[*rit-1]->_degree > partial_solution.size()<<1){
-                            if((bool)this->_adjacency_matrix[partial_solution.back()-1][*rit-1]){
-
-                                /* Necesario si se aplica la poda de la frontera optima parcial
-                                 *
-                                 * Voy recopilando informacion que se usará para aplicar una
-                                 * poda una vez terminado el ciclo
-                                 */
-                                if(this->_nodes[*rit-1]->_degree > (partial_solution.size()+bound_joinable_nodes)<<1){
-                                    bound_best_frontier += this->_nodes[*rit-1]->_degree - ((partial_solution.size()+bound_joinable_nodes)<<1);
-                                    ++bound_joinable_nodes;
-                                }
-
-                                /* Necesario si se esta trabajando la poda con los nodos
-                                 * ordenados por grado
-                                 *
-                                 * Como los candidatos se agregan manteniendo el orden de los grados,
-                                 * si con el ultimo agregado no se incrementa nuestra cota para la frontera,
-                                 * ya podemos verificar si por esta rama se puede llegar a una solucion
-                                 * optima.
-                                 */
-                                /*
-                                else if(bound_best_frontier <= max_frontier){
-                                    candidates[partial_solution.size()].clear();
-                                    stop = true;
-                                }
-                                */
-
-                                /*Agregamos el candidato*/
-                                candidates[partial_solution.size()].push_front(*rit);
-                            }
-
-                        /*Necesario si los nodos estan ordenados por grado*/
-                        //} else {
-                            /* Como los candidatos estan ordenados por grado de menor a mayor
-                             * e iteramos de atras hacia adelante, ya sabemos que la condicion
-                             * del if no se cumplira para el resto de los candidatos
-                             */
-                        //    stop = true;
-                        }
-                    }
-
-                    /* Necesario si se aplica la poda de frontera optima parcial
-                     * trabajando con los nodos ordenados por id
-                     *
-                     * Verifico, mediante una cota, si con estos candidatos
-                     * sería posible (en el mejor de los casos) superar la frontera
-                     * de la mejor solución encontrada hasta el momento
-                     */
-                    #pragma omp critical(max_frontier)
-                    if(max_frontier > bound_best_frontier){
-                        candidates[partial_solution.size()].clear();
-                    }
-
-                } else {
-                    /*Termine con esta rama, hago Backtracking*/
-                    partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
-                    partial_solution.pop_back();
                 }
+
+                /* Verifico si sería posible (en el mejor de los casos)
+                 * superar la frontera de la mejor solución encontrada
+                 * hasta el momento
+                 */
+                if(max_frontier > bound_best_frontier || candidates[partial_solution.size()].empty()){
+                    candidates[partial_solution.size()].clear();
+
+                    /*Verifico si mejoró mi solucion optima al haber terminado la rama*/
+                    if(max_frontier < partial_frontier){
+                        max_frontier = partial_frontier;
+                        clique = partial_solution;
+                    }
+                }
+            } else {
+                /*Termine con esta rama, hago Backtracking*/
+                partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
+                partial_solution.pop_back();
             }
-        #ifdef _OPENMP
         }
-        #endif//_OPENMP
     }
 
     return max_frontier;
