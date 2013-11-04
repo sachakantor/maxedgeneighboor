@@ -265,6 +265,9 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                         - this->_nodes[partial_solution.back()-1]->_degree +
                         ((partial_solution.size()-1+bound_joinable_nodes.top())<<1);
 
+                    /* Si quedan nodos en los candidatos para reemplazar el que ya se utilizó,
+                     * lo tengo en cuenta
+                     */
                     if(candidates[partial_solution.size()-1].size() > bound_joinable_nodes.top() &&
                         this->_nodes[candidates[partial_solution.size()-1][bound_joinable_nodes.top()]-1]->_degree >
                             (partial_solution.size()-1+bound_joinable_nodes.top())<<1)
