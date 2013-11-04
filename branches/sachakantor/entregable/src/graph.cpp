@@ -5,6 +5,7 @@
 #include<iostream>
 #include<vector>
 #include<deque>
+#include<stack>
 //#include <union_find_by_rank.hpp> /*define union_find_set*/
 #include<graph.hpp> /*define node,edge,graph*/
 
@@ -155,9 +156,9 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
     /*Variables locales*/
     vector<deque<node_id> > candidates(this->_quant_nodes);
     vector<node_id> partial_solution;
+    deque<uint> bound_best_frontier,bound_joinable_nodes;
     uint partial_frontier,max_frontier,r;
     double n_pow2;
-    uint bound_best_frontier,bound_joinable_nodes;
 
     /*Comenzamos*/
     if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)>>1){
@@ -177,65 +178,101 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
         n_pow2 = pow(this->_quant_nodes,2);
         r = (uint)(ceil(-1 + n_pow2/(n_pow2-(this->_quant_edges<<1))));
         max_frontier = ((r+1)>>1)*(1+(r>>1));
-        //cout << "Numero de turam: " << (n_pow2/(n_pow2-(this->_quant_edges<<1))) << endl;
-        //cout << "r: " << r << endl;
-        //cout << "Frontera Max Inicial: " << max_frontier << endl;
 
-        /* Cargamos los datos iniciales del ciclo de manera que
-         * el algoritmo funcione segun el id de los nodos
+        /* Cargamos los datos iniciales del ciclo
          */
         for(uint i = 1;i<=this->_quant_nodes;++i)
-            candidates[0].push_front(i);
+            candidates[0].push_back(i);
         partial_solution.reserve(this->_quant_nodes);
         partial_frontier = 0;
+        bound_best_frontier.push_back(0);
+        bound_joinable_nodes.push_back(0);
+
+        /* Ordeno por grado de menor a mayor para luego
+         * poder acotar la frontera maxima de la rama del backtracking
+         */
+        sort(candidates[0].begin(),
+            candidates[0].end(),
+            [&](int v,int w){return this->_nodes[v-1]->_degree > this->_nodes[w-1]->_degree;}
+        );
+
+        /* Calculo la cota de la frontera maxima (algo mejor que "m")
+         * para la primera iteracion del ciclo
+         */
+        for(deque<node_id>::const_iterator it = candidates[0].cbegin();
+            it != candidates[0].cend();
+            ++it)
+        {
+            if(this->_nodes[*it-1]->_degree > (bound_joinable_nodes.back()<<1)){
+                bound_best_frontier.back() +=
+                    this->_nodes[*it-1]->_degree - (bound_joinable_nodes.back()<<1);
+                ++bound_joinable_nodes.back();
+            }
+        }
 
         while(!candidates[0].empty() || !partial_solution.empty()){
-            if(!candidates[partial_solution.size()].empty()){
+            if(!candidates[partial_solution.size()].empty() && max_frontier < bound_best_frontier.back()){
                 /*Tengo opciones validas en candidatos para agrandar la clique*/
-                partial_solution.push_back(candidates[partial_solution.size()].back());
-                candidates[partial_solution.size()-1].pop_back();
+                partial_solution.push_back(candidates[partial_solution.size()].front());
+                candidates[partial_solution.size()-1].pop_front();
                 partial_frontier += -((partial_solution.size()-1)<<1)+this->_nodes[partial_solution.back()-1]->_degree;
 
-                /*Calculo los candidatos de la nueva solucion parcial*/
-                bound_joinable_nodes = 0;
-                bound_best_frontier = partial_frontier;
-                for(deque<node_id>::const_reverse_iterator rit = candidates[partial_solution.size()-1].crbegin();
-                    rit != candidates[partial_solution.size()-1].crend();
-                    ++rit)
+                /*Recalculo la cota de la frontera optima parcial de la instancia anterior*/
+                --bound_joinable_nodes.back();
+                bound_best_frontier.back() +=
+                    - this->_nodes[partial_solution.back()-1]->_degree +
+                    ((partial_solution.size()-1+bound_joinable_nodes.back())<<1);
+
+                if(candidates[partial_solution.size()-1].size() > bound_joinable_nodes.back() &&
+                    this->_nodes[candidates[partial_solution.size()-1][bound_joinable_nodes.back()]-1]->_degree >
+                        (partial_solution.size()-1+bound_joinable_nodes.back())<<1)
                 {
-                    if((this->_nodes[*rit-1]->_degree > partial_solution.size()<<1) &&
-                        (bool)this->_adjacency_matrix[partial_solution.back()-1][*rit-1])
+                    bound_best_frontier.back() +=
+                        this->_nodes[candidates[partial_solution.size()-1][bound_joinable_nodes.back()]-1]->_degree -
+                        ((partial_solution.size()-1+bound_joinable_nodes.back())<<1);
+
+                    ++bound_joinable_nodes.back();
+                }
+
+                /*Calculo los candidatos de la nueva solucion parcial*/
+                bound_joinable_nodes.push_back(0);
+                bound_best_frontier.push_back(partial_frontier);
+                for(deque<node_id>::const_iterator it = candidates[partial_solution.size()-1].cbegin();
+                    it != candidates[partial_solution.size()-1].cend();
+                    ++it)
+                {
+                    if((this->_nodes[*it-1]->_degree > partial_solution.size()<<1) &&
+                        (bool)this->_adjacency_matrix[partial_solution.back()-1][*it-1])
                     {
-                        /* Voy recopilando informacion que se usará para aplicar una
-                         * poda una vez terminado el ciclo
-                         */
-                        if(this->_nodes[*rit-1]->_degree > (partial_solution.size()+bound_joinable_nodes)<<1){
-                            bound_best_frontier += this->_nodes[*rit-1]->_degree - ((partial_solution.size()+bound_joinable_nodes)<<1);
-                            ++bound_joinable_nodes;
+                        /*Calculo la conta de la frontera optima parcial*/
+                        if(this->_nodes[*it-1]->_degree > (partial_solution.size()+bound_joinable_nodes.back())<<1){
+                            bound_best_frontier.back() +=
+                                this->_nodes[*it-1]->_degree -
+                                ((partial_solution.size()+bound_joinable_nodes.back())<<1);
+
+                            ++bound_joinable_nodes.back();
                         }
 
                         /*Agregamos el candidato*/
-                        candidates[partial_solution.size()].push_front(*rit);
+                        candidates[partial_solution.size()].push_back(*it);
                     }
                 }
 
-                /* Verifico si sería posible (en el mejor de los casos)
-                 * superar la frontera de la mejor solución encontrada
-                 * hasta el momento
-                 */
-                if(max_frontier > bound_best_frontier || candidates[partial_solution.size()].empty()){
-                    candidates[partial_solution.size()].clear();
-
-                    /*Verifico si mejoró mi solucion optima al haber terminado la rama*/
-                    if(max_frontier < partial_frontier){
-                        max_frontier = partial_frontier;
-                        clique = partial_solution;
-                    }
+                /*Verifico si mejoró mi solucion optima al haber terminado la rama*/
+                if(candidates[partial_solution.size()].empty() && max_frontier < partial_frontier){
+                    max_frontier = partial_frontier;
+                    clique = partial_solution;
                 }
+
             } else {
                 /*Termine con esta rama, hago Backtracking*/
-                partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
-                partial_solution.pop_back();
+                candidates[partial_solution.size()].clear();
+                if(partial_solution.size() != 0){
+                    partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
+                    partial_solution.pop_back();
+                    bound_best_frontier.pop_back();
+                    bound_joinable_nodes.pop_back();
+                }
             }
         }
     }

@@ -42,8 +42,15 @@
                 frontera maximal en $G$ se deriv\'o a partir del \emph{Teorema de Tur\'an},
                 como ya se explic\'o anteriormente.}
 
-        \State $K \gets \emptyset$, $K' \gets \emptyset$
-        \For{$v$}{$1$}{$n$}
+        \State $K \gets \emptyset$, $K' \gets \emptyset$, $YaProcesados(K')$\footnote{%
+            $YaProcesados(K')$ representar\'a a los v\'ertices de $candidatos(K')$ que
+            ya fueron tenidos en cuenta para la \emph{clique} $K'$.}$ \gets \emptyset$
+        \While{$candidatos(K') \neq \emptyset$ $\lor$ $K' \neq \emptyset$}
+            \If{$candidatos(K') \setminus YaProcesados(K') \neq \emptyset$}
+                \State Sea $v' \in candidatos(K') \setminus YaProcesados(K')$
+                \State $K' \gets K' \cup \{v'\}$
+
+
             \State $K' \gets \{v\}$
             \While{$K' \neq \emptyset$}\label{existe_ultimo}
                 \NoEndIf{$\delta_{max} < \delta(K')$}
