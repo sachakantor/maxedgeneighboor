@@ -1,7 +1,7 @@
 #include<iostream>
 #include<vector>
-#include<algo3InputParser.hpp>
-#include<graph.hpp>
+#include"../include/algo3InputParser.hpp"
+#include"../include/graph.hpp"
 
 typedef unsigned int parameter;
 
@@ -40,6 +40,14 @@ int main(int argc,char* argv[]){
         --it_param; //Esto se debe a que el constructor de grafo
                     //deja it_param ya incrementado (que luego indrementa
                     //el for)
+		vector<node_id> clique;
+		uint frontera;
+		frontera = grafo.cmf_golosa(clique);
+		cout << "Frontera CMF - Size CMF - node_id CMF" << endl << frontera << " - " << clique.size() << " -";
+		for (int i=0; i< clique.size(); i++){
+			cout << " " << clique[i];
+		}
+		cout << endl;
     }
 
     return 0;
