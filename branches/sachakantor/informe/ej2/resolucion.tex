@@ -6,10 +6,9 @@
                 y $m$ aristas.
 
             \item Una funci\'on $candidatos(K)$, que dado un conjunto de v\'ertices
-                $K$, devuelve el conjunto de v\'ertices de $G$ que son adjacentes
-                a todos los elementos de $K$, cuyo grado es mayor $2|K|$ y tales
-                que su n\'umero de v\'ertice sea mayor al mayor de todos los elementos
-                de $K$.
+                $K$, devuelve una secuencia de v\'ertices de $G$ ordenada por grado
+                de mayor a menor que son adjacentes a todos los elementos de $K$ y
+                cuyo grado es mayor $2|K|$.
 
             \item Una funci\'on $\delta(K)$, que dada una \emph{clique} $K$\footnote{Una
                 \emph{clique} no es otra cosa que un conjunto de v\'ertices, con la
@@ -17,6 +16,10 @@
                 el cardinal de su frontera\footnote{Como ya se explic\'o, sea $K$ una
                 \emph{clique} de $G$, entonces: $\delta(K) = - |K|(|K|-1) +
                 \displaystyle\sum_{v \in K} d(v)$}.
+
+            \item Una funci\'on $\delta_{cota}(K)$, que dada una \emph{clique} $K$
+                en $G$, calcula la cota de su frontera seg\'un el m\'etodo
+                ya explicado anteriormente.
 
         \end{itemize}
     \Statex
@@ -45,35 +48,34 @@
         \State $K \gets \emptyset$, $K' \gets \emptyset$, $YaProcesados(K')$\footnote{%
             $YaProcesados(K')$ representar\'a a los v\'ertices de $candidatos(K')$ que
             ya fueron tenidos en cuenta para la \emph{clique} $K'$.}$ \gets \emptyset$
-        \While{$candidatos(K') \neq \emptyset$ $\lor$ $K' \neq \emptyset$}
-            \If{$candidatos(K') \setminus YaProcesados(K') \neq \emptyset$}
-                \State Sea $v' \in candidatos(K') \setminus YaProcesados(K')$
+
+        \While{$candidatos(K')$\footnote{Si $K'$ es vac\'io, $candidatos(K')$ son todos
+            los nodos de $G$.}$\setminus YaProcesados(K')$\footnote{Peque\~no abuso
+            de notaci\'on, ya que $candidatos(K')$ es una secuencia y $YaProcesados(K')$
+            es un conjunto. Se asume que es la secuencia sin los elementos del conjunto.}$
+            \neq \emptyset$ $\lor$ $K' \neq \emptyset$}
+
+            \If{$candidatos(K') \setminus YaProcesados(K') \neq \emptyset$ $\land$ $\delta_{max} < \delta_{cota}(K')$%
+                \footnote{Si $K'$ es vac\'io, $\delta_{cota}(K')$ es $m$.}}
+
+                \State $v \gets cabeza(candidatos(K') \setminus YaProcesados(K'))$
                 \State $K' \gets K' \cup \{v'\}$
-
-
-            \State $K' \gets \{v\}$
-            \While{$K' \neq \emptyset$}\label{existe_ultimo}
-                \NoEndIf{$\delta_{max} < \delta(K')$}
+                \If{$candidatos(K') = \emptyset$ $\land$ $\delta_{max} < \delta(K')$}
+                    %\Comment{Llegu\'e al final de la rama y obtuve una mejor solucion}
+                    \State $\delta_{max} \gets \delta(K')$
                     \State $K \gets K'$
-                \If{$candidatos(K') \setminus YaProcesados(K') \neq \emptyset$}
-                    \State Sea $v' \in candidatos(K') \setminus YaProcesados(K')$
-                    \State $K' \gets K' \cup \{v'\}$
-                    \State $YaProcesados(K')$\footnote{$YaProcesados(K')$ representar\'a a
-                        los v\'ertices de $candidatos(K')$ que ya fueron tenidos en cuenta
-                        para la \emph{clique} $K'$.}$ \gets \emptyset$
-
-                \Else \Comment{Ac\'a est\'a el \emph{Backtracking}}
-                    \State $v' \gets ultimo(K')$\footnote{Donde $ultimo(K')$
-                        es el \'ulitmo v\'ertice agregado a $K'$, y sabemos que no se
-                        indefine pues la guarda del ciclo \emph{mientras} de la
-                        l\'inea~\ref{existe_ultimo} nos lo asegura.}
-
-                    \State $K' \gets K' \setminus \{v'\}$
-                    \State $YaProcesados(K') \gets YaProcesados(K') \cup \{v'\}$
-
                 \EndIf
-            \EndWhile
-        \EndFor
+
+            \ElsIf{$K' \neq \emptyset$} \Comment{\emph{Backtracking}}
+                \State $v \gets ultimo(K')$\footnote{Donde $ultimo(K')$
+                    es el \'ulitmo v\'ertice agregado a $K'$.}
+                \State $K' \gets K' \setminus \{v'\}$
+                \State $YaProcesados(K') \gets YaProcesados(K') \cup \{v\}$
+
+            \Else
+                \State $YaProcesados(K') \gets YaProcesados(K') \cup candidatos(K')$
+            \EndIf
+        \EndWhile
     \EndIf
 
     \State \Return{$K$}

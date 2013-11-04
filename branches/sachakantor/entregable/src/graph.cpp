@@ -156,7 +156,7 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
     /*Variables locales*/
     vector<deque<node_id> > candidates(this->_quant_nodes);
     vector<node_id> partial_solution;
-    deque<uint> bound_best_frontier,bound_joinable_nodes;
+    stack<uint> bound_best_frontier,bound_joinable_nodes;
     uint partial_frontier,max_frontier,r;
     double n_pow2;
 
@@ -185,10 +185,10 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
             candidates[0].push_back(i);
         partial_solution.reserve(this->_quant_nodes);
         partial_frontier = 0;
-        bound_best_frontier.push_back(0);
-        bound_joinable_nodes.push_back(0);
+        bound_best_frontier.push(0);
+        bound_joinable_nodes.push(0);
 
-        /* Ordeno por grado de menor a mayor para luego
+        /* Ordeno por grado de mayor a menor para luego
          * poder acotar la frontera maxima de la rama del backtracking
          */
         sort(candidates[0].begin(),
@@ -203,40 +203,23 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
             it != candidates[0].cend();
             ++it)
         {
-            if(this->_nodes[*it-1]->_degree > (bound_joinable_nodes.back()<<1)){
-                bound_best_frontier.back() +=
-                    this->_nodes[*it-1]->_degree - (bound_joinable_nodes.back()<<1);
-                ++bound_joinable_nodes.back();
+            if(this->_nodes[*it-1]->_degree > (bound_joinable_nodes.top()<<1)){
+                bound_best_frontier.top() +=
+                    this->_nodes[*it-1]->_degree - (bound_joinable_nodes.top()<<1);
+                ++bound_joinable_nodes.top();
             }
         }
 
         while(!candidates[0].empty() || !partial_solution.empty()){
-            if(!candidates[partial_solution.size()].empty() && max_frontier < bound_best_frontier.back()){
+            if(!candidates[partial_solution.size()].empty() && max_frontier < bound_best_frontier.top()){
                 /*Tengo opciones validas en candidatos para agrandar la clique*/
                 partial_solution.push_back(candidates[partial_solution.size()].front());
                 candidates[partial_solution.size()-1].pop_front();
                 partial_frontier += -((partial_solution.size()-1)<<1)+this->_nodes[partial_solution.back()-1]->_degree;
 
-                /*Recalculo la cota de la frontera optima parcial de la instancia anterior*/
-                --bound_joinable_nodes.back();
-                bound_best_frontier.back() +=
-                    - this->_nodes[partial_solution.back()-1]->_degree +
-                    ((partial_solution.size()-1+bound_joinable_nodes.back())<<1);
-
-                if(candidates[partial_solution.size()-1].size() > bound_joinable_nodes.back() &&
-                    this->_nodes[candidates[partial_solution.size()-1][bound_joinable_nodes.back()]-1]->_degree >
-                        (partial_solution.size()-1+bound_joinable_nodes.back())<<1)
-                {
-                    bound_best_frontier.back() +=
-                        this->_nodes[candidates[partial_solution.size()-1][bound_joinable_nodes.back()]-1]->_degree -
-                        ((partial_solution.size()-1+bound_joinable_nodes.back())<<1);
-
-                    ++bound_joinable_nodes.back();
-                }
-
                 /*Calculo los candidatos de la nueva solucion parcial*/
-                bound_joinable_nodes.push_back(0);
-                bound_best_frontier.push_back(partial_frontier);
+                bound_joinable_nodes.push(0);
+                bound_best_frontier.push(partial_frontier);
                 for(deque<node_id>::const_iterator it = candidates[partial_solution.size()-1].cbegin();
                     it != candidates[partial_solution.size()-1].cend();
                     ++it)
@@ -245,12 +228,12 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
                         (bool)this->_adjacency_matrix[partial_solution.back()-1][*it-1])
                     {
                         /*Calculo la conta de la frontera optima parcial*/
-                        if(this->_nodes[*it-1]->_degree > (partial_solution.size()+bound_joinable_nodes.back())<<1){
-                            bound_best_frontier.back() +=
+                        if(this->_nodes[*it-1]->_degree > (partial_solution.size()+bound_joinable_nodes.top())<<1){
+                            bound_best_frontier.top() +=
                                 this->_nodes[*it-1]->_degree -
-                                ((partial_solution.size()+bound_joinable_nodes.back())<<1);
+                                ((partial_solution.size()+bound_joinable_nodes.top())<<1);
 
-                            ++bound_joinable_nodes.back();
+                            ++bound_joinable_nodes.top();
                         }
 
                         /*Agregamos el candidato*/
@@ -266,12 +249,36 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
 
             } else {
                 /*Termine con esta rama, hago Backtracking*/
-                candidates[partial_solution.size()].clear();
+                candidates[partial_solution.size()].clear();    /* Por si corte la rama a partir de
+                                                                 * la cota de frontera optima parcial
+                                                                 */
                 if(partial_solution.size() != 0){
+                    /*Hago backtracking en la cota de frontera optima parcial */
+                    bound_best_frontier.pop();
+                    bound_joinable_nodes.pop();
+
+                    /*Recalculo la cota de la frontera optima parcial de la instancia anterior,
+                     * ya que ahora tiene un candidato menos
+                     */
+                    --bound_joinable_nodes.top();
+                    bound_best_frontier.top() +=
+                        - this->_nodes[partial_solution.back()-1]->_degree +
+                        ((partial_solution.size()-1+bound_joinable_nodes.top())<<1);
+
+                    if(candidates[partial_solution.size()-1].size() > bound_joinable_nodes.top() &&
+                        this->_nodes[candidates[partial_solution.size()-1][bound_joinable_nodes.top()]-1]->_degree >
+                            (partial_solution.size()-1+bound_joinable_nodes.top())<<1)
+                    {
+                        bound_best_frontier.top() +=
+                            this->_nodes[candidates[partial_solution.size()-1][bound_joinable_nodes.top()]-1]->_degree -
+                            ((partial_solution.size()-1+bound_joinable_nodes.top())<<1);
+
+                        ++bound_joinable_nodes.top();
+                    }
+
+                    /* Hago backtracking en la solucion parcial */
                     partial_frontier += ((partial_solution.size()-1)<<1)-this->_nodes[partial_solution.back()-1]->_degree;
                     partial_solution.pop_back();
-                    bound_best_frontier.pop_back();
-                    bound_joinable_nodes.pop_back();
                 }
             }
         }
