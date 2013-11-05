@@ -11,11 +11,10 @@ struct node;
 
 /* Renombres y Structs */
 typedef unsigned int uint;
-typedef unsigned char uchar;
 typedef unsigned int node_id;
 typedef unsigned int degree;
 typedef vector<node_id> adjacent_nodes_id;
-typedef vector<vector<uchar> > adjacency_matrix;
+typedef vector<vector<bool> > adjacency_matrix;
 
 typedef struct node{
     /*Constructores y Destructores*/
@@ -71,9 +70,6 @@ class graph{
 
     private:
         /*Metodos privados*/
-		/* JORGE */
-			vector<node *> candidatos(const vector<node *> K) const;
-		/* END JORGE */
 
         /*Sobrecarga de operadores*/
         friend ostream& operator<<(ostream &output, const graph& G);
@@ -86,8 +82,3 @@ class graph{
         vector<edge*> _edges;
 };
 #endif //GRAPH_HPP_
-
-/* JORGE */
-bool in(const vector<node *> origen, const vector<node_id> destino);
-node * vertice_mayor_grado(const vector<node *> v);
-/* END JORGE */
