@@ -1,0 +1,65 @@
+\begin{pseudocodigo}[Algoritmo Exacto para \emph{CMF} - Complejidad]
+    \Require Un grafo $G$ con $n$ v\'ertices numerados de $1$ a $n$ y $m$ aristas. El mismo
+        cuenta con las siguientes estructuras de datos que lo modelan:
+        \begin{itemize}
+            \item Listas de adyacencia: Dado un vertice $v$, $vecinos(v)$ nos da todos los
+                nodos adyacentes a $v$ en $G$.
+
+            \item Matriz de adyacencia: Dados los v\'ertices $v$ y $w$, $adyacentes(v,w)$ y
+                $adyacentes(w,v)$ nos devuelven $true$ si y s\'olo si $v$ es adyacente
+                a $w$ en $G$.
+        \end{itemize}
+    \Ensure\Statex
+        \begin{itemize}
+            \item Una \emph{clique} $K$ correspondiente a la \emph{clique} de m\'axima frontera.
+
+            \item El cardinal de $\delta(K)$, siendo $K$ la \emph{clique} del item anterior.
+        \end{itemize}
+
+    \Statex
+    \If{$m = \frac{n(n-1)}{2}$} \Compl{Blue}{}{$1$}{}
+        \State $K \gets \left\{1;\dots;\left\lfloor\frac{n}{2}\right\rfloor\right\}$ \Compl{Blue}{}{$n$}{}
+        \Statex
+        \State $\delta_{max} \gets \left\lfloor\frac{n}{2}\right\rfloor\cdot
+            \left\lceil\frac{n}{2}\right\rceil$ \Compl{Blue}{}{$1$}{}
+        \Statex
+
+    \Else
+        \State $r \gets \left\lceil\-1 + \frac{n^2}{n^2-2m}\right\rceil$ \Compl{Blue}{}{$1$}{}
+        \State $\delta_{max} \gets \left\lfloor\frac{r+1}{2}\right\rfloor\cdot
+            \left\lceil\frac{r+1}{2}\right\rceil$ \Compl{Blue}{}{$1$}{}
+        \State $candidatos[0] \gets \{1 \dots n\}$ \Compl{Blue}{}{$n$}{}
+        \State $solucionParcial \gets \emptyset$ \Compl{Blue}{}{$n$}{}
+        \State $fronteraParcial \gets 0$ \Compl{Blue}{}{$1$}{}
+        \State $pilaCMFs \gets \emptyset$ \Compl{Blue}{}{$1$}{}
+        \State Ordeno por grado de mayor a menor $candidatos[0]$ \Compl{Blue}{}{$n\cdot log(n)$}{}
+        \State Calculo el $CMF_{max}$ para $solucionParcial$ \Compl{Blue}{}{$n$}{}
+        \State $push(CMF_{max},pilaCMFs)$ \Compl{Blue}{}{$1$}{}
+        \While{$candidatos[0] \neq \emptyset$ $\lor$ $solucionParcial \neq \emptyset$} \Compl{Red}{}{$1$}{}
+            \If{$candidatos[|solucionParcial|] \neq \emptyset$ $\land$ $\delta_{max} < top(cotaFronteraMax)$} \Compl{Fuchsia}{}{$1$}{}
+                \State Muevo $cabeza(candidatos[|solucionParcial|])$ al final de $solucionParcial$ \Compl{Fuchsia}{}{$1$}{}
+                \State Actualizo $fronteraParcial$ \Compl{Fuchsia}{}{$1$}{}
+                \State Calculamos $candidatos[|solucionParcial|]$ y $CMF_{max}$ \Compl{Fuchsia}{}{$n-|solucionParcial|$}{}
+                \State $push(CMF_{max},pilaCMFs)$ \Compl{Fuchsia}{}{$1$}{}
+                \If{$candidatos[|solucionParcial|] = \emptyset$ $\land$ $\delta_{max} < fronteraParcial$} \Compl{YellowOrange}{}{$1$}{}
+                    \State $\delta_{max} \gets fronteraParcial$ \Compl{YellowOrange}{}{$1$}{}
+                    \State $K \gets solucionParcial$ \Compl{YellowOrange}{}{$|solucionParcial|$}{}
+                \EndIf \Compl{Fuchsia}{Costo \emph{si}: }{$|solucionParcial|$}{}%
+
+            \Else
+                \State Vac\'io $candidatos[|solucionParcial|]$ \Compl{Fuchsia}{}{$n-|solucionParcial|$}{}
+                \If{$solucionParcial \neq \emptyset$} \Compl{YellowOrange}{}{$1$}{}
+                    \State $pop(pilaCMFs)$ \Compl{YellowOrange}{}{$1$}{}
+                    \State Elimino a $ultimo(solucionParcial)$ \Compl{YellowOrange}{}{$1$}{}
+                    \State Recalculo $fronteraParcial$ \Compl{YellowOrange}{}{$1$}{}
+                    \State Recalculo $CMF_{max}$ para $candidatos[|solucionParcial|]$ \Compl{YellowOrange}{}{$n-|solucionParcial|$}{}
+                    \State $push(CMF_{max},pilaCMFs)$ \Compl{YellowOrange}{}{$1$}{}
+                \EndIf \Compl{Fuchsia}{Costo \emph{si}: }{$n-|solucionParcial|$}{}
+            \EndIf \Compl{Red}{Costo \emph{si}: }{$n$}{}
+        \EndWhile \Compl{Blue}{Costo \emph{mientras}: }{$2^n$}{veces $\times$ $\mathcal O(2^n) = \mathcal O(n\cdot 2^n)$ }
+    \EndIf \Compl{Brown}{Costo \emph{si}: }{$n + n\cdot log(n) + n\cdot 2^n$}{$= \mathcal O(n\cdot 2^n)$ }%
+
+    \State \Return{$\delta_{max}$, $K$} \Compl{Brown}{}{$1$}{}%
+    \Statex
+    \Statex \Compl{Brown}{Costo Total de Algoritmo: }{$n\cdot 2^n$}{}
+\end{pseudocodigo}
