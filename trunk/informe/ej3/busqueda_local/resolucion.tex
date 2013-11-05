@@ -1,10 +1,47 @@
 \begin{pseudocodigo}[Heur\'istica Golosa Constructiva para \emph{CMF} - Descriptivo]
-    \Require Un grafo $G$ de $n$ v\'ertices\footnote{Asumimos, sin p\'erdida 
-        de generalidad, que los v\'ertices est\'an numerados de 1 a $n$.}
-        y $m$ aristas.
-    \Ensure Una \emph{clique} $K$ de $G$ con una frontera 
-        $\delta(K)$ de m\'axima cardinalidad.
+    \Require\Statex
+        \begin{itemize}
+            \item Un grafo $G$ de $n$ v\'ertices\footnote{Asumimos, sin p\'erdida 
+                de generalidad, que los v\'ertices est\'an numerados de 1 a $n$.}
+                y $m$ aristas.
+
+            \item Una funci\'on $candidatos(K)$, que dado un conjunto de v\'ertices
+                $K$, devuelve una secuencia de v\'ertices de $G$ ordenada por grado
+                de mayor a menor que son adjacentes a todos los elementos de $K$ y
+                cuyo grado es mayor $2|K|$.
+
+            \item Una funci\'on $\delta(K)$, que dada una \emph{clique} $K$\footnote{Una
+                \emph{clique} no es otra cosa que un conjunto de v\'ertices, con la
+                caracter\'istica de inducir un grafo completo en $G$.} en $G$, calcula
+                el cardinal de su frontera\footnote{Como ya se explic\'o, sea $K$ una
+                \emph{clique} de $G$, entonces: $\delta(K) = - |K|(|K|-1) +
+                \displaystyle\sum_{v \in K} d(v)$}.
+        \end{itemize}
+
     \Statex
+    \Ensure Una \emph{clique} $K$ de $G$ con una frontera $\delta(K)$ que se
+        espera que sea de cardinalidad cercana o igual a la de $\delta(K_{max})$,
+        siendo $K_{max}$ la \emph{clique} de m\'axima frontera de $G$.
+
+    \Statex
+    \State $K' \gets \emptyset$
+    \Repeat
+        \State $K \gets K'$
+        \State $\delta_{max} \gets \delta(K')$\footnote{Si $K'$ es vac\'io, $\delta(K')$ es $0$.}
+        \State $v \gets cabeza(candidatos(K'))$\footnote{Si $K'$ es vac\'io, $candidatos(K')$ son todos
+            los nodos de $G$.}
+        \State Sea $v' \in K'$ tal que $(\forall w \in K')$
+            $\delta(K' \setminus \{v'\}) \geq \delta(K' \setminus \{w\})$
+
+        \If{$\delta(K' \cup \{v\}) > \delta(K' \setminus \{v'\})$}
+            \State $K' \gets K' \cup \{v\}$
+
+        \Else
+            \State $K' \gets K' \setminus \{v'\}$
+
+        \EndIf
+
+    \Until{$\delta_{max} > \delta(K')$}
 
     \State \Return{$K$}
 \end{pseudocodigo}

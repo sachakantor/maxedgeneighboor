@@ -73,6 +73,9 @@
 \usepackage{algpseudocode}
 \usepackage{fixltx2e}
 \MakeRobust{\Call} %Para poder hacer llamadas a funciones como par\'ametro de funciones
+\newcommand{\Compl}[4]{%Para marcar las complejidades en los pseudos
+    \Comment{\textcolor{#1}{\textbf{#2}$\mathcal O($#3$)$\ #4}}
+}
 
 %Para usar cuadros split'eables para los pseudocodigos y con footnotes lindos
 \usepackage{footnote}

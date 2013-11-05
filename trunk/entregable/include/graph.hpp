@@ -1,8 +1,9 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
-#include<iostream>
+//#include<iostream>
 #include<vector>
+#include<deque>
 
 using namespace std;
 
@@ -11,10 +12,11 @@ struct node;
 
 /* Renombres y Structs */
 typedef unsigned int uint;
+typedef unsigned char uchar;
 typedef unsigned int node_id;
 typedef unsigned int degree;
-typedef vector<node_id> adjacent_nodes_id;
-typedef vector<vector<bool> > adjacency_matrix;
+typedef deque<node_id> adjacent_nodes_id;
+typedef vector<vector<uchar> > adjacency_matrix;
 
 typedef struct node{
     /*Constructores y Destructores*/
@@ -70,6 +72,7 @@ class graph{
 
     private:
         /*Metodos privados*/
+        void candidates(const deque<node_id>& prev_candidates,node_id new_node_id,uint min_degree,deque<node_id>& output) const;
 
         /*Sobrecarga de operadores*/
         friend ostream& operator<<(ostream &output, const graph& G);
