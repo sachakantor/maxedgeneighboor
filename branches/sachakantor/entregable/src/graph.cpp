@@ -1,5 +1,5 @@
 #include<algorithm>
-#include<numeric>
+//#include<numeric>
 //#include<functional>
 #include<iterator>
 //#include <list>
@@ -12,8 +12,9 @@
 //#include <union_find_by_rank.hpp> /*define union_find_set*/
 #include<graph.hpp> /*define node,edge,graph*/
 
-#define MAYOR_A_MENOR_POR_GRADO [&](int v,int w){return this->_nodes[w-1]->_degree < this->_nodes[v-1]->_degree;}
-#define MAYOR_A_MENOR_POR_GRADO_PTR [&](const node* v,const node* w){return v->_degree < w->_degree;}
+#define MAYOR_A_MENOR_POR_GRADO [this](int v,int w){return this->_nodes[w-1]->_degree < this->_nodes[v-1]->_degree;}
+#define MENOR_A_MAYOR_POR_GRADO [this](int v,int w){return this->_nodes[w-1]->_degree > this->_nodes[v-1]->_degree;}
+#define MAYOR_A_MENOR_POR_GRADO_PTR [](const node* v,const node* w){return v->_degree < w->_degree;}
 
 using namespace std;
 
@@ -326,8 +327,9 @@ uint graph::cmf_golosa(vector<node_id>& clique) const{
 
 uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
     /*Variables locales*/
+    clique.reserve(this->_quant_nodes);
     deque<node_id> candidates;
-    uint frontier;
+    uint frontier,frontier_add = 0,frontier_remove = 0;
 
     /*Comenzamos*/
     if(clique.empty()){
@@ -337,7 +339,7 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
             (*find_if(
                 this->_nodes.cbegin(),
                 this->_nodes.cend(),
-                [&](const node* v){return v->_degree > this->_quant_nodes/this->_quant_edges;})
+                [this](const node* v){return v->_degree > this->_quant_nodes/this->_quant_edges;})
             )->_id
         );
         frontier = this->_nodes[clique.back()-1]->_degree;
@@ -348,16 +350,65 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
          * calculamos sus candidatos y frontera
          * primero
          */
+        /*
         sort(clique.begin(),
             clique.end(),
             MAYOR_A_MENOR_POR_GRADO
         );
+        */
         this->candidates(clique,candidates);
-        frontier = accumulate(clique.cbegin(),clique.cend(),0,
-            [&](const uint accum,const uint node_id){
-                return accum+this->_nodes[node_id-1]->_degree-clique.size();
-            }
-        );
+        /* Ya tenemos los candidatos ordenados por grado*/
+
+        frontier = 0;
+        for(vector<node_id>::const_iterator node_id_it = clique.cbegin();
+            node_id_it != clique.cend();
+            ++node_id_it)
+            frontier += this->_nodes[*node_id_it-1]->_degree-clique.size();
+    }
+
+
+    /* Nos generamos primero dos heaps de la clique segun los grados
+     * Uno con el grado de mayor o menor y otro al reves
+     */
+    make_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO); /*Popea el de menor grado*/
+
+    /*Comenzamos el ciclo de la busqueda local*/
+    if(!candidates.empty())
+        frontier_add = frontier+this->_nodes[candidates.front()-1]->_degree-(clique.size()<<1);
+    frontier_remove = frontier-this->_nodes[clique.front()-1]->_degree+clique.size()-1;
+
+    //for(uint frontier_add = frontier+this->_nodes[candidates.front()-1]->_degree-(clique.size()<<1),
+    //    frontier_remove = frontier-this->_nodes[clique.front()-1]->_degree+clique.size()-1;
+
+        //frontier <  max(frontier_add,frontier_remove);
+    while(frontier <  max(frontier_add,frontier_remove)){
+
+        //frontier_add = frontier+this->_nodes[candidates.front()-1]->_degree-(clique.size()<<1),
+        //frontier_remove = frontier-this->_nodes[clique.front()-1]->_degree+clique.size()-1)
+    //{
+        if(frontier_add > frontier_remove){
+            /*Agregamos un nodo*/
+            frontier = frontier_add;
+            clique.push_back(candidates.front());
+            candidates.pop_front();
+            /*Actualizamos los candidatos*/
+            this->candidates(candidates,clique.back(),clique.size()<<1,candidates);
+            /*Mantenemos la estructura*/
+            push_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO);
+
+        } else {
+            /*Sacamos un nodo manteniendo las estructuras*/
+            frontier = frontier_remove;
+            pop_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO);
+            clique.pop_back();
+            /*Actualizamos los candidatos*/
+            this->candidates(clique,candidates);
+        }
+
+        /*Actualizamos las fronteras de agregado y quitado*/
+        if(!candidates.empty())
+            frontier_add = frontier+this->_nodes[candidates.front()-1]->_degree-(clique.size()<<1);
+        frontier_remove = frontier-this->_nodes[clique.front()-1]->_degree+clique.size()-1;
     }
 
     return frontier;
