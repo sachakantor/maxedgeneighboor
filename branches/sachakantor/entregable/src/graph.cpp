@@ -1,5 +1,7 @@
 #include<algorithm>
+#include<numeric>
 //#include<functional>
+#include<iterator>
 //#include <list>
 //#include <ctime>
 #include<cmath>
@@ -145,17 +147,15 @@ graph::graph(uint quant_nodes,uint quant_edges,vector<node_id>::const_iterator& 
     }
 
     /*Ordenamos los vecinos segun el grado de mayor a menor*/
-    /*
     for(vector<node*>::iterator it = this->_nodes.begin();
         it != this->_nodes.end();
         ++it)
     {
         sort((*it)->_neighbors.begin(),
             (*it)->_neighbors.end(),
-            [&](int v,int w){return this->_nodes[w-1]->_degree < this->_nodes[v-1]->_degree;}
+            MAYOR_A_MENOR_POR_GRADO
         );
     }
-    */
 }
 
 graph::~graph(){
@@ -178,13 +178,14 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
     double n_pow2;
 
     /*Comenzamos*/
+    clique.clear();
+
     if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)>>1){
         /*El grafo de entrada es un Kn*/
         max_frontier = ((this->_quant_nodes)>>1)*(1+((this->_quant_nodes-1)>>1));
-        clique.clear();
         clique.reserve(this->_quant_nodes>>1);
-        for(uint i=0;i<this->_quant_nodes>>1;++i)
-            clique.push_back(i+1);
+        r = 0;
+        generate_n(back_inserter(clique),this->_quant_nodes>>1,[&r](){return ++r;});
 
     } else {
         /*El grafo no es un Kn, proseguimos
@@ -198,33 +199,22 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
 
         /* Cargamos los datos iniciales del ciclo
          */
-        for(uint i = 1;i<=this->_quant_nodes;++i)
-            candidates[0].push_back(i);
+        this->candidates(clique,candidates[0]);
         partial_solution.reserve(this->_quant_nodes);
         partial_frontier = 0;
         bound_best_frontier.push(0);
         bound_joinable_nodes.push(0);
 
-        /* Ordeno por grado de mayor a menor para luego
-         * poder acotar la frontera maxima de la rama del backtracking
-         */
-        sort(candidates[0].begin(),
-            candidates[0].end(),
-            MAYOR_A_MENOR_POR_GRADO
-        );
-
         /* Calculo la cota de la frontera maxima (algo mejor que "m")
-         * para la primera iteracion del ciclo
+         * para la primera iteracion del ciclo (tengo en cuenta que los
+         * candidatos estan ordenados por grado descendientemente)
          */
         for(deque<node_id>::const_iterator it = candidates[0].cbegin();
-            it != candidates[0].cend();
+            it != candidates[0].cend() && this->_nodes[*it-1]->_degree > bound_joinable_nodes.top()<<1;
             ++it)
         {
-            if(this->_nodes[*it-1]->_degree > (bound_joinable_nodes.top()<<1)){
-                bound_best_frontier.top() +=
-                    this->_nodes[*it-1]->_degree - (bound_joinable_nodes.top()<<1);
-                ++bound_joinable_nodes.top();
-            }
+            bound_best_frontier.top() += this->_nodes[*it-1]->_degree - (bound_joinable_nodes.top()<<1);
+            ++bound_joinable_nodes.top();
         }
 
         while(!candidates[0].empty() || !partial_solution.empty()){
@@ -302,27 +292,28 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
 }
 
 uint graph::cmf_golosa(vector<node_id>& clique) const{
-    /*Variables Locales*/
-    const node* higher_degree_node_ptr = *max_element(this->_nodes.cbegin(),
-        this->_nodes.cend(),
-        MAYOR_A_MENOR_POR_GRADO_PTR
-    );
-    deque<node_id> candidates(higher_degree_node_ptr->_neighbors);
-    uint frontier;
-
     /*Comenzamos*/
     clique.clear();
     clique.reserve(this->_quant_nodes);
+    /*
     sort(candidates.begin(),
         candidates.end(),
         MAYOR_A_MENOR_POR_GRADO
     );
+    */
 
     /* Agregamos el primer nodo a clique y comenzamos a iterar
      * hasta que se acaben los nodos candidatos
      */
-    clique.push_back(higher_degree_node_ptr->_id);
-    frontier = higher_degree_node_ptr->_degree;
+    clique.push_back(
+        (*max_element(this->_nodes.cbegin(),
+            this->_nodes.cend(),
+            MAYOR_A_MENOR_POR_GRADO_PTR)
+        )->_id
+    );
+    deque<node_id> candidates(this->_nodes[clique.back()-1]->_neighbors);
+    uint frontier = this->_nodes[clique.back()-1]->_degree;
+
     while(!candidates.empty()){
         frontier += this->_nodes[candidates.front()-1]->_degree - (clique.size()<<1);
         clique.push_back(candidates.front());
@@ -334,7 +325,42 @@ uint graph::cmf_golosa(vector<node_id>& clique) const{
 }
 
 uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
-    return 0;
+    /*Variables locales*/
+    deque<node_id> candidates;
+    uint frontier;
+
+    /*Comenzamos*/
+    if(clique.empty()){
+        /*Buscamos un primer nodo para comenzar*/
+        clique.reserve(this->_quant_nodes);
+        clique.push_back(
+            (*find_if(
+                this->_nodes.cbegin(),
+                this->_nodes.cend(),
+                [&](const node* v){return v->_degree > this->_quant_nodes/this->_quant_edges;})
+            )->_id
+        );
+        frontier = this->_nodes[clique.back()-1]->_degree;
+        candidates = this->_nodes[clique.back()-1]->_neighbors; /*Ya estan ordenados*/
+
+    } else {
+        /* Ya nos dieron un resultado inicial,
+         * calculamos sus candidatos y frontera
+         * primero
+         */
+        sort(clique.begin(),
+            clique.end(),
+            MAYOR_A_MENOR_POR_GRADO
+        );
+        this->candidates(clique,candidates);
+        frontier = accumulate(clique.cbegin(),clique.cend(),0,
+            [&](const uint accum,const uint node_id){
+                return accum+this->_nodes[node_id-1]->_degree-clique.size();
+            }
+        );
+    }
+
+    return frontier;
 }
 
 uint graph::cmf_tabu_search(vector<node_id>& clique) const{
@@ -342,9 +368,45 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
 }
 
 /*Metodos Privados*/
-void graph::candidates(const deque<node_id>& prev_candidates,node_id new_node_id,uint min_degree,deque<node_id>& output) const{
+void graph::candidates(const vector<node_id>& clique,deque<node_id>& new_candidates) const{
     /*Variables locales*/
-    uint index_output = 0,end_output = output.size();
+    uint r;
+
+    /*Comenzamos*/
+    new_candidates.clear();
+
+    if(clique.empty()){
+        r = 0;
+        generate_n(back_inserter(new_candidates),this->_quant_nodes,[&r](){return ++r;});
+
+        /* Ordeno por grado de mayor a menor para luego
+         * poder acotar la frontera maxima de la rama del backtracking
+         */
+        sort(new_candidates.begin(),
+            new_candidates.end(),
+            MAYOR_A_MENOR_POR_GRADO
+        );
+
+    } else {
+        /*Nos dieron una clique inicial, calculamos sus candidatos*/
+        new_candidates = this->_nodes[clique.back()-1]->_neighbors;
+        for(vector<node_id>::const_iterator node_id_it = clique.cbegin();
+            node_id_it != clique.cend()-1;
+            ++node_id_it)
+        {
+            this->candidates(new_candidates,*node_id_it,clique.size()<<1,new_candidates);
+        }
+    }
+}
+
+void graph::candidates(
+        const deque<node_id>& prev_candidates,
+        node_id new_node_id,
+        uint min_degree,
+        deque<node_id>& new_candidates
+) const{
+    /*Variables locales*/
+    uint index_new_candidates = 0,end_new_candidates = new_candidates.size();
 
     /*Comenzamos*/
     for(deque<node_id>::const_iterator it = prev_candidates.cbegin();
@@ -354,19 +416,19 @@ void graph::candidates(const deque<node_id>& prev_candidates,node_id new_node_id
         if(this->_nodes[*it-1]->_degree > min_degree && (bool)this->_adjacency_matrix[new_node_id-1][*it-1])
         {
             /*Agregamos el candidato*/
-            if(index_output < end_output){
-                output[index_output] = *it;
-                ++index_output;
-            } else
-                output.push_back(*it);
+            if(index_new_candidates < end_new_candidates)
+                new_candidates[index_new_candidates] = *it;
+            else
+                new_candidates.push_back(*it);
+
+            ++index_new_candidates;
         }
     }
 
-    /* Destruimos los elementos restantes de output
+    /* Destruimos los elementos restantes de new_candidates
      * que no fueron sobreescritos
      */
-    for(uint i = 0; i<end_output-index_output;++i)
-        output.pop_back();
+    new_candidates.resize(index_new_candidates);
 }
 
 /*Sobrecarga de operadores*/

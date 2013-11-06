@@ -72,6 +72,7 @@ class graph{
 
     private:
         /*Metodos privados*/
+        void candidates(const vector<node_id>& clique,deque<node_id>& new_candidates) const;
         void candidates(const deque<node_id>& prev_candidates,node_id new_node_id,uint min_degree,deque<node_id>& output) const;
 
         /*Sobrecarga de operadores*/
