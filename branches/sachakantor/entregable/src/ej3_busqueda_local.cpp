@@ -49,7 +49,6 @@ int main(int argc,char* argv[]){
         /*Calculamos su frontera maxima por busqueda local*/
         clique.clear();
         #ifdef _GOLOSA
-        cout << "Golosa" << endl;
         grafo.cmf_golosa(clique);
         #endif//_GOLOSA
         frontera = grafo.cmf_busqueda_local(clique);
