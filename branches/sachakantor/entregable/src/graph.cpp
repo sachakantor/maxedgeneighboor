@@ -12,6 +12,7 @@
 //#include <union_find_by_rank.hpp> /*define union_find_set*/
 #include<graph.hpp> /*define node,edge,graph*/
 
+/*Expresiones Lambda para el ordenamiento de nodos*/
 #define MAYOR_A_MENOR_POR_GRADO [this](int v,int w){return this->_nodes[w-1]->_degree < this->_nodes[v-1]->_degree;}
 #define MENOR_A_MAYOR_POR_GRADO [this](int v,int w){return this->_nodes[w-1]->_degree > this->_nodes[v-1]->_degree;}
 #define MAYOR_A_MENOR_POR_GRADO_PTR [](const node* v,const node* w){return v->_degree < w->_degree;}
@@ -30,13 +31,11 @@ node::node(const node_id id,const degree d,const uint max_degree) :
     //this->_neighbors.reserve(max_degree);
 }
 
-//node::node(uint id,degree d) :
-//    _id(id),
-//    _degree(d),
-//    _neighbors()
-//{
-//    this->_neighbors.reserve(d);
-//}
+node::node(uint id,degree d) :
+    _id(id),
+    _degree(d),
+    _neighbors()
+{}
 
 node::node(const node& copy) :
     _id(copy._id),
@@ -147,6 +146,8 @@ graph::graph(uint quant_nodes,uint quant_edges,vector<node_id>::const_iterator& 
         this->_nodes[b-1]->_neighbors.push_back(a);
     }
 
+    #ifdef _VECINOS_ORDENADOS
+    cout << "Ordeno vecinos" << endl;
     /*Ordenamos los vecinos segun el grado de mayor a menor*/
     for(vector<node*>::iterator it = this->_nodes.begin();
         it != this->_nodes.end();
@@ -157,6 +158,7 @@ graph::graph(uint quant_nodes,uint quant_edges,vector<node_id>::const_iterator& 
             MAYOR_A_MENOR_POR_GRADO
         );
     }
+    #endif//_VECINOS_ORDENADOS
 }
 
 graph::~graph(){
@@ -167,8 +169,7 @@ graph::~graph(){
         delete this->_edges[i];
 }
 
-/*Getters*/
-
+/***************************************************************/
 /*Métodos publicos*/
 uint graph::cmf_backtracking(vector<node_id>& clique) const{
     /*Variables locales*/
@@ -296,12 +297,6 @@ uint graph::cmf_golosa(vector<node_id>& clique) const{
     /*Comenzamos*/
     clique.clear();
     clique.reserve(this->_quant_nodes);
-    /*
-    sort(candidates.begin(),
-        candidates.end(),
-        MAYOR_A_MENOR_POR_GRADO
-    );
-    */
 
     /* Agregamos el primer nodo a clique y comenzamos a iterar
      * hasta que se acaben los nodos candidatos
@@ -313,6 +308,12 @@ uint graph::cmf_golosa(vector<node_id>& clique) const{
         )->_id
     );
     deque<node_id> candidates(this->_nodes[clique.back()-1]->_neighbors);
+    #ifndef _VECINOS_ORDENADOS
+    sort(candidates.begin(),
+        candidates.end(),
+        MAYOR_A_MENOR_POR_GRADO
+    );
+    #endif//_VECINOS_ORDENADOS
     uint frontier = this->_nodes[clique.back()-1]->_degree;
 
     while(!candidates.empty()){
@@ -328,13 +329,14 @@ uint graph::cmf_golosa(vector<node_id>& clique) const{
 uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
     /*Variables locales*/
     clique.reserve(this->_quant_nodes);
-    deque<node_id> candidates;
-    uint frontier,frontier_add = 0,frontier_remove = 0;
+    vector<bool> nodes_ids_in_clique(this->_quant_nodes,false);
+    node_id node_id_add;
+    uint frontier,frontier_if_add,frontier_if_remove = 0;
+    bool frontier_can_grow = true;
 
     /*Comenzamos*/
     if(clique.empty()){
         /*Buscamos un primer nodo para comenzar*/
-        clique.reserve(this->_quant_nodes);
         clique.push_back(
             (*find_if(
                 this->_nodes.cbegin(),
@@ -343,73 +345,61 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
             )->_id
         );
         frontier = this->_nodes[clique.back()-1]->_degree;
-        candidates = this->_nodes[clique.back()-1]->_neighbors; /*Ya estan ordenados*/
+        nodes_ids_in_clique[clique.back()-1] = true;
 
     } else {
-        /* Ya nos dieron un resultado inicial,
-         * calculamos sus candidatos y frontera
-         * primero
+        /* Ya nos dieron un resultado inicial
+         *
+         *Calculamos la frontera de la clique provista
          */
-        /*
-        sort(clique.begin(),
-            clique.end(),
-            MAYOR_A_MENOR_POR_GRADO
-        );
-        */
-        this->candidates(clique,candidates);
-        /* Ya tenemos los candidatos ordenados por grado*/
-
         frontier = 0;
         for(vector<node_id>::const_iterator node_id_it = clique.cbegin();
             node_id_it != clique.cend();
             ++node_id_it)
+        {
             frontier += this->_nodes[*node_id_it-1]->_degree-clique.size();
+            nodes_ids_in_clique[*node_id_it-1] = true;
+        }
     }
 
-
-    /* Nos generamos primero dos heaps de la clique segun los grados
-     * Uno con el grado de mayor o menor y otro al reves
+    /* Utilizamos la clique como un "min heap", para asi acceder al
+     * nodo de menor grado en O(1)
      */
     make_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO); /*Popea el de menor grado*/
 
     /*Comenzamos el ciclo de la busqueda local*/
-    if(!candidates.empty())
-        frontier_add = frontier+this->_nodes[candidates.front()-1]->_degree-(clique.size()<<1);
-    frontier_remove = frontier-this->_nodes[clique.front()-1]->_degree+clique.size()-1;
-
-    //for(uint frontier_add = frontier+this->_nodes[candidates.front()-1]->_degree-(clique.size()<<1),
-    //    frontier_remove = frontier-this->_nodes[clique.front()-1]->_degree+clique.size()-1;
-
-        //frontier <  max(frontier_add,frontier_remove);
-    while(frontier <  max(frontier_add,frontier_remove)){
-
-        //frontier_add = frontier+this->_nodes[candidates.front()-1]->_degree-(clique.size()<<1),
-        //frontier_remove = frontier-this->_nodes[clique.front()-1]->_degree+clique.size()-1)
-    //{
-        if(frontier_add > frontier_remove){
-            /*Agregamos un nodo*/
-            frontier = frontier_add;
-            clique.push_back(candidates.front());
-            candidates.pop_front();
-            /*Actualizamos los candidatos*/
-            this->candidates(candidates,clique.back(),clique.size()<<1,candidates);
-            /*Mantenemos la estructura*/
-            push_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO);
-
-        } else {
-            /*Sacamos un nodo manteniendo las estructuras*/
-            frontier = frontier_remove;
-            pop_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO);
-            clique.pop_back();
-            /*Actualizamos los candidatos*/
-            this->candidates(clique,candidates);
-        }
-
+    do{
         /*Actualizamos las fronteras de agregado y quitado*/
-        if(!candidates.empty())
-            frontier_add = frontier+this->_nodes[candidates.front()-1]->_degree-(clique.size()<<1);
-        frontier_remove = frontier-this->_nodes[clique.front()-1]->_degree+clique.size()-1;
-    }
+        node_id_add = first_candidate(this->_nodes[clique.front()-1]->_neighbors,clique,nodes_ids_in_clique);
+        if((bool)node_id_add) //En caso de que node_id_add = 0 = no hay nodo agregable
+            frontier_if_add = frontier+this->_nodes[node_id_add-1]->_degree-(clique.size()<<1);
+        else
+            frontier_if_add = 0;
+        frontier_if_remove = frontier-this->_nodes[clique.front()-1]->_degree+clique.size()-1;
+
+        if(frontier <  max(frontier_if_add,frontier_if_remove)){
+            /*La funcion objeto puede crecer*/
+            if(frontier_if_add > frontier_if_remove){
+                /*Agregamos un nodo*/
+                frontier = frontier_if_add;
+                clique.push_back(node_id_add);
+
+                /*Mantenemos la estructura*/
+                push_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO);
+                nodes_ids_in_clique[node_id_add-1] = true;
+
+            } else {
+                /*Sacamos un nodo manteniendo las estructuras*/
+                frontier = frontier_if_remove;
+                pop_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO);
+                nodes_ids_in_clique[clique.back()-1] = false;
+                cout << "Quite " << clique.back() << ' ' << nodes_ids_in_clique[clique.back()-1] << endl;
+                clique.pop_back();
+            }
+
+        } else
+            frontier_can_grow = false;
+    }while(frontier_can_grow);
 
     return frontier;
 }
@@ -418,7 +408,34 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
     return 0;
 }
 
+/***************************************************************/
 /*Metodos Privados*/
+node_id graph::first_candidate(const deque<node_id>& candidates,const vector<node_id>& clique,const vector<bool>& nodes_ids_in_clique) const{
+    /*Variables locales*/
+    bool found = false;
+    vector<node_id>::const_iterator clk_node_id_it;
+    node_id first_candidate = 0;
+
+    /*Comenzamos*/
+    for(deque<node_id>::const_iterator candidate_id_it = candidates.cbegin();
+        candidate_id_it != candidates.cend() && !found;
+        ++candidate_id_it)
+    {
+        if(!nodes_ids_in_clique[*candidate_id_it-1] && this->_nodes[*candidate_id_it-1]->_degree > clique.size()<<1){
+            for(clk_node_id_it = clique.cbegin();
+                clk_node_id_it != clique.cend() && this->_adjacency_matrix[*clk_node_id_it-1][*candidate_id_it-1];
+                ++clk_node_id_it){}
+
+            if(clk_node_id_it == clique.cend()){
+                first_candidate = *candidate_id_it;
+                found = true;
+            }
+        }
+    }
+
+    return first_candidate;
+}
+
 void graph::candidates(const vector<node_id>& clique,deque<node_id>& new_candidates) const{
     /*Variables locales*/
     uint r;
@@ -430,9 +447,7 @@ void graph::candidates(const vector<node_id>& clique,deque<node_id>& new_candida
         r = 0;
         generate_n(back_inserter(new_candidates),this->_quant_nodes,[&r](){return ++r;});
 
-        /* Ordeno por grado de mayor a menor para luego
-         * poder acotar la frontera maxima de la rama del backtracking
-         */
+        /*Ordeno por grado de mayor a meno */
         sort(new_candidates.begin(),
             new_candidates.end(),
             MAYOR_A_MENOR_POR_GRADO
@@ -441,6 +456,13 @@ void graph::candidates(const vector<node_id>& clique,deque<node_id>& new_candida
     } else {
         /*Nos dieron una clique inicial, calculamos sus candidatos*/
         new_candidates = this->_nodes[clique.back()-1]->_neighbors;
+        #ifndef _VECINOS_ORDENADOS
+        /*Ordeno por grado de mayor a meno */
+        sort(new_candidates.begin(),
+            new_candidates.end(),
+            MAYOR_A_MENOR_POR_GRADO
+        );
+        #endif//_VECINOS_ORDENADOS
         for(vector<node_id>::const_iterator node_id_it = clique.cbegin();
             node_id_it != clique.cend()-1;
             ++node_id_it)
@@ -460,6 +482,7 @@ void graph::candidates(
     uint index_new_candidates = 0,end_new_candidates = new_candidates.size();
 
     /*Comenzamos*/
+    /*Preservamos el orden de prev_candidates*/
     for(deque<node_id>::const_iterator it = prev_candidates.cbegin();
         it != prev_candidates.cend();
         ++it)
@@ -482,6 +505,7 @@ void graph::candidates(
     new_candidates.resize(index_new_candidates);
 }
 
+/***************************************************************/
 /*Sobrecarga de operadores*/
 ostream& operator<<(ostream& output, const graph& G){
     output << "Matriz de adyacencia:" << endl;

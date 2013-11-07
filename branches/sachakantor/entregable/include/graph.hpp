@@ -21,7 +21,7 @@ typedef vector<vector<uchar> > adjacency_matrix;
 typedef struct node{
     /*Constructores y Destructores*/
     node(const node_id id,const degree d,const uint max_degree);
-    //node(const uint id,const degree d);
+    node(const uint id,const degree d);
     node(const node&);
     ~node();
 
@@ -62,8 +62,6 @@ class graph{
         graph(uint quant_nodes,uint quant_edges,vector<node_id>::const_iterator& it_edges_nodes);
         ~graph();
 
-        /*Getters*/
-
         /*Métodos publicos*/
         uint cmf_backtracking(vector<node_id>& clique) const;
         uint cmf_golosa(vector<node_id>& clique) const;
@@ -72,6 +70,7 @@ class graph{
 
     private:
         /*Metodos privados*/
+        node_id first_candidate(const deque<node_id>& candidates,const vector<node_id>& clique,const vector<bool>& nodes_ids_in_clique) const;
         void candidates(const vector<node_id>& clique,deque<node_id>& new_candidates) const;
         void candidates(const deque<node_id>& prev_candidates,node_id new_node_id,uint min_degree,deque<node_id>& output) const;
 

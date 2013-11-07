@@ -82,7 +82,7 @@ int main(int argc,char* argv[]){
         private(clique)\
         shared(results,problems)
     for(uint i = 0; i<problems.size(); ++i){
-        results[i] = to_string(problems[i]->cmf_backtracking(clique));
+        results[i] = to_string(problems[i]->cmf_golosa(clique));
         results[i] += ' '+to_string(clique.size());
         for(vector<node_id>::const_iterator it = clique.cbegin();
             it<clique.cend();

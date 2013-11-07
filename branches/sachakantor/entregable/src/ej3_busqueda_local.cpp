@@ -41,7 +41,6 @@ int main(int argc,char* argv[]){
         ++it_param;
         quant_edges = *it_param;
         ++it_param;
-
     #ifndef _OPENMP
         /*Instanciamos el grafo*/
         graph grafo(quant_nodes,quant_edges,it_param);
@@ -49,6 +48,10 @@ int main(int argc,char* argv[]){
 
         /*Calculamos su frontera maxima por busqueda local*/
         clique.clear();
+        #ifdef _GOLOSA
+        cout << "Golosa" << endl;
+        grafo.cmf_golosa(clique);
+        #endif//_GOLOSA
         frontera = grafo.cmf_busqueda_local(clique);
 
         /*Imprimimos el resultado por pantallas*/
@@ -82,7 +85,10 @@ int main(int argc,char* argv[]){
         private(clique)\
         shared(results,problems)
     for(uint i = 0; i<problems.size(); ++i){
-        results[i] = to_string(problems[i]->cmf_backtracking(clique));
+        #ifdef _GOLOSA
+        grafo.cmf_golosa(clique);
+        #endif//_GOLOSA
+        results[i] = to_string(problems[i]->cmf_busqueda_local(clique));
         results[i] += ' '+to_string(clique.size());
         for(vector<node_id>::const_iterator it = clique.cbegin();
             it<clique.cend();
