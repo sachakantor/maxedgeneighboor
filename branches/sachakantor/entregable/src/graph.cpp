@@ -331,12 +331,14 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
     vector<bool> nodes_ids_in_clique(this->_quant_nodes,false);
     node_id node_id_add;
     uint frontier,frontier_if_add,frontier_if_remove;
+    bool frontier_can_grow = true;
+
     #ifdef _INTERCAMBIAR
     vector<node_id>::iterator node_exch_out_it;
     node_id node_exch_out_id_aux,node_exch_in_id = 0,node_exch_in_id_aux;
+    uint new_node_heap_pos,node_father_heap_pos,left_child_pos,right_child_pos,min_degree_child_pos;
     uint frontier_if_exch,frontier_if_exch_aux;
     #endif//_INTERCAMBIAR
-    bool frontier_can_grow = true;
 
     /*Comenzamos*/
     if(clique.empty()){
@@ -395,16 +397,30 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
 
             /*Saco al elemento de la clique*/
             frontier_if_exch_aux += -this->_nodes[*clk_node_id_it-1]->_degree+clique.size()-1;
-            nodes_ids_in_clique[*clk_node_id_it-1] = false;
+            /* No lo quietamos de nodes_ids_in_clique para que first_candidate
+             * no lo tenga en cuenta
+             *
+             * nodes_ids_in_clique[*clk_node_id_it-1] = false;
+            */
             iter_swap(clk_node_id_it,clique.end()-1);
             node_exch_out_id_aux = clique.back();
             clique.pop_back();
 
-            /* Buscamos el nodo entrante que mas frontera sume,
-             * requiere que los vecinos esten ordenados por
-             * grado de mayor a menor
-             */
-            node_exch_in_id_aux = first_candidate(this->_nodes[clique.front()-1]->_neighbors,clique,nodes_ids_in_clique);
+            /*Buscamos el primer nodo entrante que incremente la frontera*/
+            if(clique.empty()){
+                node_exch_in_id_aux = (*max_element(this->_nodes.cbegin(),
+                        this->_nodes.cend(),
+                        MAYOR_A_MENOR_POR_GRADO_PTR)
+                    )->_id;
+
+            } else {
+                node_exch_in_id_aux = first_candidate(
+                        this->_nodes[clique.front()-1]->_neighbors,
+                        clique,
+                        nodes_ids_in_clique
+                    );
+            }
+
             if((bool)node_exch_in_id_aux) //En caso de que node_id_add = 0 = no hay nodo agregable
                 frontier_if_exch_aux += this->_nodes[node_exch_in_id_aux-1]->_degree-(clique.size()<<1);
 
@@ -413,40 +429,30 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
              */
             clique.push_back(node_exch_out_id_aux);
             iter_swap(clk_node_id_it,clique.end()-1);
-            nodes_ids_in_clique[*clk_node_id_it-1] = true;
+            /*nodes_ids_in_clique[*clk_node_id_it-1] = true;*/
 
             /*Vemos si mejoramos el mejor intercambio encontrado*/
-            //cout << "me conviene cambiar " << *clk_node_id_it << " por " << node_exch_in_id_aux << "? " << endl;
             if(frontier_if_exch < frontier_if_exch_aux){
-                //cout << "si" << endl;
                 frontier_if_exch = frontier_if_exch_aux;
                 node_exch_in_id = node_exch_in_id_aux;
                 node_exch_out_it = clk_node_id_it;
             }
         }
-        cout << "Frontera actual: " << frontier << endl;
-        cout << "Si agrego " << node_id_add << ": " << frontier_if_add << endl;
-        if(node_exch_out_it != clique.end())
-            cout << "Si cambio " << *node_exch_out_it << " por " << node_exch_in_id << ": " << frontier_if_exch << endl;
-        cout << "Si quito " << clique.front() << ": " << frontier_if_remove << endl;
-
         #endif//_INTERCAMBIAR
 
-
+        if(frontier < frontier_if_add || frontier < frontier_if_remove
         #ifdef _INTERCAMBIAR
-        if(frontier < frontier_if_add || frontier < frontier_if_exch || frontier < frontier_if_remove){
-        #else
-        if(frontier <  max(frontier_if_add,frontier_if_remove)){
+            || frontier < frontier_if_exch
         #endif//_INTERCAMBIAR
+        ){
             /*La funcion objeto puede crecer*/
             if(frontier_if_add > frontier_if_remove
             #ifdef _INTERCAMBIAR
                 && frontier_if_add > frontier_if_exch
             #endif//_INTERCAMBIAR
             ){
-                cout << "voy a agregar" << endl;
-                /*Agregamos un nodo*/
                 frontier = frontier_if_add;
+                /*Agregamos un nodo*/
                 clique.push_back(node_id_add);
 
                 /*Mantenemos la estructura*/
@@ -455,46 +461,67 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
 
             #ifdef _INTERCAMBIAR
             } else if(frontier_if_exch > frontier_if_remove){
-                cout << "voy a intercambiar" << endl;
-                /*Intercambiamos un nodo manteniendo las estructuras*/
                 frontier = frontier_if_exch;
-                /*
-                iter_swap(clique.begin(),node_exch_out_it);
-                pop_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO);
-                nodes_ids_in_clique[clique.back()-1] = false;
-
-                /Ya sacamos al nodo, ahora agreamos uno nuevo/
+                /*Intercambiamos el nodo*/
+                nodes_ids_in_clique[*node_exch_out_it-1] = false;
                 nodes_ids_in_clique[node_exch_in_id-1] = true;
-                clique.back() = node_exch_in_id;
-
-                if(this->_nodes[clique.back()-1]->_degree < this->_nodes[node_exch_out_it-1]->_degree){
-                    / El elemento entrante debe reemplazar al que era
-                     * el minimo del min heap
-                     /
-                    iter_swap(node_exch_out_it,clique.end()-1);
-                }
-
-                push_heap(clique)
-                push_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO);
-                */
                 *node_exch_out_it = node_exch_in_id;
-                make_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO); /*Popea el de menor grado*/
 
+                /*Mantenemos la estructura del heap en O(log(n))*/
+                new_node_heap_pos = distance(clique.begin(),node_exch_out_it);
+                node_father_heap_pos = (new_node_heap_pos - 1)>>1;
+                if(new_node_heap_pos > 0 &&
+                    this->_nodes[clique[new_node_heap_pos]-1]->_degree <
+                    this->_nodes[clique[node_father_heap_pos]-1]->_degree)
+                {
+                    /*El padre tiene mayor grado, el nuevo nodo debe "subir"*/
+                    while(new_node_heap_pos > 0 &&
+                        this->_nodes[clique[new_node_heap_pos]-1]->_degree <
+                        this->_nodes[clique[node_father_heap_pos]-1]->_degree)
+                    {
+                        swap(clique[new_node_heap_pos],clique[node_father_heap_pos]);
+                        new_node_heap_pos = node_father_heap_pos;
+                        node_father_heap_pos = (new_node_heap_pos - 1)>>1;
+                    }
+
+                } else {
+                    /*El padre tiene menor grado, el nuevo nodo debe "bajar"*/
+                    left_child_pos = (new_node_heap_pos<<1)+1;
+                    right_child_pos = left_child_pos+1;
+                    while(left_child_pos < clique.size()){
+                        if(right_child_pos < clique.size() &&
+                            this->_nodes[clique[right_child_pos]-1]->_degree <
+                            this->_nodes[clique[left_child_pos]-1]->_degree)
+                        {
+                            min_degree_child_pos = right_child_pos;
+                        } else
+                            min_degree_child_pos = left_child_pos;
+
+                        /*Intercambiamos si es necesario, sino paramos*/
+                        if(this->_nodes[clique[new_node_heap_pos]-1]->_degree <
+                            this->_nodes[clique[min_degree_child_pos]-1]->_degree)
+                        {
+                            swap(clique[new_node_heap_pos],clique[min_degree_child_pos]);
+                            new_node_heap_pos = min_degree_child_pos;
+                            left_child_pos = (new_node_heap_pos<<1)+1;
+                            right_child_pos = left_child_pos+1;
+                        } else
+                            left_child_pos = clique.size()+1; //para no usar un bool/break
+                    }
+                }
             #endif//_INTERCAMBIAR
+
             } else {
-                cout << "voy a quitar" << endl;
-                /*Sacamos un nodo manteniendo las estructuras*/
                 frontier = frontier_if_remove;
+                /*Sacamos un nodo manteniendo las estructuras*/
                 pop_heap(clique.begin(),clique.end(),MAYOR_A_MENOR_POR_GRADO);
                 nodes_ids_in_clique[clique.back()-1] = false;
-                //cout << "Quite " << clique.back() << ' ' << nodes_ids_in_clique[clique.back()-1] << endl;
                 clique.pop_back();
             }
 
         } else
             frontier_can_grow = false;
 
-        cout << "=========================" << endl;
     }while(frontier_can_grow);
 
     return frontier;
