@@ -13,8 +13,8 @@ int main(int argc,char* argv[]){
     algo3InputParser<parameter,vector<parameter> > parser(std::cin);
     vector<parameter> input;
     parameter quant_nodes,quant_edges,terminator_char=0;
-    vector<node_id> clique;
     #ifndef _OPENMP
+    vector<node_id> clique;
     uint frontera;
     #else
     vector<graph*> problems;
@@ -81,20 +81,23 @@ int main(int argc,char* argv[]){
     vector<string> results(problems.size());
     /*Resuelvo el CMF para todos los problemas con distintos threads*/
     #pragma omp parallel for schedule(dynamic) default(none) collapse(1)\
-        private(clique)\
         shared(results,problems)
     for(uint i = 0; i<problems.size(); ++i){
+        vector<node_id>* clique_ptr = new vector<node_id>;
         #ifdef _GOLOSA
-        grafo.cmf_golosa(clique);
+        problems[i]->cmf_golosa(*clique_ptr);
         #endif//_GOLOSA
-        results[i] = to_string(problems[i]->cmf_busqueda_local(clique));
-        results[i] += ' '+to_string(clique.size());
-        for(vector<node_id>::const_iterator it = clique.cbegin();
-            it<clique.cend();
+        results[i] = to_string(problems[i]->cmf_busqueda_local(*clique_ptr));
+        results[i] += ' '+to_string(clique_ptr->size());
+        for(vector<node_id>::const_iterator it = clique_ptr->cbegin();
+            it<clique_ptr->cend();
             ++it)
         {
             results[i]+= ' '+to_string(*it);
         }
+
+        delete clique_ptr;
+        delete problems[i];
     }
 
     /*Imprimo los resultados*/

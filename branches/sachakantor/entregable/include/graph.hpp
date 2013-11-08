@@ -16,7 +16,7 @@ typedef unsigned char uchar;
 typedef unsigned int node_id;
 typedef unsigned int degree;
 typedef deque<node_id> adjacent_nodes_id;
-typedef vector<vector<uchar> > adjacency_matrix;
+typedef vector<vector<bool> > adjacency_matrix;
 
 typedef struct node{
     /*Constructores y Destructores*/

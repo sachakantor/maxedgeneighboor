@@ -114,7 +114,7 @@ graph::graph(const graph& copy) :
 graph::graph(uint quant_nodes,uint quant_edges,vector<node_id>::const_iterator& it_edges_nodes) :
     _quant_nodes(quant_nodes),
     _quant_edges(quant_edges),
-    _adjacency_matrix(quant_nodes,vector<uchar>(quant_nodes,(uchar)false)),
+    _adjacency_matrix(quant_nodes,vector<bool>(quant_nodes,false)),
     _nodes(quant_nodes,NULL),
     _edges(quant_edges,NULL)
 {
@@ -136,8 +136,8 @@ graph::graph(uint quant_nodes,uint quant_edges,vector<node_id>::const_iterator& 
 
         /*Creamos el eje y actualizamos la matriz de adyacencia*/
         this->_edges[edge] = new struct edge(a,b);
-        this->_adjacency_matrix[a-1][b-1] = (uchar)true;
-        this->_adjacency_matrix[b-1][a-1] = (uchar)true;
+        this->_adjacency_matrix[a-1][b-1] = true;
+        this->_adjacency_matrix[b-1][a-1] = true;
 
         /*Actualizamos la info de los nodos*/
         ++this->_nodes[a-1]->_degree;
@@ -610,7 +610,7 @@ void graph::candidates(
         it != prev_candidates.cend();
         ++it)
     {
-        if(this->_nodes[*it-1]->_degree > min_degree && (bool)this->_adjacency_matrix[new_node_id-1][*it-1])
+        if(this->_nodes[*it-1]->_degree > min_degree && this->_adjacency_matrix[new_node_id-1][*it-1])
         {
             /*Agregamos el candidato*/
             if(index_new_candidates < end_new_candidates)
@@ -651,11 +651,11 @@ ostream& operator<<(ostream& output, const graph& G){
         ++row)
     {
         output << distance(G._adjacency_matrix.cbegin(),row)+1 << "|| ";
-        for(vector<uchar>::const_iterator col = row->cbegin();
+        for(vector<bool>::const_iterator col = row->cbegin();
             col < row->end();
             ++col)
         {
-            output << (bool)*col << " | ";
+            output << *col << " | ";
         }
         output << endl;
 
