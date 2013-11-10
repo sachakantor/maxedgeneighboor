@@ -53,12 +53,12 @@ int main(int argc,char* argv[]){
         frontera = grafo.cmf_backtracking(clique);
 
         /*Imprimimos el resultado por pantallas*/
-        cout << frontera << ' ' << clique.size() << ' ';
+        cout << frontera << ' ' << clique.size();
         for(vector<node_id>::const_iterator it = clique.cbegin();
             it<clique.cend();
             ++it)
         {
-            cout << *it << ' ';
+            cout << ' ' << *it;
         }
         cout << endl;
 
