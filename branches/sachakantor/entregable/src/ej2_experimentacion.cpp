@@ -22,6 +22,5 @@ int main(int argc,char* argv[]){
     /* Abro el archivo (4to parametro) */
     //archivo.open(argv[4],std::ios::app);
 
-    random_bipartite_graph(std::cout,9);
     return 0;
 }
