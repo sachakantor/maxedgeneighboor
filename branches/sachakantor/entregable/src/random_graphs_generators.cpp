@@ -8,7 +8,7 @@
 #include<vector>
 #include<deque>
 
-#include<random_graph_generator.hpp>
+#include<random_graphs_generators.hpp>
 #include<typedefs.hpp>
 
 using namespace std;
