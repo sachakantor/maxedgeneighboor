@@ -4,18 +4,12 @@
 #include<vector>
 #include<deque>
 
+#include<typedefs.hpp>
+
 using namespace std;
 
 /* Forward declaration */
-struct node;
-
-/* Renombres y Structs */
-typedef unsigned int uint;
-typedef unsigned char uchar;
-typedef unsigned int node_id;
-typedef unsigned int degree;
-typedef deque<node_id> adjacent_nodes_id;
-typedef vector<vector<bool> > adjacency_matrix;
+//struct node;
 
 typedef struct node{
     /*Constructores y Destructores*/

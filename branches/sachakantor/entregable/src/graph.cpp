@@ -5,7 +5,8 @@
 #include<vector>
 #include<deque>
 #include<stack>
-#include<graph.hpp> /*define node,edge,graph,node_id,uint,uchar,adjacency_matrix,adjacent_nodes_id*/
+#include<typedefs.hpp>/*node_id,uint,uchar,adjacency_matrix,adjacent_nodes_id*/
+#include<graph.hpp> /*define node,edge,graph*/
 
 /*Expresiones Lambda para el ordenamiento de nodos*/
 #define MAYOR_A_MENOR_POR_GRADO [this](int v,int w){return this->_nodes[w-1]->_degree < this->_nodes[v-1]->_degree;}
