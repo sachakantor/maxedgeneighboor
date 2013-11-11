@@ -55,14 +55,34 @@ uno de los de mayor grado). Tenemos lo siguiente:
 \end{figure}
 
 \subsection{\'Arboles}
-La familia de los \'arboles es otra de las familias en las que la heur\'istica
-funciona bien. Para los \'arboles es pr\'acticamente inmediato que el 
+La familia de los \'arboles es una de las familias en las que la heur\'istica
+se puede romper y no devolver el resultado correcto. 
+
+Para los \'arboles es pr\'acticamente inmediato que el 
 tama\~no de la clique de m\'axima frontera es a lo sumo igual a dos, dado
 que por su misma definici\'on los arboles no contienen circuitos simples.
 
 Nuevamente en este caso se toma alguno de los nodos de mayor grado 
 (t\'ipicamente uno de los nodos internos del \'arbol) y se intenta hacer
 crecer la clique con alg\'un nodo adyacente (alguno de los de mayor grado).
+
+Como puede verse en los siguientes ejemplos en el caso de que 
+implementativamente se seleccione uno de los nodos de mayor grado
+adyacente a otro de los nodos de mayor grado, la heur\'istica encuentra
+efectivamente una CMF, pero en el caso de que el nodo de partida sea 
+uno de los de mayor grado en el grafo y dicho nodo no pertenezca a
+ninguna de las CMF del grafo, la heur\'istica reportar\'a un falso 
+positivo (una clique cuya frontera es maximal pero no m\'axima).
+
+\begin{figure}[H]
+\caption{Ejemplos \'Arboles}
+\centering
+\includegraphics[scale = 0.5]{img/ej2/tree_st0.png}
+\includegraphics[scale = 0.5]{img/ej2/tree_st01.png}
+\includegraphics[scale = 0.5]{img/ej2/tree_st02.png}
+\includegraphics[scale = 0.5]{img/ej2/tree_st11.png}
+\includegraphics[scale = 0.5]{img/ej2/tree_st12.png}
+\end{figure}
 
 \subsection{Grafos bipartitos}
 
