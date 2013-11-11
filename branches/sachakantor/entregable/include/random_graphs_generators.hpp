@@ -12,6 +12,7 @@ void random_star_graph(ostream& output,uint quant_nodes);
 void random_wheel_graph(ostream& output,uint quant_nodes);
 void random_banana_tree_graph(ostream& output,uint quant_star,uint star_size);
 void random_complete_graph(ostream& output,uint quant_nodes);
+void random_complete_bipartite_graph(ostream& output,uint quant_nodes);
 void random_bipartite_graph(ostream& output,uint quant_nodes);
 void random_bipartite_graph(ostream& output,uint quant_nodes_V1,uint quant_nodes_V2,uint quant_edges);
 void random_tree_graph(ostream& output,uint quant_nodes);

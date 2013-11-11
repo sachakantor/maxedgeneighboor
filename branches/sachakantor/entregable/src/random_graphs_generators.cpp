@@ -126,6 +126,13 @@ void random_complete_graph(ostream& output,uint quant_nodes){
     }
 }
 
+void random_complete_bipartite_graph(ostream& output,uint quant_nodes){
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+    uint v1_size = rand() % (quant_nodes-1)+1; //Me aseguro nodos en ambas particiones
+
+    random_bipartite_graph(output,v1_size,quant_nodes-v1_size,v1_size*(quant_nodes-v1_size));
+}
+
 void random_bipartite_graph(ostream& output,uint quant_nodes){
     srand(std::chrono::system_clock::now().time_since_epoch().count());
     uint v1_size = rand() % (quant_nodes-1)+1; //Me aseguro nodos en ambas particiones
@@ -181,11 +188,61 @@ void random_bipartite_graph(ostream& output,uint quant_nodes_V1,uint quant_nodes
 }
 
 void random_tree_graph(ostream& output,uint quant_nodes){
-    //Variables locales
+    random_connected_graph(output,quant_nodes,quant_nodes-1);
 }
 
 void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges){
-    //Variables locales
+    //Empezamos generando un arbol
+    //(copio el codigo porque necesito guardar informacion
+    //para luego no generar un multigrafo)
+    if(quant_nodes == 1){
+        output << quant_nodes << ' ' << '0' << endl;
+
+    } else {
+        output << quant_nodes << ' ' << max(quant_nodes-1,quant_edges) << endl;
+
+        //Variables locales
+        vector<vector<node_id> > possible_neighbors(quant_nodes,vector<node_id>(quant_nodes));
+        vector<node_id> nodes(quant_nodes);
+        vector<node_id> tree;
+        tree.reserve(quant_nodes);
+        uint node_src;
+
+        //Inicializamos los vecinos
+        for(vector<vector<node_id> >::iterator it = possible_neighbors.begin();
+            it != possible_neighbors.end();
+            ++it)
+        {
+            std::iota(it->begin(),it->end(),1);
+        }
+
+        //Seteamos la semilla para el random
+        srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+        //Comenzamos
+        std::iota(nodes.begin(),nodes.end(),1);
+        random_shuffle(nodes.begin(),nodes.end());
+
+        //Vamos colocando los nodos de a uno, asegurandonos que sea conexo
+        tree.push_back(nodes.back());
+        nodes.pop_back();
+        while(!nodes.empty()){
+            node_src = tree[rand()%tree.size()];
+            output << node_src << ' ' << nodes.back() << endl;
+            tree.push_back(nodes.back());
+            nodes.pop_back();
+
+            //Actualizamos la estructura
+            possible_neighbors[node_src-1].erase(
+                find(possible_neighbors[node_src-1].begin(),possible_neighbors[node_src-1].end(),tree.back())
+            );
+
+            possible_neighbors[tree.back()-1].erase(
+                find(possible_neighbors[tree.back()-1].begin(),possible_neighbors[tree.back()-1].end(),node_src)
+            );
+        }
+        //Colocamos los ejes restantes
+    }
 }
 
 

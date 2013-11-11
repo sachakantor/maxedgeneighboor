@@ -8,9 +8,6 @@
 
 using namespace std;
 
-/* Forward declaration */
-//struct node;
-
 typedef struct node{
     /*Constructores y Destructores*/
     node(const node_id id,const degree d,const uint max_degree);

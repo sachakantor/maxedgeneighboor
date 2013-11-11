@@ -9,7 +9,6 @@ uint from_how_many_nodes(){
     uint nodes;
     cout << "Cantidad de nodos de la instancia mas chica: ";
     cin >> nodes;
-    cout << endl;
 
     return nodes;
 }
@@ -18,7 +17,6 @@ uint to_how_many_nodes(){
     uint nodes;
     cout << "Cantidad de nodos de la instancia mas grande: ";
     cin >> nodes;
-    cout << endl;
 
     return nodes;
 }
@@ -27,7 +25,6 @@ string ask_output_file(){
     string name;
     cout << "¿Donde desea guardar el resultado?: ";
     cin >> name;
-    cout << endl;
 
     return name;
 }
@@ -47,8 +44,9 @@ int main(int argc,char* argv[]){
     cout << "3.  Banana Tree" << endl;
     cout << "4.  Completo" << endl;
     cout << "5.  Bipartito" << endl;
-    cout << "6.  Arbol" << endl;
-    cout << "7.  Conexo" << endl;
+    cout << "6.  Bipartito Completo" << endl;
+    cout << "7.  Arbol" << endl;
+    cout << "8.  Conexo" << endl;
     cout << "Seleccione una opcion: ";
     cin >> choice;
 
@@ -92,12 +90,18 @@ int main(int argc,char* argv[]){
             break;
 
         case 6:
-            //for(uint nodes = nodes_lower; nodes<=nodes_upper;++nodes)
-            //    random_tree_graph(output_file,nodes);
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;++nodes)
+                random_complete_bipartite_graph(output_file,nodes);
             output_file << '0' << endl;
             break;
 
         case 7:
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;++nodes)
+                random_tree_graph(output_file,nodes);
+            output_file << '0' << endl;
+            break;
+
+        case 8:
             //for(uint nodes = nodes_lower; nodes<=nodes_upper;++nodes)
             //    random_connected_graph(output_file,nodes,uint quant_edges);
             output_file << '0' << endl;
