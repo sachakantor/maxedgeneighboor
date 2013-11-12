@@ -76,16 +76,47 @@ void random_wheel_graph(ostream& output,uint quant_nodes){
     nodes.pop_back();
 
     //Imprimimos la salida segun el formato pedido
-    output << quant_nodes << ' ' << 2*(quant_nodes-1) << endl;
-    for(vector<node_id>::const_iterator it = nodes.cbegin();
-        it < nodes.cend()-1;
-        ++it)
-    {
-        output << *it << ' ' << *(it+1) << endl;
-        output << center << ' ' << *it << endl;
+    if(quant_nodes<=2){
+        output << quant_nodes << ' ' << quant_nodes-1 << endl;
+        if(quant_nodes == 2)
+            output << center << ' ' << nodes.back() << endl;
+
+    } else if(quant_nodes == 3){
+        output << quant_nodes << ' ' << quant_nodes << endl;
+        output << nodes.back() << ' ' << nodes.front() << endl;
+        output << center << ' ' << nodes.front() << endl;
+        output << center << ' ' << nodes.back() << endl;
+
+    } else {
+        output << quant_nodes << ' ' << 2*(quant_nodes-1) << endl;
+        for(vector<node_id>::const_iterator it = nodes.cbegin();
+            it < nodes.cend()-1;
+            ++it)
+        {
+            output << *it << ' ' << *(it+1) << endl;
+            output << center << ' ' << *it << endl;
+        }
+        output << nodes.back() << ' ' << nodes.front() << endl;
+        output << center << ' ' << nodes.back() << endl;
     }
-    output << nodes.back() << ' ' << nodes.front() << endl;
-    output << center << ' ' << nodes.back() << endl;
+}
+
+
+void random_banana_tree_graph(ostream& output,uint quant_nodes){
+    //Variables locales
+    uint quant_star,star_size;
+
+    //Seteamos la semilla para el random
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+    //Buscamos un divisor aleatorio para que luego matchee
+    //con el tamano de las estrellas
+    quant_star = rand()%((quant_nodes-1)/2) + 1;
+    while((bool)((quant_nodes-1)%quant_star))
+        --quant_star;
+    star_size = (quant_nodes-1)/quant_star;
+
+    random_banana_tree_graph(output,quant_star,star_size);
 }
 
 void random_banana_tree_graph(ostream& output,uint quant_star,uint star_size){

@@ -21,8 +21,6 @@ BUSQUEDA=ej3_busqueda_local_primer_salto \
 
 #TABU=
 
-GRAPHS_GENERATOR=graph_generator
-
 EJ2_EXECUTABLES=$(BACKTRACKING)
 EJ3_EXECUTABLES=$(GOLOSA) $(BUSQUEDA)# $(TABU)
 EXECUTABLES=$(EJ2_EXECUTABLES) $(EJ3_EXECUTABLES) $(GRAPHS_GENERATOR)
@@ -32,7 +30,6 @@ backtracking: $(BACKTRACKING)
 golosa: $(GOLOSA)
 busqueda: $(BUSQUEDA)
 #tabu: $(TABU)
-generador: $(GRAPHS_GENERATOR)
 
 #Archivos ejecutables
 ej2: ej2.cpp $(SOURCES)
@@ -67,9 +64,6 @@ ej3_busqueda_local_mejor_salto_intercambiar: ej3_busqueda_local.cpp $(SOURCES)
 
 ej3_busqueda_local_mejor_salto_intercambiar_golosa: ej3_busqueda_local.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_VECINOS_ORDENADOS -D_INTERCAMBIAR -D_GOLOSA -o $@ $^
-
-graph_generator: graph_generator.cpp random_graphs_generators.cpp
-		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^
 
 clean:
 		@$(RM) $(EXECUTABLES)

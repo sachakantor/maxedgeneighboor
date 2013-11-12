@@ -10,6 +10,7 @@ using namespace std;
 void random_hole_graph(ostream& output,uint quant_nodes);
 void random_star_graph(ostream& output,uint quant_nodes);
 void random_wheel_graph(ostream& output,uint quant_nodes);
+void random_banana_tree_graph(ostream& output,uint quant_nodes);
 void random_banana_tree_graph(ostream& output,uint quant_star,uint star_size);
 void random_complete_graph(ostream& output,uint quant_nodes);
 void random_complete_bipartite_graph(ostream& output,uint quant_nodes);
