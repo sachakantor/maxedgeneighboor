@@ -191,6 +191,18 @@ void random_tree_graph(ostream& output,uint quant_nodes){
     random_connected_graph(output,quant_nodes,quant_nodes-1);
 }
 
+void random_connected_graph(ostream& output,uint quant_nodes){
+    //Variables locales
+    uint quant_edges = quant_nodes-1;
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+    //Me aseguro que sea conexo y que no supere el completo
+    if(quant_nodes > 2)
+        quant_edges = rand()%((quant_nodes*(quant_nodes-3))/2 + 1 ) + quant_nodes-1;
+
+    random_connected_graph(output,quant_nodes,quant_edges);
+}
+
 void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges){
     //Empezamos generando un arbol
     //(copio el codigo porque necesito guardar informacion
@@ -199,14 +211,18 @@ void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges){
         output << quant_nodes << ' ' << '0' << endl;
 
     } else {
-        output << quant_nodes << ' ' << max(quant_nodes-1,quant_edges) << endl;
+        output << quant_nodes << ' ' << quant_edges << endl;
 
         //Variables locales
         vector<vector<node_id> > possible_neighbors(quant_nodes,vector<node_id>(quant_nodes));
         vector<node_id> nodes(quant_nodes);
         vector<node_id> tree;
         tree.reserve(quant_nodes);
-        uint node_src;
+        uint node_src,node_src_pos,node_dest;//,node_dest_pos;
+        int edges_left;
+
+        //Seteamos la semilla para el random
+        srand(std::chrono::system_clock::now().time_since_epoch().count());
 
         //Inicializamos los vecinos
         for(vector<vector<node_id> >::iterator it = possible_neighbors.begin();
@@ -214,16 +230,20 @@ void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges){
             ++it)
         {
             std::iota(it->begin(),it->end(),1);
-        }
+            //Elimino de las opciones de un nodo x a x
+            swap(it->back(),it->at(distance(possible_neighbors.begin(),it)));
+            it->pop_back();
 
-        //Seteamos la semilla para el random
-        srand(std::chrono::system_clock::now().time_since_epoch().count());
+            //Mezclo
+            random_shuffle(it->begin(),it->end());
+        }
 
         //Comenzamos
         std::iota(nodes.begin(),nodes.end(),1);
         random_shuffle(nodes.begin(),nodes.end());
 
         //Vamos colocando los nodos de a uno, asegurandonos que sea conexo
+        //o sea, armamos un arbol primero
         tree.push_back(nodes.back());
         nodes.pop_back();
         while(!nodes.empty()){
@@ -233,15 +253,47 @@ void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges){
             nodes.pop_back();
 
             //Actualizamos la estructura
-            possible_neighbors[node_src-1].erase(
+            iter_swap(
+                possible_neighbors[node_src-1].end()-1,
                 find(possible_neighbors[node_src-1].begin(),possible_neighbors[node_src-1].end(),tree.back())
             );
+            possible_neighbors[node_src-1].pop_back();
 
-            possible_neighbors[tree.back()-1].erase(
+            iter_swap(
+                possible_neighbors[tree.back()-1].end()-1,
                 find(possible_neighbors[tree.back()-1].begin(),possible_neighbors[tree.back()-1].end(),node_src)
             );
+            possible_neighbors[tree.back()-1].pop_back();
         }
+
         //Colocamos los ejes restantes
+        edges_left = quant_edges - quant_nodes +1;
+        while(edges_left > 0){
+            node_src_pos = rand()%tree.size();
+            node_src = tree[node_src_pos];
+            if(possible_neighbors[node_src-1].empty()){
+                //Si no le quedan vecinos validos, no lo tenemos
+                //mas en cuenta
+                swap(tree[node_src_pos],tree.back());
+                tree.pop_back();
+
+            } else {
+                //Agregamos el eje
+                node_dest = possible_neighbors[node_src-1].back();
+                output << node_src << ' ' << node_dest << endl;
+
+                //Actualizamos las estructuras de datos
+                iter_swap(
+                    possible_neighbors[node_dest-1].end()-1,
+                    find(possible_neighbors[node_dest-1].begin(),
+                        possible_neighbors[node_dest-1].end(),
+                        node_src)
+                );
+                possible_neighbors[node_dest-1].pop_back();
+                possible_neighbors[node_src-1].pop_back();
+                --edges_left;
+            }
+        }
     }
 }
 

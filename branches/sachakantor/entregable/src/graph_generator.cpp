@@ -102,8 +102,8 @@ int main(int argc,char* argv[]){
             break;
 
         case 8:
-            //for(uint nodes = nodes_lower; nodes<=nodes_upper;++nodes)
-            //    random_connected_graph(output_file,nodes,uint quant_edges);
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;++nodes)
+                random_connected_graph(output_file,nodes);
             output_file << '0' << endl;
             break;
 

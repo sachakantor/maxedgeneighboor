@@ -16,6 +16,7 @@ void random_complete_bipartite_graph(ostream& output,uint quant_nodes);
 void random_bipartite_graph(ostream& output,uint quant_nodes);
 void random_bipartite_graph(ostream& output,uint quant_nodes_V1,uint quant_nodes_V2,uint quant_edges);
 void random_tree_graph(ostream& output,uint quant_nodes);
+void random_connected_graph(ostream& output,uint quant_nodes);
 void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges);
 
 /* Generadores de grafos por densidad de nodos */
