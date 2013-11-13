@@ -3,7 +3,6 @@
 #include<vector>
 #include<algo3InputParser.hpp>
 #include<graph.hpp>
-//#include<ej2.hpp>
 
 typedef unsigned int parameter;
 
@@ -13,6 +12,7 @@ int main(int argc,char* argv[]){
     /* Variables Locales */
     algo3InputParser<parameter,vector<parameter> > parser(std::cin);
     vector<parameter> input;
+    vector<parameter>::const_iterator it_param;
     parameter quant_nodes,quant_edges,terminator_char=0;
     #ifndef _OPENMP
     vector<node_id> clique;
@@ -33,15 +33,11 @@ int main(int argc,char* argv[]){
      * input, y luego llamo a sus metodos que resuelven el
      * problema dado
      */
-
-    for(vector<parameter>::const_iterator it_param = input.cbegin();
-        it_param < input.cend();
-        ++it_param)
+    for(uint i = 0; i<input.size(); i += 2*(quant_edges+1))
     {
-        quant_nodes = *it_param;
-        ++it_param;
-        quant_edges = *it_param;
-        ++it_param;
+        quant_nodes = input[i];
+        quant_edges = input[i+1];
+        it_param = input.cbegin()+i+2;
 
     #ifndef _OPENMP
         /*Instanciamos el grafo*/
@@ -61,21 +57,11 @@ int main(int argc,char* argv[]){
             cout << ' ' << *it;
         }
         cout << endl;
-
-        /* Terminamos el bucle*/
-        --it_param; //Esto se debe a que el constructor de grafo
-                    //deja it_param ya incrementado (que luego indrementa
-                    //el for)
     }
 
     #else
         /*Instanciamos el grafo y nos guardamos un puntero al mismo*/
         problems.push_back(new graph(quant_nodes,quant_edges,it_param));
-
-        /* Terminamos el bucle*/
-        --it_param; //Esto se debe a que el constructor de grafo
-                    //deja it_param ya incrementado (que luego indrementa
-                    //el for)
     }
     vector<string> results(problems.size());
     /*Resuelvo el CMF para todos los problemas con distintos threads*/

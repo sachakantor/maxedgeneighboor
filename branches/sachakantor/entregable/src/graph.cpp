@@ -297,32 +297,44 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
 
 uint graph::cmf_golosa(vector<node_id>& clique) const{
     /*Comenzamos*/
+    uint frontier,r;
     clique.clear();
     clique.reserve(this->_quant_nodes);
 
-    /* Agregamos el primer nodo a clique y comenzamos a iterar
-     * hasta que se acaben los nodos candidatos
-     */
-    clique.push_back(
-        (*max_element(this->_nodes.cbegin(),
-            this->_nodes.cend(),
-            MAYOR_A_MENOR_POR_GRADO_PTR)
-        )->_id
-    );
-    deque<node_id> candidates(this->_nodes[clique.back()-1]->_neighbors);
-    #ifndef _VECINOS_ORDENADOS
-    sort(candidates.begin(),
-        candidates.end(),
-        MAYOR_A_MENOR_POR_GRADO
-    );
-    #endif//_VECINOS_ORDENADOS
-    uint frontier = this->_nodes[clique.back()-1]->_degree;
+    if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)/2){
+        /*El grafo de entrada es un Kn*/
+        frontier = this->_quant_nodes/2 * (this->_quant_nodes/2 + this->_quant_nodes%2);
+        clique.reserve(this->_quant_nodes/2);
+        r = 0;
+        generate_n(back_inserter(clique),this->_quant_nodes/2,[&r](){return ++r;});
 
-    while(!candidates.empty()){
-        frontier += this->_nodes[candidates.front()-1]->_degree - clique.size()*2;
-        clique.push_back(candidates.front());
-        candidates.pop_front();
-        this->candidates(candidates,clique.back(),clique.size()*2,candidates);
+    } else {
+        /* El grafo no es un Kn
+         *
+         * Agregamos el primer nodo a clique y comenzamos a iterar
+         * hasta que se acaben los nodos candidatos
+         */
+        clique.push_back(
+            (*max_element(this->_nodes.cbegin(),
+                this->_nodes.cend(),
+                MAYOR_A_MENOR_POR_GRADO_PTR)
+            )->_id
+        );
+        deque<node_id> candidates(this->_nodes[clique.back()-1]->_neighbors);
+        #ifndef _VECINOS_ORDENADOS
+        sort(candidates.begin(),
+            candidates.end(),
+            MAYOR_A_MENOR_POR_GRADO
+        );
+        #endif//_VECINOS_ORDENADOS
+        frontier = this->_nodes[clique.back()-1]->_degree;
+
+        while(!candidates.empty()){
+            frontier += this->_nodes[candidates.front()-1]->_degree - clique.size()*2;
+            clique.push_back(candidates.front());
+            candidates.pop_front();
+            this->candidates(candidates,clique.back(),clique.size()*2,candidates);
+        }
     }
 
     return frontier;
@@ -333,7 +345,7 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
     clique.reserve(this->_quant_nodes);
     vector<bool> nodes_ids_in_clique(this->_quant_nodes,false);
     node_id node_id_add;
-    uint frontier,frontier_if_add,frontier_if_remove;
+    uint frontier,frontier_if_add,frontier_if_remove,r;
     bool frontier_can_grow = true;
 
     #ifdef _INTERCAMBIAR
@@ -344,7 +356,15 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
     #endif//_INTERCAMBIAR
 
     /*Comenzamos*/
-    if(clique.empty()){
+    if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)/2){
+        /*El grafo de entrada es un Kn*/
+        frontier = this->_quant_nodes/2 * (this->_quant_nodes/2 + this->_quant_nodes%2);
+        clique.reserve(this->_quant_nodes/2);
+        r = 0;
+        generate_n(back_inserter(clique),this->_quant_nodes/2,[&r](){return ++r;});
+
+    } else if(clique.empty()){
+        /* El grafo no es un Kn */
         /*Buscamos un primer nodo para comenzar*/
         clique.push_back(
             (*find_if(
@@ -357,6 +377,7 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
         nodes_ids_in_clique[clique.back()-1] = true;
 
     } else {
+        /* El grafo no es un Kn */
         /* Ya nos dieron un resultado inicial
          *
          *Calculamos la frontera de la clique provista

@@ -5,19 +5,19 @@ LDFLAGS=
 EXTRACXXFLAGS=
 SOURCES=graph.cpp
 #OBJECTS=$(SOURCES:.cpp=.o)
-BACKTRACKING=ej2
+BACKTRACKING=ej2.backtracking
 
-GOLOSA=ej3_constructiva_golosa_vecinos_no_ordenados \
-	   ej3_constructiva_golosa_vecinos_ordenados
+GOLOSA=ej3.golosa.vecinos_no_ordenados \
+	   ej3.golosa.vecinos_ordenados
 
-BUSQUEDA=ej3_busqueda_local_primer_salto \
-		 ej3_busqueda_local_primer_salto_golosa \
-		 ej3_busqueda_local_primer_salto_intercambiar \
-		 ej3_busqueda_local_primer_salto_intercambiar_golosa \
-		 ej3_busqueda_local_mejor_salto \
-		 ej3_busqueda_local_mejor_salto_golosa \
-		 ej3_busqueda_local_mejor_salto_intercambiar \
-		 ej3_busqueda_local_mejor_salto_intercambiar_golosa
+BUSQUEDA=ej3.busqueda.primer_salto \
+		 ej3.busqueda.primer_salto_golosa \
+		 ej3.busqueda.primer_salto_intercambiar \
+		 ej3.busqueda.primer_salto_intercambiar_golosa \
+		 ej3.busqueda.mejor_salto \
+		 ej3.busqueda.mejor_salto_golosa \
+		 ej3.busqueda.mejor_salto_intercambiar \
+		 ej3.busqueda.mejor_salto_intercambiar_golosa
 
 #TABU=
 
@@ -32,37 +32,37 @@ busqueda: $(BUSQUEDA)
 #tabu: $(TABU)
 
 #Archivos ejecutables
-ej2: ej2.cpp $(SOURCES)
+ej2.backtracking: ej2.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^
 
-ej3_constructiva_golosa_vecinos_no_ordenados: ej3_constructiva_golosa.cpp $(SOURCES)
+ej3.golosa.vecinos_no_ordenados: ej3_constructiva_golosa.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^
 
-ej3_constructiva_golosa_vecinos_ordenados: ej3_constructiva_golosa.cpp $(SOURCES)
+ej3.golosa.vecinos_ordenados: ej3_constructiva_golosa.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_VECINOS_ORDENADOS -o $@ $^
 
-ej3_busqueda_local_primer_salto: ej3_busqueda_local.cpp $(SOURCES)
+ej3.busqueda.primer_salto: ej3_busqueda_local.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^
 
-ej3_busqueda_local_primer_salto_golosa: ej3_busqueda_local.cpp $(SOURCES)
+ej3.busqueda.primer_salto_golosa: ej3_busqueda_local.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_GOLOSA -o $@ $^
 
-ej3_busqueda_local_primer_salto_intercambiar: ej3_busqueda_local.cpp $(SOURCES)
+ej3.busqueda.primer_salto_intercambiar: ej3_busqueda_local.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_INTERCAMBIAR -o $@ $^
 
-ej3_busqueda_local_primer_salto_intercambiar_golosa: ej3_busqueda_local.cpp $(SOURCES)
+ej3.busqueda.primer_salto_intercambiar_golosa: ej3_busqueda_local.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_INTERCAMBIAR -D_GOLOSA -o $@ $^
 
-ej3_busqueda_local_mejor_salto: ej3_busqueda_local.cpp $(SOURCES)
+ej3.busqueda.mejor_salto: ej3_busqueda_local.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_VECINOS_ORDENADOS -o $@ $^
 
-ej3_busqueda_local_mejor_salto_golosa: ej3_busqueda_local.cpp $(SOURCES)
+ej3.busqueda.mejor_salto_golosa: ej3_busqueda_local.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_VECINOS_ORDENADOS -D_GOLOSA -o $@ $^
 
-ej3_busqueda_local_mejor_salto_intercambiar: ej3_busqueda_local.cpp $(SOURCES)
+ej3.busqueda.mejor_salto_intercambiar: ej3_busqueda_local.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_VECINOS_ORDENADOS -D_INTERCAMBIAR -o $@ $^
 
-ej3_busqueda_local_mejor_salto_intercambiar_golosa: ej3_busqueda_local.cpp $(SOURCES)
+ej3.busqueda.mejor_salto_intercambiar_golosa: ej3_busqueda_local.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_VECINOS_ORDENADOS -D_INTERCAMBIAR -D_GOLOSA -o $@ $^
 
 clean:
