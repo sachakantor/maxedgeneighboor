@@ -1,8 +1,9 @@
 #include<algorithm>
 #include<fstream>
-#include<ctime>
+//#include<ctime>
+#include<chrono>
 #include<iostream>
-#include<limits>
+//#include<limits>
 #include<vector>
 
 #ifdef _OPENMP
@@ -15,6 +16,7 @@
 
 typedef unsigned int parameter;
 typedef unsigned long long int ullong;
+typedef std::chrono::high_resolution_clock high_res_clock;
 
 using namespace std;
 
@@ -31,7 +33,8 @@ int main(int argc,char* argv[]){
     ofstream output_file;
     uint frontera;
     uint cant_ejec_por_inst = std::stoi(argv[1]);
-    ullong t,t_min;
+    std::chrono::duration<double> t_span,t_min; //Segundos
+    high_res_clock::time_point t_begin,t_end;
     #ifdef _OPENMP
     deque<parameter> quant_nodes_deque,quant_edges_deque;
     deque<vector<parameter>::const_iterator> edges_it_deque;
@@ -41,7 +44,12 @@ int main(int argc,char* argv[]){
     output_file.open(argv[2],std::ios::app);
 
     /* Imprimimos los encabezados */
-    output_file << "Nodos Aristas Frontera |CMF| Clocks" << endl;
+    output_file << "Nodos Aristas Frontera |CMF| Segundos" << endl;
+
+    /* Configuramos cout para imprimir la max cantidad de decimales
+     * posibles sin notacion cientifica
+     */
+    output_file.precision(std::numeric_limits< double >::digits10+2);
 
     /* Comenzamos */
 
@@ -76,11 +84,11 @@ int main(int argc,char* argv[]){
         graph grafo(quant_nodes,quant_edges,it_param);
 
         /*Calculamos su frontera maxima por backtracking*/
-        t_min = numeric_limits<ullong>::max();
+        t_min = std::chrono::duration<ullong,milli>::max();
 
         for(uint ejec=0;ejec<cant_ejec_por_inst;++ejec){
             clique.clear();
-            t = clock();
+            t_begin = high_res_clock::now();
                 #if defined(_HEUR_GOLOSA)
                 frontera = grafo.cmf_golosa(clique);
 
@@ -98,9 +106,10 @@ int main(int argc,char* argv[]){
                 frontera = grafo.cmf_backtracking(clique);
 
                 #endif
-            t = clock()-t;
+            t_end = high_res_clock::now();
+            t_span = std::chrono::duration_cast<std::chrono::duration<double> >(t_end - t_begin);
 
-            t_min = min(t,t_min);
+            t_min = min(t_span,t_min);
         }
 
         /*Guardamos el resultado*/
@@ -108,7 +117,7 @@ int main(int argc,char* argv[]){
         output_file << ' ' << quant_edges;
         output_file << ' ' << frontera;
         output_file << ' ' << clique.size();
-        output_file << ' ' << t_min << endl;
+        output_file << ' ' << std::fixed << t_min.count() << endl;
 
         #endif//_OPENMP
     }
@@ -116,7 +125,7 @@ int main(int argc,char* argv[]){
     #ifdef _OPENMP
 
     #pragma omp parallel for schedule(dynamic) default(none) collapse(1)\
-        private(frontera,t,t_min)\
+        private(frontera,t_begin,t_end,t_span,t_min)\
         firstprivate(cant_ejec_por_inst)\
         shared(output_file,input,quant_nodes_deque,quant_edges_deque,edges_it_deque,cout)
     for(uint i = 0; i<quant_nodes_deque.size(); ++i){
@@ -127,11 +136,11 @@ int main(int argc,char* argv[]){
         graph grafo(quant_nodes_deque[i],quant_edges_deque[i],edges_it_deque[i]);
 
         /*Calculamos su frontera maxima por backtracking*/
-        t_min = numeric_limits<ullong>::max();
+        t_min = std::chrono::duration<ullong,milli>::max();
 
         for(uint ejec=0;ejec<cant_ejec_por_inst;++ejec){
             clique.clear();
-            t = clock();
+            t_begin = high_res_clock::now();
                 #if defined(_HEUR_GOLOSA)
                 frontera = grafo.cmf_golosa(clique);
 
@@ -149,9 +158,10 @@ int main(int argc,char* argv[]){
                 frontera = grafo.cmf_backtracking(clique);
 
                 #endif
-            t = clock()-t;
+            t_end = high_res_clock::now();
+            t_span = std::chrono::duration_cast<std::chrono::duration<double> >(t_end - t_begin);
 
-            t_min = min(t,t_min);
+            t_min = min(t_span,t_min);
         }
 
         /*Guardamos el resultado*/
@@ -161,7 +171,7 @@ int main(int argc,char* argv[]){
         output_file << ' ' << quant_edges_deque[i];
         output_file << ' ' << frontera;
         output_file << ' ' << clique.size();
-        output_file << ' ' << t_min << endl;
+        output_file << ' ' << std::fixed << t_min.count() << endl;
         }
     }
 
