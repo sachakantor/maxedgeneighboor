@@ -9,6 +9,17 @@ bajo la condici\'on de que el grado de los mismos sea mayor a dos veces
 el tama\~no de la clique actual (de estos candidatos, tambi\'en elige
 uno de los de mayor grado). Tenemos lo siguiente:
 
+En todos los casos en los que hay varios candidatos para agregar a la
+clique con el mismo grado (en particular el primero) la heur\'istica
+puede proporcionar el resultado incorrecto, dado que el algoritmo
+elige determin\'isticamente uno de los candidatos mientras que la 
+entrada es aleatoria (la idea es poder resolver el problema para
+cualquier grafo de entrada), veremos a continuaci\'on que excepto
+en casos muy particulares, grafos isomorfos cuyas matrices de adyacencia
+son distintas pueden, al ser sometidos a la heur\'istica, arrojar
+resultados muy dispares (en particular, resultados correctos, versus
+resultados incorrectos).
+
 \subsubsection{Grafos completos}
 	En estos grafos como ya se mencion\'o anteriormente, el algoritmo
 	escoge nodos y va haciendo crecer una clique hasta llegar a una 
@@ -63,8 +74,7 @@ tama\~no de la clique de m\'axima frontera es a lo sumo igual a dos, dado
 que por su misma definici\'on los arboles no contienen circuitos simples.
 
 Nuevamente en este caso se toma alguno de los nodos de mayor grado 
-(t\'ipicamente uno de los nodos internos del \'arbol) y se intenta hacer
-crecer la clique con alg\'un nodo adyacente (alguno de los de mayor grado).
+y se intenta hacer crecer la clique con alg\'un nodo adyacente.
 
 Como puede verse en los siguientes ejemplos en el caso de que 
 implementativamente se seleccione uno de los nodos de mayor grado
@@ -73,6 +83,14 @@ efectivamente una CMF, pero en el caso de que el nodo de partida sea
 uno de los de mayor grado en el grafo y dicho nodo no pertenezca a
 ninguna de las CMF del grafo, la heur\'istica reportar\'a un falso 
 positivo (una clique cuya frontera es maximal pero no m\'axima).
+
+Desde un punto de vista implementativo el desempate entre nodos de 
+mismo grado, depender\'a de la matriz de adyacencia (la posici\'on en
+la que aparece un nodo) y dado que existe un arbol isomorfo al del 
+ejemplo en el que el nodo incorrecto para empezar la clique est\'a
+listado antes que el nodo correcto (el que permite generar la CMF),
+el siguiente es un buen ejemplo para ilustrar la fragilidad de la
+heur\'istica
 
 \begin{figure}[H]
 \caption{Ejemplos \'Arboles}
