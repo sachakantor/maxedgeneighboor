@@ -21,6 +21,43 @@ resultados muy dispares (en particular, resultados correctos, versus
 resultados incorrectos).
 
 \subsubsection{Grafos completos}
+	\begin{center}
+		\begin{tabular}{ |c||c| }
+			\hline
+			Grafo de entrada & Paso 1 \\
+			\hline\hline
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K2_st0.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K2_st1.png} \\
+			\hline
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K3_st0.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K3_st1.png} \\
+			\hline
+		\end{tabular}
+		\begin{tabular}{ |c||c||c| }
+			\hline
+			Grafo de entrada & Paso 1 & Paso 2 \\
+			\hline\hline
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K4_st0.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K4_st1.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K4_st2.png} \\
+			\hline
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K5_st0.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K5_st1.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/K5_st2.png} \\
+			\hline
+		  \end{tabular}
+		  \begin{tabular}{ |c||c||c||c| }
+			\hline
+			Grafo de entrada & Paso 1 & Paso 2 & Paso 3 \\
+			\hline\hline
+			\includegraphics[scale = 0.25]{img/ej3/constructiva_golosa/K7_st0.png} &
+			\includegraphics[scale = 0.25]{img/ej3/constructiva_golosa/K7_st1.png} &
+			\includegraphics[scale = 0.25]{img/ej3/constructiva_golosa/K7_st2.png} &
+			\includegraphics[scale = 0.25]{img/ej3/constructiva_golosa/K7_st3.png} \\
+			\hline
+		\end{tabular}
+	\end{center}
+
 	En estos grafos como ya se mencion\'o anteriormente, el algoritmo
 	escoge nodos y va haciendo crecer una clique hasta llegar a una 
 	clique de tama\~no $n/2$, notes\'e que todos los nodos en los 
@@ -58,11 +95,11 @@ resultados incorrectos).
 \begin{figure}[H]
 \caption{Ejemplos grafos completos - Entrada / Salida}
 \centering
-%\includegraphics[scale = 0.5]{img/ej2/k2.png}
-%\includegraphics[scale = 0.5]{img/ej2/k3.png}
-\includegraphics[scale = 0.5]{img/ej2/k4.png}
-\includegraphics[scale = 0.5]{img/ej2/k5.png}
-\includegraphics[scale = 0.5]{img/ej2/k7.png}
+%\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/k2.png}
+%\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/k3.png}
+\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/K4_st0.png}
+\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/K5_st0.png}
+\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/K7_st0.png}
 \end{figure}
 
 \subsection{\'Arboles}
@@ -95,23 +132,101 @@ heur\'istica
 \begin{figure}[H]
 \caption{Ejemplos \'Arboles}
 \centering
-\includegraphics[scale = 0.5]{img/ej2/tree_st0.png}
-\includegraphics[scale = 0.5]{img/ej2/tree_st01.png}
-\includegraphics[scale = 0.5]{img/ej2/tree_st02.png}
-\includegraphics[scale = 0.5]{img/ej2/tree_st11.png}
-\includegraphics[scale = 0.5]{img/ej2/tree_st12.png}
+\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/tree_st0.png}
+\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/tree_st01.png}
+\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/tree_st02.png}
+\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/tree_st11.png}
+\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/tree_st12.png}
 \end{figure}
 
+	\begin{center}
+		\begin{tabular}{ |c||c||c| }
+			\hline
+			Grafo de entrada & Paso 1 & Paso2 \\
+			\hline\hline
+			\includegraphics[scale = 0.15]{img/ej3/constructiva_golosa/ctree_st0.png} &
+			\includegraphics[scale = 0.15]{img/ej3/constructiva_golosa/ctree_st1.png} &
+			\includegraphics[scale = 0.15]{img/ej3/constructiva_golosa/ctree_st2.png} \\
+			\hline
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/tree_st0.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/tree_st01.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/tree_st02.png} \\
+			\hline
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/tree_st0.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/tree_st11.png} &
+			\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/tree_st12.png} \\
+			\hline
+		\end{tabular}
+	\end{center}
+			
 \subsection{Grafos bipartitos}
+	\begin{center}
+		\begin{tabular}{ |c||c||c| }
+			\hline
+			Grafo de entrada & Paso 1 & Paso2 \\
+			\hline\hline
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/k3,3_st0.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/k3,3_st1.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/k3,3_st2.png} \\
+			\hline
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/bipartito1_st0.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/bipartito1_st01.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/bipartito1_st02.png} \\
+			\hline
+		\end{tabular}
+	\end{center}
 
 \subsection{Grafos circulares}
+	\begin{center}
+		\begin{tabular}{ |c||c| }
+			\hline
+			Grafo de entrada & Paso 1 \\
+			\hline\hline
+			\includegraphics[scale = 0.4]{img/ej3/constructiva_golosa/Circle_st0.png} &
+			\includegraphics[scale = 0.4]{img/ej3/constructiva_golosa/Circle_st1.png} \\
+			\hline
+		\end{tabular}
+	\end{center}
 
 \subsection{Estrellas}
+	\begin{center}
+		\begin{tabular}{ |c||c| }
+			\hline
+			Grafo de entrada & Paso 1 \\
+			\hline\hline
+			\includegraphics[scale = 0.25]{img/ej3/constructiva_golosa/Star_st0.png} &
+			\includegraphics[scale = 0.25]{img/ej3/constructiva_golosa/Star_st1.png} \\
+			\hline
+		 \end{tabular}
+		 \begin{tabular}{ |c||c||c| }
+			\hline
+			Grafo de entrada & Paso 1 & Paso 2 \\
+			\hline\hline
+			\includegraphics[scale = 0.25]{img/ej3/constructiva_golosa/Wheel_st0.png} &
+			\includegraphics[scale = 0.25]{img/ej3/constructiva_golosa/Wheel_st1.png} &
+			\includegraphics[scale = 0.25]{img/ej3/constructiva_golosa/Wheel_st2.png} \\
+			\hline
+		\end{tabular}
+	\end{center}
 
 \subsection{Grafo de secuencias}
 
 \subsection{Banana tree}
-	
+	\begin{center}
+		\begin{tabular}{ |c||c|c| }
+			\hline
+			Grafo de entrada & Paso 1 & Paso 2 \\
+			\hline\hline
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/banana4,4_st0.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/banana4,4_st1.png} & 
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/banana4,4_st2.png} \\
+			\hline
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/banana5,7_st0.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/banana5,7_st1.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/banana5,7_st2.png} \\
+			\hline
+		\end{tabular}
+	\end{center}
 
 
 
