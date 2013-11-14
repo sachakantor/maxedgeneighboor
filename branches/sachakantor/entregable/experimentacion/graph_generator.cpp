@@ -19,6 +19,10 @@ using namespace std;
 uint from_how_many_nodes(uint choice){
     uint nodes;
     switch(choice){
+        case STAR:
+            cout << "Cantidad de nodos de la instancia mas chica [min:2]: ";
+            break;
+
         case HOLE:
             cout << "Cantidad de nodos de la instancia mas chica [min:3]: ";
             break;

@@ -7,100 +7,169 @@
 #include<random>        // std::default_random_engine
 #include<vector>
 #include<deque>
+#include<map>
 
 #include<random_graphs_generators.hpp>
 #include<typedefs.hpp>
 
 using namespace std;
 
-/* Generadores de grafos con numeros exactos */
+/************************* HOLE **************************/
+void random_hole_graph(ostream& output,
+    vector<node_id>::iterator it_begin,
+    const vector<node_id>::iterator it_end)
+{
+    //Comenzamos
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+    random_shuffle(it_begin,it_end);
+
+    //Imprimimos la salida segun el formato pedido
+    vector<node_id>::iterator it = it_begin;
+    for(;it < it_end-1;++it)
+        output << *it << ' ' << *(it+1) << endl;
+
+    output << *it << ' ' << *it_begin << endl;
+}
+
 void random_hole_graph(ostream& output,uint quant_nodes){
     //Variables locales
     vector<node_id> nodes(quant_nodes);
 
-    //Seteamos la semilla para el random
-    srand(std::chrono::system_clock::now().time_since_epoch().count());
-
     //Comenzamos
     std::iota(nodes.begin(),nodes.end(),1);
-    random_shuffle(nodes.begin(),nodes.end());
 
     //Imprimimos la salida segun el formato pedido
     output << quant_nodes << ' ' << quant_nodes << endl;
-    for(vector<node_id>::const_iterator it = nodes.cbegin();
-        it < nodes.cend()-1;
-        ++it)
-        output << *it << ' ' << *(it+1) << endl;
 
-    output << nodes.back() << ' ' << nodes.front() << endl;
+    random_hole_graph(output,nodes.begin(),nodes.end());
 }
 
-void random_star_graph(ostream& output,uint quant_nodes){
+/************************* STAR **************************/
+void random_star_graph(ostream& output,
+    vector<node_id>::iterator it_begin,
+    const vector<node_id>::iterator it_end)
+{
     //Variables locales
-    vector<node_id> nodes(quant_nodes);
     node_id center;
 
     //Seteamos la semilla para el random
     srand(std::chrono::system_clock::now().time_since_epoch().count());
 
     //Comenzamos
-    std::iota(nodes.begin(),nodes.end(),1);
-    random_shuffle(nodes.begin(),nodes.end());
+    random_shuffle(it_begin,it_end);
 
     //Nos guardamos el centro de la estrella
-    center = nodes.back();
-    nodes.pop_back();
+    center = *it_begin;
+    ++it_begin;
+
+    //Imprimimos la salida segun el formato pedido
+    for(;it_begin < it_end;++it_begin)
+        output << center << ' ' << *it_begin << endl;
+}
+
+void random_star_graph(ostream& output,uint quant_nodes){
+    //Variables locales
+    vector<node_id> nodes(quant_nodes);
+
+    //Comenzamos
+    std::iota(nodes.begin(),nodes.end(),1);
 
     //Imprimimos la salida segun el formato pedido
     output << quant_nodes << ' ' << quant_nodes-1 << endl;
-    for(vector<node_id>::const_iterator it = nodes.cbegin();
-        it < nodes.cend();
-        ++it)
+    random_star_graph(output,nodes.begin(),nodes.end());
+}
+
+/************************* WHEEL **************************/
+void random_wheel_graph(ostream& output,
+    vector<node_id>::iterator it_begin,
+    const vector<node_id>::iterator it_end)
+{
+    //Variables locales
+    node_id center;
+
+    //Seteamos la semilla para el random
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+    //Comenzamos
+    random_shuffle(it_begin,it_end);
+
+    //Nos guardamos el centro de la estrella
+    center = *it_begin;
+    ++it_begin;
+
+    vector<node_id>::iterator it = it_begin;
+    for(;it < it_end-1;++it)
+    {
+        output << *it << ' ' << *(it+1) << endl;
         output << center << ' ' << *it << endl;
+    }
+    output << *it << ' ' << *it_begin << endl;
+    output << center << ' ' << *it << endl;
 }
 
 void random_wheel_graph(ostream& output,uint quant_nodes){
     //Variables locales
     vector<node_id> nodes(quant_nodes);
     node_id center;
-
-    //Seteamos la semilla para el random
-    srand(std::chrono::system_clock::now().time_since_epoch().count());
+    uint node_id_pos;
 
     //Comenzamos
     std::iota(nodes.begin(),nodes.end(),1);
-    random_shuffle(nodes.begin(),nodes.end());
-
-    //Nos guardamos el centro de la estrella
-    center = nodes.back();
-    nodes.pop_back();
 
     //Imprimimos la salida segun el formato pedido
     if(quant_nodes<=2){
         output << quant_nodes << ' ' << quant_nodes-1 << endl;
         if(quant_nodes == 2)
-            output << center << ' ' << nodes.back() << endl;
+            output << nodes.front() << ' ' << nodes.back() << endl;
 
     } else if(quant_nodes == 3){
         output << quant_nodes << ' ' << quant_nodes << endl;
+        srand(std::chrono::system_clock::now().time_since_epoch().count());
+        node_id_pos = rand()%3;
+        center = nodes[node_id_pos];
+        nodes.erase(nodes.begin()+node_id_pos);
         output << nodes.back() << ' ' << nodes.front() << endl;
         output << center << ' ' << nodes.front() << endl;
         output << center << ' ' << nodes.back() << endl;
 
     } else {
         output << quant_nodes << ' ' << 2*(quant_nodes-1) << endl;
-        for(vector<node_id>::const_iterator it = nodes.cbegin();
-            it < nodes.cend()-1;
-            ++it)
-        {
-            output << *it << ' ' << *(it+1) << endl;
-            output << center << ' ' << *it << endl;
-        }
-        output << nodes.back() << ' ' << nodes.front() << endl;
-        output << center << ' ' << nodes.back() << endl;
+        random_wheel_graph(output,nodes.begin(),nodes.end());
     }
 }
 
+
+/************************* BANANA **************************/
+void random_banana_tree_graph(ostream& output,
+    uint quant_star,
+    uint star_size,
+    vector<node_id>::iterator it_begin,
+    const vector<node_id>::iterator it_end)
+{
+    //Variables locales
+    node_id banana_center,star_center;
+
+    //Seteamos la semilla para el random
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+    //Comenzamos
+    random_shuffle(it_begin,it_end);
+
+    //Nos guardamos el centro de la banana
+    banana_center = *it_begin;
+    ++it_begin;
+
+    //Imprimimos la salida segun el formato pedido
+    for(uint star = 0;star<quant_star;++star){
+        star_center = *it_begin;
+        ++it_begin;
+        output << banana_center << ' ' << *it_begin << endl;
+        for(uint point = 0;point < star_size-1;++point){
+            output << star_center << ' ' << *it_begin << endl;
+            ++it_begin;
+        }
+    }
+}
 
 void random_banana_tree_graph(ostream& output,uint quant_nodes){
     //Variables locales
@@ -123,45 +192,53 @@ void random_banana_tree_graph(ostream& output,uint quant_star,uint star_size){
     //Variables locales
     uint quant_nodes = star_size*quant_star+1;
     vector<node_id> nodes(quant_nodes);
-    node_id banana_center,star_center;
-
-    //Seteamos la semilla para el random
-    srand(std::chrono::system_clock::now().time_since_epoch().count());
 
     //Comenzamos
     std::iota(nodes.begin(),nodes.end(),1);
-    random_shuffle(nodes.begin(),nodes.end());
-
-    //Nos guardamos el centro de la banana
-    banana_center = nodes.back();
-    nodes.pop_back();
 
     //Imprimimos la salida segun el formato pedido
     output << quant_nodes << ' ' << quant_star*star_size << endl;
-    for(uint star = 0;star<quant_star;++star){
-        star_center = nodes.back();
-        nodes.pop_back();
-        output << banana_center << ' ' << nodes.back() << endl;
-        for(uint point = 0;point < star_size-1;++point){
-            output << star_center << ' ' << nodes.back() << endl;
-            nodes.pop_back();
-        }
+    random_banana_tree_graph(output,quant_star,star_size,nodes.begin(),nodes.end());
+}
+
+/************************* COMPLETE **************************/
+void random_complete_graph(ostream& output,
+    vector<node_id>::const_iterator it_begin,
+    const vector<node_id>::const_iterator it_end)
+{
+    for(;it_begin != it_end ;++it_begin){
+        for(vector<node_id>::const_iterator it_left = it_begin+1;
+            it_left!=it_end;
+            ++it_left)
+                output << *it_begin << ' ' << *it_left << endl;
     }
 }
 
 void random_complete_graph(ostream& output,uint quant_nodes){
+    //Variables locales
+    vector<node_id> nodes(quant_nodes);
+
+    //Comenzamos
+    std::iota(nodes.begin(),nodes.end(),1);
     output << quant_nodes << ' ' << (quant_nodes*(quant_nodes-1))/2 << endl;
-    for(uint node = 1;node<quant_nodes;++node){
-        for(uint nodes_left = node+1;nodes_left<=quant_nodes;++nodes_left)
-            output << node << ' ' << nodes_left << endl;
-    }
+    random_complete_graph(output,nodes.cbegin(),nodes.cend());
 }
 
+/************************* COMPLETE_BIPARTITE **************************/
 void random_complete_bipartite_graph(ostream& output,uint quant_nodes){
     srand(std::chrono::system_clock::now().time_since_epoch().count());
     uint v1_size = rand() % (quant_nodes-1)+1; //Me aseguro nodos en ambas particiones
 
     random_bipartite_graph(output,v1_size,quant_nodes-v1_size,v1_size*(quant_nodes-v1_size));
+}
+
+/************************* BIPARTIE **************************/
+void random_bipartite_graph(ostream& output,uint quant_nodes,float density){
+    //Variables locales
+}
+
+void random_bipartite_graph(ostream& output,uint quant_nodes_V1,uint quant_nodes_V2,float density){
+    //Variables locales
 }
 
 void random_bipartite_graph(ostream& output,uint quant_nodes){
@@ -171,55 +248,101 @@ void random_bipartite_graph(ostream& output,uint quant_nodes){
     random_bipartite_graph(output,v1_size,quant_nodes-v1_size,rand()%(v1_size*(quant_nodes-v1_size))+1);
 }
 
+void random_bipartite_graph(ostream& output,
+    vector<node_id>::iterator it_v1_begin,
+    vector<node_id>::iterator it_v1_end,
+    vector<node_id>::iterator it_v2_begin,
+    vector<node_id>::iterator it_v2_end,
+    uint quant_edges)
+{
+    //Variables locales
+    map<node_id,vector<node_id> > possible_neighbors;
+    vector<node_id>::iterator node_src_it;
+    vector<node_id>::iterator it_begin_smallest_node_partition,it_end_smallest_node_partition;
+    vector<node_id>::iterator it_begin_largest_node_partition,it_end_largest_node_partition;
+    node_id node_dest;
+
+    //Seteamos la semilla para el random
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+    //Generamos una lista de posibles vecinos
+    if(distance(it_v1_begin,it_v1_end)<distance(it_v2_begin,it_v2_end)){
+        it_begin_smallest_node_partition = it_v1_begin;
+        it_end_smallest_node_partition = it_v1_end;
+        it_begin_largest_node_partition = it_v2_begin;
+        it_end_largest_node_partition = it_v2_end;
+    } else {
+        it_begin_smallest_node_partition = it_v2_begin;
+        it_end_smallest_node_partition = it_v2_end;
+        it_begin_largest_node_partition = it_v1_begin;
+        it_end_largest_node_partition = it_v1_end;
+    }
+    for(vector<node_id>::const_iterator it = it_begin_smallest_node_partition;
+        it != it_end_smallest_node_partition;
+        ++it)
+    {
+        possible_neighbors.insert(
+            pair<node_id,vector<node_id> >(
+                *it,
+                vector<node_id>(it_begin_largest_node_partition,it_end_largest_node_partition)
+            )
+        );
+        std::random_shuffle(possible_neighbors[*it].begin(),possible_neighbors[*it].end());
+    }
+
+    //Comenzamos a meter los ejes
+    for(uint edge = 0; edge<quant_edges; ++edge){
+        int offset = rand()%(
+            distance(
+                it_begin_smallest_node_partition,
+                it_end_smallest_node_partition
+            ) + 1 //Para no dividir por 0
+        ) - 1; //Para suplir el fix para no dividir por 0
+        node_src_it = it_begin_smallest_node_partition+max(0,offset); //Por si el offset quedo -1
+
+        node_dest = possible_neighbors[*node_src_it].back();
+        output << *node_src_it << ' ' << node_dest << endl;
+
+        /*Borramos esta opcion de ambos nodos*/
+        possible_neighbors[*node_src_it].pop_back();
+        if(possible_neighbors[*node_src_it].empty()){
+            iter_swap(node_src_it,it_end_smallest_node_partition-1);
+            --it_end_smallest_node_partition;
+        }
+    }
+}
+
 void random_bipartite_graph(ostream& output,uint quant_nodes_V1,uint quant_nodes_V2,uint quant_edges){
     //Variables locales
-    vector<vector<node_id> > possible_neighbors(quant_nodes_V1+quant_nodes_V2);
-    vector<node_id> V1_nodes(quant_nodes_V1+quant_nodes_V2),V2_nodes(quant_nodes_V2);
-    uint node_src_pos,node_src,node_dest;
+    vector<node_id> nodes(quant_nodes_V1+quant_nodes_V2);
 
     //Seteamos la semilla para el random
     srand(std::chrono::system_clock::now().time_since_epoch().count());
 
     //Comenzamos
-    std::iota(V1_nodes.begin(),V1_nodes.end(),1);
-    random_shuffle(V1_nodes.begin(),V1_nodes.end());
-
-    //Dividimos en dos vectores correspondientes a cada particion
-    std::move(V1_nodes.begin()+quant_nodes_V1,V1_nodes.end(),V2_nodes.begin());
-    V1_nodes.erase(V1_nodes.begin()+quant_nodes_V1,V1_nodes.end());
-
-    //Generamos una lista de posibles vecinos
-    vector<node_id>& smallest_node_partition = (V1_nodes.size()<V2_nodes.size()?V1_nodes:V2_nodes);
-    vector<node_id>& largest_node_partition = (V1_nodes.size()<V2_nodes.size()?V2_nodes:V1_nodes);
-    for(vector<node_id>::const_iterator it = smallest_node_partition.cbegin();
-        it != smallest_node_partition.cend();
-        ++it)
-    {
-        possible_neighbors[*it-1].reserve(largest_node_partition.size());
-        possible_neighbors[*it-1] = largest_node_partition;
-        std::random_shuffle(possible_neighbors[*it-1].begin(),possible_neighbors[*it-1].end());
-    }
+    std::iota(nodes.begin(),nodes.end(),1);
+    random_shuffle(nodes.begin(),nodes.end());
 
     //Comenzamos a meter los ejes
     output << quant_nodes_V1 + quant_nodes_V2 << ' ' << quant_edges << endl;
-    for(uint edge = 0; edge<quant_edges /*&& !smallest_node_partition.empty()*/; ++edge){
-        node_src_pos = rand()%smallest_node_partition.size();
-        node_src = smallest_node_partition[node_src_pos];
-        node_dest = possible_neighbors[node_src-1].back();
-        output << node_src << ' ' << node_dest << endl;
-
-        /*Borramos esta opcion de ambos nodos*/
-        possible_neighbors[node_src-1].pop_back();
-        if(possible_neighbors[node_src-1].empty()){
-            swap(smallest_node_partition[node_src_pos],smallest_node_partition[smallest_node_partition.size()-1]);
-            smallest_node_partition.pop_back();
-        }
-    }
-
+    random_bipartite_graph(
+        output,
+        nodes.begin(),
+        nodes.begin()+quant_nodes_V1,
+        nodes.begin()+quant_nodes_V1,
+        nodes.end(),
+        quant_edges
+    );
 }
 
+/************************* TREE **************************/
 void random_tree_graph(ostream& output,uint quant_nodes){
     random_connected_graph(output,quant_nodes,quant_nodes-1);
+}
+
+/************************* CONNECTED **************************/
+void random_connected_graph(ostream& output,uint quant_nodes,float density){
+    //Variables locales
 }
 
 void random_connected_graph(ostream& output,uint quant_nodes){
@@ -326,18 +449,4 @@ void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges){
             }
         }
     }
-}
-
-
-/* Generadores de grafos por densidad de nodos */
-void random_bipartite_graph(ostream& output,uint quant_nodes,float density){
-    //Variables locales
-}
-
-void random_bipartite_graph(ostream& output,uint quant_nodes_V1,uint quant_nodes_V2,float density){
-    //Variables locales
-}
-
-void random_connected_graph(ostream& output,uint quant_nodes,float density){
-    //Variables locales
 }
