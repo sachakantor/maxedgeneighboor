@@ -229,23 +229,29 @@ void random_complete_bipartite_graph(ostream& output,uint quant_nodes){
     srand(std::chrono::system_clock::now().time_since_epoch().count());
     uint v1_size = rand() % (quant_nodes-1)+1; //Me aseguro nodos en ambas particiones
 
-    random_bipartite_graph(output,v1_size,quant_nodes-v1_size,v1_size*(quant_nodes-v1_size));
+    random_bipartite_graph(output,
+                            v1_size,
+                            quant_nodes-v1_size,
+                            v1_size*(quant_nodes-v1_size),
+                            true);
 }
 
 /************************* BIPARTIE **************************/
-void random_bipartite_graph(ostream& output,uint quant_nodes,float density){
+void random_bipartite_graph(ostream& output,
+                            uint quant_nodes,
+                            float density,
+                            bool connected)
+{
     //Variables locales
 }
 
-void random_bipartite_graph(ostream& output,uint quant_nodes_V1,uint quant_nodes_V2,float density){
+void random_bipartite_graph(ostream& output,
+                            uint quant_nodes_V1,
+                            uint quant_nodes_V2,
+                            float density,
+                            bool connected)
+{
     //Variables locales
-}
-
-void random_bipartite_graph(ostream& output,uint quant_nodes){
-    srand(std::chrono::system_clock::now().time_since_epoch().count());
-    uint v1_size = rand() % (quant_nodes-1)+1; //Me aseguro nodos en ambas particiones
-
-    random_bipartite_graph(output,v1_size,quant_nodes-v1_size,rand()%(v1_size*(quant_nodes-v1_size))+1);
 }
 
 void random_bipartite_graph(ostream& output,
@@ -253,7 +259,8 @@ void random_bipartite_graph(ostream& output,
     vector<node_id>::iterator it_v1_end,
     vector<node_id>::iterator it_v2_begin,
     vector<node_id>::iterator it_v2_end,
-    uint quant_edges)
+    uint quant_edges,
+    bool connected)
 {
     //Variables locales
     map<node_id,vector<node_id> > possible_neighbors;
@@ -290,20 +297,73 @@ void random_bipartite_graph(ostream& output,
         std::random_shuffle(possible_neighbors[*it].begin(),possible_neighbors[*it].end());
     }
 
+    //Si nos pidieron un grafo bipartito conexo
+    if(connected){
+        quant_edges+= -distance(it_v1_begin,it_v1_end)-distance(it_v2_begin,it_v2_end)+1;
+        //Nos aseguramos que sea conexo
+        vector<node_id>::iterator it_smallest = it_begin_smallest_node_partition;
+        for(vector<node_id>::const_iterator it_largest = it_begin_largest_node_partition;
+            it_largest != it_end_largest_node_partition;
+            ++it_largest)
+        {
+            output << *it_smallest << ' ' << *it_largest << endl;
+
+            /*Borramos esta opcion*/
+            iter_swap(
+                possible_neighbors[*it_smallest].end()-1,
+                find(
+                    possible_neighbors[*it_smallest].begin(),
+                    possible_neighbors[*it_smallest].end(),
+                    *it_largest
+                )
+            );
+            possible_neighbors[*it_smallest].pop_back();
+
+            /*Movemos el iterador de la particion pequena*/
+            if(it_smallest < it_end_smallest_node_partition-1){
+                ++it_smallest;
+                output << *it_smallest << ' ' << *it_largest << endl;
+
+                /*Borramos esta opcion*/
+                iter_swap(
+                    possible_neighbors[*it_smallest].end()-1,
+                    find(
+                        possible_neighbors[*it_smallest].begin(),
+                        possible_neighbors[*it_smallest].end(),
+                        *it_largest
+                    )
+                );
+                possible_neighbors[*it_smallest].pop_back();
+
+            } else
+                it_smallest = it_begin_smallest_node_partition+
+                    rand()%distance(it_begin_smallest_node_partition,it_end_smallest_node_partition);
+        }
+    }
+
     //Comenzamos a meter los ejes
-    for(uint edge = 0; edge<quant_edges; ++edge){
-        int offset = rand()%(
-            distance(
+    for(uint edge = 0; edge<quant_edges && distance(it_begin_smallest_node_partition,it_end_smallest_node_partition) > 0; ++edge){
+        node_src_it = it_begin_smallest_node_partition+
+            rand()%distance(
                 it_begin_smallest_node_partition,
                 it_end_smallest_node_partition
-            ) + 1 //Para no dividir por 0
-        ) - 1; //Para suplir el fix para no dividir por 0
-        node_src_it = it_begin_smallest_node_partition+max(0,offset); //Por si el offset quedo -1
+            );
 
+        //Si estabamos en un grafo conexo hay que tener en cuenta
+        //que por ahi los vecinos quedaron vacios
+        while(connected && possible_neighbors[*node_src_it].empty()){
+            iter_swap(node_src_it,it_end_smallest_node_partition-1);
+            --it_end_smallest_node_partition;
+            node_src_it = it_begin_smallest_node_partition+
+                rand()%distance(
+                    it_begin_smallest_node_partition,
+                    it_end_smallest_node_partition
+                );
+        }
         node_dest = possible_neighbors[*node_src_it].back();
         output << *node_src_it << ' ' << node_dest << endl;
 
-        /*Borramos esta opcion de ambos nodos*/
+        /*Borramos esta opcion*/
         possible_neighbors[*node_src_it].pop_back();
         if(possible_neighbors[*node_src_it].empty()){
             iter_swap(node_src_it,it_end_smallest_node_partition-1);
@@ -312,7 +372,12 @@ void random_bipartite_graph(ostream& output,
     }
 }
 
-void random_bipartite_graph(ostream& output,uint quant_nodes_V1,uint quant_nodes_V2,uint quant_edges){
+void random_bipartite_graph(ostream& output,
+                            uint quant_nodes_V1,
+                            uint quant_nodes_V2,
+                            uint quant_edges,
+                            bool connected)
+{
     //Variables locales
     vector<node_id> nodes(quant_nodes_V1+quant_nodes_V2);
 
@@ -331,8 +396,31 @@ void random_bipartite_graph(ostream& output,uint quant_nodes_V1,uint quant_nodes
         nodes.begin()+quant_nodes_V1,
         nodes.begin()+quant_nodes_V1,
         nodes.end(),
-        quant_edges
+        quant_edges,
+        connected
     );
+}
+
+void random_bipartite_graph(ostream& output,
+                            uint quant_nodes,
+                            bool connected)
+{
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+    uint v1_size = rand() % (quant_nodes-1)+1; //Me aseguro nodos en ambas particiones
+
+    uint quant_edges;
+    if(!connected)
+        quant_edges = rand()%(v1_size*(quant_nodes-v1_size))+1;
+    else if (v1_size*(quant_nodes-v1_size)-quant_nodes+1 != 0)
+        quant_edges = rand()%(v1_size*(quant_nodes-v1_size)-quant_nodes+1)+quant_nodes;
+    else
+        quant_edges = quant_nodes-1;
+
+    random_bipartite_graph(output,
+                            v1_size,
+                            quant_nodes-v1_size,
+                            quant_edges,
+                            connected);
 }
 
 /************************* TREE **************************/

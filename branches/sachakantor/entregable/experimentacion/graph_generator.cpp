@@ -10,19 +10,16 @@
 #define BANANA 3
 #define COMPLETE 4
 #define BIPARTITE 5
-#define BIPARTITE_COMPLETE 6
-#define TREE 7
-#define CONNECTED 8
+#define BIPARTITE_CONNECTED 6
+#define BIPARTITE_COMPLETE 7
+#define TREE 8
+#define CONNECTED 9
 
 using namespace std;
 
 uint from_how_many_nodes(uint choice){
     uint nodes;
     switch(choice){
-        case STAR:
-            cout << "Cantidad de nodos de la instancia mas chica [min:2]: ";
-            break;
-
         case HOLE:
             cout << "Cantidad de nodos de la instancia mas chica [min:3]: ";
             break;
@@ -31,16 +28,8 @@ uint from_how_many_nodes(uint choice){
             cout << "Cantidad de nodos de la instancia mas chica [min:3]: ";
             break;
 
-        case BIPARTITE:
-            cout << "Cantidad de nodos de la instancia mas chica [min:2]: ";
-            break;
-
-        case BIPARTITE_COMPLETE:
-            cout << "Cantidad de nodos de la instancia mas chica [min:2]: ";
-            break;
-
         default:
-            cout << "Cantidad de nodos de la instancia mas chica [min:1]: ";
+            cout << "Cantidad de nodos de la instancia mas chica [min:2]: ";
             break;
     }
     cin >> nodes;
@@ -92,6 +81,7 @@ int main(int argc,char* argv[]){
     cout << BANANA << ".  Banana Tree" << endl;
     cout << COMPLETE << ".  Completo" << endl;
     cout << BIPARTITE << ".  Bipartito" << endl;
+    cout << BIPARTITE_CONNECTED << ".  Bipartito Conexo" << endl;
     cout << BIPARTITE_COMPLETE << ".  Bipartito Completo" << endl;
     cout << TREE << ".  Arbol" << endl;
     cout << CONNECTED << ".  Conexo" << endl;
@@ -137,7 +127,13 @@ int main(int argc,char* argv[]){
         case BIPARTITE:
             for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
                 for(uint quant = 0; quant<quant_per_size;++quant)
-                    random_bipartite_graph(output_file,nodes);
+                    random_bipartite_graph(output_file,nodes,false);
+            break;
+
+        case BIPARTITE_CONNECTED:
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
+                for(uint quant = 0; quant<quant_per_size;++quant)
+                    random_bipartite_graph(output_file,nodes,true);
             break;
 
         case BIPARTITE_COMPLETE:
