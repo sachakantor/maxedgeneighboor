@@ -18,6 +18,8 @@
 #define CONNECTED 11
 #define CONNECTED_DENSITY 12
 #define CONNECTED_DENSITY_RANGE 13
+#define GREEDY_NOT_IN_CMF 14
+#define GREEDY_IN_CMF 15
 
 using namespace std;
 
@@ -30,6 +32,14 @@ uint from_how_many_nodes(uint choice){
 
         case BANANA:
             cout << "Cantidad de nodos de la instancia mas chica [min:3]: ";
+            break;
+
+        case GREEDY_NOT_IN_CMF:
+            cout << "Cantidad de nodos de la instancia mas chica [min:16]: ";
+            break;
+
+        case GREEDY_IN_CMF:
+            cout << "Cantidad de nodos de la instancia mas chica [min:17]: ";
             break;
 
         default:
@@ -118,6 +128,8 @@ int main(int argc,char* argv[]){
     cout << CONNECTED                   << ". Conexo" << endl;
     cout << CONNECTED_DENSITY           << ". Conexo por densidad de ejes" << endl;
     cout << CONNECTED_DENSITY_RANGE     << ". Conexo por rango de densidad de ejes" << endl;
+    cout << GREEDY_NOT_IN_CMF           << ". Estrella+Puente+CMF" << endl;
+    cout << GREEDY_IN_CMF               << ". Estrella+CMF" << endl;
     cout << "Seleccione una opcion: ";
     cin >> choice;
     nodes_lower = from_how_many_nodes(choice);
@@ -214,6 +226,18 @@ int main(int argc,char* argv[]){
             for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
                 for(uint quant = 0; quant<quant_per_size;++quant)
                     random_connected_graph(output_file,nodes,density,density_upper);
+            break;
+
+        case GREEDY_NOT_IN_CMF:
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
+                for(uint quant = 0; quant<quant_per_size;++quant)
+                    highest_degree_node_not_in_CMF(output_file,nodes);
+            break;
+
+        case GREEDY_IN_CMF:
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
+                for(uint quant = 0; quant<quant_per_size;++quant)
+                    highest_degree_node_in_CMF(output_file,nodes);
             break;
 
         default:

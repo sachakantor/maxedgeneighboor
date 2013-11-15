@@ -578,3 +578,121 @@ void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges){
         }
     }
 }
+
+/************** GREEDY ******************/
+void join_by_bridge(ostream& output,
+                    uint node_src,
+                    uint node_dest,
+                    vector<node_id>::const_iterator it_bridge_begin,
+                    const vector<node_id>::const_iterator it_bridge_end)
+{
+    output << node_src << ' ' << *it_bridge_begin << endl;
+    for(;it_bridge_begin != it_bridge_end-1;++it_bridge_begin)
+        output << *it_bridge_begin << ' ' << *(it_bridge_begin+1) << endl;
+
+    output << *it_bridge_begin << ' ' << node_dest << endl;
+}
+
+void highest_degree_node_in_CMF(ostream& output,uint quant_nodes){
+    //Variables locales
+    vector<node_id> nodes(quant_nodes);
+    vector<node_id>::iterator star_begin_it,star_end_it;
+    vector<node_id>::iterator clique_begin_it,clique_end_it;
+    vector<node_id>::iterator frontier_begin_it,frontier_end_it;
+    vector<node_id>::const_iterator prev_remaining_it;
+    uint quant_edges,frontier_max;
+
+    //Seteamos la semilla para el random
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+    //Comenzamos
+    std::iota(nodes.begin(),nodes.end(),1);
+    random_shuffle(nodes.begin(),nodes.end());
+
+    //Nos separamos las secciones que formaran las
+    //distintas partes de estos grafos
+    clique_begin_it = nodes.begin();
+    clique_end_it = nodes.begin()+(nodes.size()+3)/4-1;
+    frontier_begin_it = clique_end_it;
+    frontier_end_it = frontier_begin_it+(nodes.size()+3)/4-1;
+    star_begin_it = frontier_end_it;
+    star_end_it = star_begin_it+(nodes.size()+3)/2-1;
+
+    frontier_max = distance(clique_begin_it,clique_end_it)*distance(frontier_begin_it,frontier_end_it);
+    quant_edges =
+        distance(star_begin_it,star_end_it)-1+ //Aristas de la estrella
+        (distance(clique_begin_it,clique_end_it)*(distance(clique_begin_it,clique_end_it)-1)/2)+ //aristas de la clique
+        frontier_max+ //Aristas de la frontera
+        distance(star_end_it,nodes.end())+1; //Aristas remaining y la union estrella<->clique
+
+    //Comenzamos a meter los ejes
+    output << quant_nodes << ' ' << quant_edges << endl;
+    random_complete_graph(output,clique_begin_it,clique_end_it);
+    random_bipartite_graph(output,
+                            clique_begin_it,
+                            clique_end_it,
+                            frontier_begin_it,
+                            frontier_end_it,
+                            frontier_max,
+                            true);
+    random_star_graph(output,star_begin_it,star_end_it);
+
+    //Uno la estrella
+    output << *star_begin_it << ' ' << *clique_begin_it << endl;
+
+    //Agrego los posibles nodos disconexos debido de las divisiones
+    //enteras
+    prev_remaining_it = frontier_begin_it;
+    for(vector<node_id>::const_iterator remaining_it = star_end_it;
+        remaining_it != nodes.end();
+        prev_remaining_it = remaining_it,++remaining_it)
+            output << *prev_remaining_it << ' ' << *remaining_it << endl;
+}
+
+void highest_degree_node_not_in_CMF(ostream& output,uint quant_nodes){
+    //Variables locales
+    vector<node_id> nodes(quant_nodes);
+    vector<node_id>::iterator star_begin_it,star_end_it;
+    vector<node_id>::iterator clique_begin_it,clique_end_it;
+    vector<node_id>::iterator frontier_begin_it,frontier_end_it;
+    vector<node_id>::iterator bridge_begin_it,bridge_end_it;
+    uint quant_edges,frontier_max;
+
+    //Seteamos la semilla para el random
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+    //Comenzamos
+    std::iota(nodes.begin(),nodes.end(),1);
+    random_shuffle(nodes.begin(),nodes.end());
+
+    //Nos separamos las secciones que formaran las
+    //distintas partes de estos grafos
+    star_begin_it = nodes.begin();
+    star_end_it = nodes.begin()+nodes.size()/2;
+    clique_begin_it = star_end_it;
+    clique_end_it = clique_begin_it+nodes.size()/4-1;
+    frontier_begin_it = clique_end_it;
+    frontier_end_it = frontier_begin_it+nodes.size()/4-1;
+    bridge_begin_it = frontier_end_it;
+    bridge_end_it = nodes.end();
+
+    frontier_max = distance(clique_begin_it,clique_end_it)*distance(frontier_begin_it,frontier_end_it);
+    quant_edges =
+        distance(star_begin_it,star_end_it)-1+ //Aristas de la estrella
+        (distance(clique_begin_it,clique_end_it)*(distance(clique_begin_it,clique_end_it)-1)/2)+ //aristas de la clique
+        frontier_max+ //Aristas de la frontera
+        distance(bridge_begin_it,bridge_end_it)+1; //Aristas del puente
+
+    //Comenzamos a meter los ejes
+    output << quant_nodes << ' ' << quant_edges << endl;
+    random_star_graph(output,star_begin_it,star_end_it);
+    random_complete_graph(output,clique_begin_it,clique_end_it);
+    random_bipartite_graph(output,
+                            clique_begin_it,
+                            clique_end_it,
+                            frontier_begin_it,
+                            frontier_end_it,
+                            frontier_max,
+                            true);
+    join_by_bridge(output,*(star_begin_it+1),*clique_begin_it,bridge_begin_it,bridge_end_it);
+}

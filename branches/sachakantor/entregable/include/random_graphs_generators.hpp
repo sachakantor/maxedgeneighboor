@@ -92,4 +92,14 @@ void random_connected_graph(ostream& output,uint quant_nodes,float density);
 
 void random_connected_graph(ostream& output,uint quant_nodes,float density_lower,float density_upper);
 
+/************** GREEDY ******************/
+void join_by_bridge(ostream& output,
+                    uint node_src,
+                    uint node_dest,
+                    vector<node_id>::const_iterator it_bridge_begin,
+                    const vector<node_id>::const_iterator it_bridge_end);
+
+void highest_degree_node_in_CMF(ostream& output,uint quant_nodes);
+
+void highest_degree_node_not_in_CMF(ostream& output,uint quant_nodes);
 #endif
