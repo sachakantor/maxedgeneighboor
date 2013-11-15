@@ -338,3 +338,127 @@ Ejemplos:
 
 			
 \end{tikzpicture}
+
+\subsection{Construcci\'on de familias que rompen siempre la heur\'istica}
+
+Intentando construir familias que siempre van a romper la heur\'istica llegamos a las siguientes
+(en lo siguiente llamaremos $v$ al \'unico nodo de grado m\'aximo en un grafo):
+\begin{itemize}
+	\item{$v \notin CMF$}
+	\item{$v \in CMF$}
+\end{itemize}
+
+Por construcci\'on estaremos viendo familias en las que existe un \'unico nodo de grado m\'aximo en el grafo.
+
+Construyamos la primera familia que rompe la heur\'istica
+
+\subsubsection{$v \notin CMF$}
+
+Estamos buscando una familia de grafos en los que el nodo de grado m\'aximo no forme parte de la 
+frontera, con esto en mente, partimos de un nodo de grado m\'aximo: $v$, para lograr esto $v$ ser\'a
+en un principio el nodo central de una estrella. Con este escenario si la $CMF$ contuviera a $v$, la
+$CMF$ ser\'ia la clique formada \'unicamente por $v$ (m\'as adelante estudiaremos como nos afecta 
+relajar esta condici\'on). Como estamos viendo el caso en el que no pertenece, necesitamos una clique 
+que por comodidad en un principio generaremos desconectada de $v$ para luego conectarla por 
+intermedio de un puente, esto es, un camino simple entre uno de los nodos de la estrella (cualquiera
+excepto $v$) y uno de los nodos de la clique al que llamaremos $v'$. 
+
+La idea es que la $CMF$ sea parte de esa clique que agregamos, utilizamos el puente para asegurarnos
+de que debido a la naturaleza de nuestra heur\'istica, esta no pueda construir una clique que contenga
+a $v$ y a $v'$.
+
+Llamemos $\Delta$ al grado de $v$, o sea la estrella tendr\'a $\Delta$ puntas. Con nuestra construcci\'on 
+$v'$ puede tener a lo sumo grado $\Delta -1$, adicionalmente $v'$ es parte de una clique que luego ser\'a 
+conectada por un puente a la estrella con lo que una de las aristas de $v'$ ser\'a parte del puente. 
+Con esto la clique podr\'a tener a lo sumo tama\~no $\Delta -1$, dado que el grado de cada uno de los 
+nodos de la clique entonces ser\'a $\Delta -2$, asegurando entonces que el grado de $v'$ no excede
+el l\'imite impuesto, siempre y cuando $v'$ no tenga aristas adicionales a las que lo hacen 
+parte de la clique, excepto la que lo conecta al puente.
+
+Gr\'aficamente:
+\begin{center} 
+	\includegraphics[scale = 0.6]{img/ej3/constructiva_golosa/vnotincmf_carac1.png} 
+\end{center}
+
+Ahora analicemos cual es la frontera de la $CMF$: $\delta (CMF)$
+
+Como vimos anteriormente, sabemos que la $CMF$ dentro de una clique $K_k$ tiene tama\~no
+$\left\lfloor \frac{k}{2} \right \rfloor$. Tambi\'en en este caso nuestra $CMF$ deber\'a
+contener a $v'$ ya que este nodo agrega una arista extra a la frontera que se puede conseguir
+de cualquier clique que no lo contenga.
+
+La frontera de esta $CMF$ asi caracterizada se calcula como la cantidad de nodos de la $CMF$
+multiplicada por la cantidad de aristas que la conectan con el resto de los nodos, en este caso
+(teniendo en cuenta la arista extra que conecta $v'$ con el puente):
+
+\[ \delta(CMF) = (\left\lfloor \frac{\Delta -1}{2} \right\rfloor) \times 
+	(\left\lceil \frac{\Delta -1}{2} \right\rceil) + 1 \]
+
+Separamos en dos casos, si $\Delta$ es impar, $\Delta -1$ es par y tenemos
+\[ \boxed{\delta(CMF) = (\frac{\Delta -1}{2})^2 +1} \text{ Con $\Delta$ impar} \]
+
+si $\Delta$ es par, $\Delta -1$ es impar, llamemos $c = \frac{\Delta -1}{2}$, luego, 
+$\left\lfloor c \right\rfloor = c - 1/2$ y $\left\lceil c \right\rceil = c + 1/2$ 
+ambos enteros. Con esto, tenemos:
+\[ \delta(CMF) = \left\lfloor c \right\rfloor \times 
+	\left\lceil c \right\rceil -1 \]
+\[ \delta(CMF) = (c - 1/2) \times (c + 1/2) +1 \]
+\[ \delta(CMF) = c^2 - 1/4 + 1 \]
+\[ \boxed{\delta(CMF) = (\frac{\Delta -1 }{2})^2 -1/4 +1} \text{ Con $\Delta$ par}\]
+
+Del c\'alculo gen\'erico que acabamos de efectuar para la frontera de la $CMF$
+podemos obtener condiciones sobre el m\'inimo $\Delta$ que necesitamos para
+generar grafos de esta familia, lo que estamos buscando son los $\Delta$ que cumplen
+
+\[ \delta(CMF) > \Delta \]
+
+Dado que esta es la frontera de la estrella con la que empezamos el grafo. Resolviendo la 
+inecuaci\'on para ambos casos ($\Delta$ par y $\Delta$ impar) y recordando que buscamos
+enteros que cumplan esto, tenemos $\Delta \geq 6$.
+
+
+Con esto el grafo con menor cantidad de nodos que cumple nuestra caracterizaci\'on ser\'a:
+\begin{center} 
+	\includegraphics[scale = 0.4]{img/ej3/constructiva_golosa/vnotincmf_carac1_min_st0.png} 
+\end{center}
+
+Y aqui pueden verse los resultados provistos por la heur\'istica versus los correctos:
+
+\phantom{x}
+
+\begin{tabular}{|c||c|}
+	\hline
+	Resultado obtenido por la heur\'istica & Resultado correcto \\
+	\hline
+	\includegraphics[scale = 0.18]{img/ej3/constructiva_golosa/vnotincmf_carac1_min_st01.png} &
+	\includegraphics[scale = 0.18]{img/ej3/constructiva_golosa/vnotincmf_carac1_min_st11.png} \\
+	\hline
+\end{tabular}
+
+\phantom{x}
+
+
+Habiendo visto todo este proceso, podemos pensar en relajar alguna de las condiciones que 
+caracterizan la familia, como por ejemplo, permitir que la estrella centrada en $v$ pase
+a ser una rueda. Con esto la clique de m\'axima frontera que contiene a $v$ gana una arista, 
+con lo cual para conservar la desigualdad necesitaremos que la $CMF$ encontrada
+en la clique que contiene a $v'$ tambi\'en gane una arista (siempre teniendo en cuenta la
+arista extra que posee $v'$ uniendolo con el puente. Se puede demostrar que empieza a
+valer para $\Delta \geq 7$, pero las cuentas no agregan demasiado ya que el razonamiento
+es completamente equivalente al hecho hasta ahora.
+
+	
+M\'as interesante como revelaci\'on es notar que la restricci\'on de que $v'$ est\'e
+incluido en una clique de tama\~no $K_{\Delta -1}$ es demasiado fuerte. Como puede argumentarse
+anal\'iticamente, pero tambi\'en puede verse diagram\'aticamente, en ese subgrafo s\'olo importa 
+la cantidad de aristas de la $CMF$ con lo cual, cualquier subgrafo que conserve las restricciones
+ya especificadas para la $CMF$ sigue cumpliendo las mismas relaciones n\'umericas presentadas
+hasta aqu\'i y siguen rompiendo el funcionamiento de la heur\'istica. De este modo 
+cualquier grafo en el que se quiten aristas de ese subgrafo original (la clique antes mencionada)
+tendr\'a el mismo resultado siempre que no se quiten aristas de la $CMF$. En el caso extremo queda
+la $CMF$ conectada con todos los nodos de un conjunto independiente de tama\~no 
+$\left\lceil \frac{\Delta -1}{2} \right\rceil$. Diagram\'aticamente:
+
+\begin{center} 
+	\includegraphics[scale = 0.8]{img/ej3/constructiva_golosa/vnotincmf_carac2.png} 
+\end{center}
