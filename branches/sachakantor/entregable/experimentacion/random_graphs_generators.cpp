@@ -310,6 +310,7 @@ void random_bipartite_graph(ostream& output,
     if(connected){
         quant_edges+= -distance(it_v1_begin,it_v1_end)-distance(it_v2_begin,it_v2_end)+1;
         //Nos aseguramos que sea conexo
+        bool already_connected = false;
         vector<node_id>::iterator it_smallest = it_begin_smallest_node_partition;
         for(vector<node_id>::const_iterator it_largest = it_begin_largest_node_partition;
             it_largest != it_end_largest_node_partition;
@@ -329,7 +330,7 @@ void random_bipartite_graph(ostream& output,
             possible_neighbors[*it_smallest].pop_back();
 
             /*Movemos el iterador de la particion pequena*/
-            if(it_smallest < it_end_smallest_node_partition-1){
+            if(it_smallest < it_end_smallest_node_partition-1 && !already_connected){
                 ++it_smallest;
                 output << *it_smallest << ' ' << *it_largest << endl;
 
@@ -344,9 +345,11 @@ void random_bipartite_graph(ostream& output,
                 );
                 possible_neighbors[*it_smallest].pop_back();
 
-            } else
+            } else {
                 it_smallest = it_begin_smallest_node_partition+
                     rand()%distance(it_begin_smallest_node_partition,it_end_smallest_node_partition);
+                already_connected = true;
+            }
         }
     }
 
@@ -420,16 +423,16 @@ void random_bipartite_graph(ostream& output,
     uint quant_edges;
     if(!connected)
         quant_edges = rand()%(v1_size*(quant_nodes-v1_size))+1;
-    else if (v1_size*(quant_nodes-v1_size)-quant_nodes+1 != 0)
+    else if (v1_size*(quant_nodes-v1_size)-quant_nodes+1 != 0){
         quant_edges = rand()%(v1_size*(quant_nodes-v1_size)-quant_nodes+1)+quant_nodes;
-    else
-        quant_edges = quant_nodes-1;
+        random_bipartite_graph(output,
+                                v1_size,
+                                quant_nodes-v1_size,
+                                quant_edges,
+                                connected);
+    } else
+        random_tree_graph(output,quant_nodes);
 
-    random_bipartite_graph(output,
-                            v1_size,
-                            quant_nodes-v1_size,
-                            quant_edges,
-                            connected);
 }
 
 void random_bipartite_graph(ostream& output,
@@ -453,6 +456,18 @@ void random_tree_graph(ostream& output,uint quant_nodes){
 }
 
 /************************* CONNECTED **************************/
+void random_connected_graph(ostream& output,
+    uint quant_nodes,
+    float density_lower,
+    float density_upper)
+{
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+    float density = density_lower+
+        static_cast<float>(rand())/(static_cast<float>(RAND_MAX/(density_upper-density_lower)));
+
+    random_connected_graph(output,quant_nodes,density);
+}
+
 void random_connected_graph(ostream& output,uint quant_nodes,float density){
     density = max(density,(float)2/(float)quant_nodes); //La minima densidad de un conexo
     random_connected_graph(output,quant_nodes,(uint)(density*(quant_nodes*(quant_nodes-1))/2));

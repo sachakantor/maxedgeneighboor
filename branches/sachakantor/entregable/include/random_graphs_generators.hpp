@@ -85,7 +85,11 @@ void random_tree_graph(ostream& output,uint quant_nodes);
 
 /************** CONNECTED ******************/
 void random_connected_graph(ostream& output,uint quant_nodes);
+
 void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges);
+
 void random_connected_graph(ostream& output,uint quant_nodes,float density);
+
+void random_connected_graph(ostream& output,uint quant_nodes,float density_lower,float density_upper);
 
 #endif

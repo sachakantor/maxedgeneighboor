@@ -17,6 +17,7 @@
 #define TREE 10
 #define CONNECTED 11
 #define CONNECTED_DENSITY 12
+#define CONNECTED_DENSITY_RANGE 13
 
 using namespace std;
 
@@ -48,9 +49,25 @@ uint to_how_many_nodes(uint min){
     return nodes;
 }
 
+float ask_density_range_low(){
+    float density;
+    cout << "Limite inferior de la densidad de ejes [min:0,max:0.99]: ";
+    cin >> density;
+
+    return density;
+}
+
+float ask_density_range_up(float low){
+    float density;
+    cout << "Limite superior de la densidad de ejes [min:" << low << ",max:1]: ";
+    cin >> density;
+
+    return density;
+}
+
 float ask_density(uint quant_nodes){
     float density;
-    cout << "Densidad de ejes [min:" << (float)2/(float)quant_nodes << "]: ";
+    cout << "Densidad de ejes [min:0,max:1]: ";
     cin >> density;
 
     return density;
@@ -83,7 +100,7 @@ uint ask_increment(){
 int main(int argc,char* argv[]){
     //Variables locales
     uint choice,nodes_lower,nodes_upper,inc,quant_per_size;
-    float density;
+    float density,density_upper;
     ofstream output_file;
 
     //Pedimos data al usuario
@@ -100,6 +117,7 @@ int main(int argc,char* argv[]){
     cout << TREE                        << ". Arbol" << endl;
     cout << CONNECTED                   << ". Conexo" << endl;
     cout << CONNECTED_DENSITY           << ". Conexo por densidad de ejes" << endl;
+    cout << CONNECTED_DENSITY_RANGE     << ". Conexo por rango de densidad de ejes" << endl;
     cout << "Seleccione una opcion: ";
     cin >> choice;
     nodes_lower = from_how_many_nodes(choice);
@@ -188,6 +206,14 @@ int main(int argc,char* argv[]){
             for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
                 for(uint quant = 0; quant<quant_per_size;++quant)
                     random_connected_graph(output_file,nodes,density);
+            break;
+
+        case CONNECTED_DENSITY_RANGE:
+            density = ask_density_range_low();
+            density_upper = ask_density_range_up(density);
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
+                for(uint quant = 0; quant<quant_per_size;++quant)
+                    random_connected_graph(output_file,nodes,density,density_upper);
             break;
 
         default:
