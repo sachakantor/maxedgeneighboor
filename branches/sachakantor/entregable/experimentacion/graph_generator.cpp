@@ -10,10 +10,13 @@
 #define BANANA 3
 #define COMPLETE 4
 #define BIPARTITE 5
-#define BIPARTITE_CONNECTED 6
-#define BIPARTITE_COMPLETE 7
-#define TREE 8
-#define CONNECTED 9
+#define BIPARTITE_DENSITY 6
+#define BIPARTITE_CONNECTED 7
+#define BIPARTITE_CONNECTED_DENSITY 8
+#define BIPARTITE_COMPLETE 9
+#define TREE 10
+#define CONNECTED 11
+#define CONNECTED_DENSITY 12
 
 using namespace std;
 
@@ -45,6 +48,14 @@ uint to_how_many_nodes(uint min){
     return nodes;
 }
 
+float ask_density(uint quant_nodes){
+    float density;
+    cout << "Densidad de ejes [min:" << (float)2/(float)quant_nodes << "]: ";
+    cin >> density;
+
+    return density;
+}
+
 string ask_output_file(){
     string name;
     cout << "Nombre del archivo donde desea guardar la salida: ";
@@ -72,19 +83,23 @@ uint ask_increment(){
 int main(int argc,char* argv[]){
     //Variables locales
     uint choice,nodes_lower,nodes_upper,inc,quant_per_size;
+    float density;
     ofstream output_file;
 
     //Pedimos data al usuario
-    cout << HOLE << ".  Agujero" << endl;
-    cout << STAR << ".  Estrella" << endl;
-    cout << WHEEL << ".  Rueda" << endl;
-    cout << BANANA << ".  Banana Tree" << endl;
-    cout << COMPLETE << ".  Completo" << endl;
-    cout << BIPARTITE << ".  Bipartito" << endl;
-    cout << BIPARTITE_CONNECTED << ".  Bipartito Conexo" << endl;
-    cout << BIPARTITE_COMPLETE << ".  Bipartito Completo" << endl;
-    cout << TREE << ".  Arbol" << endl;
-    cout << CONNECTED << ".  Conexo" << endl;
+    cout << HOLE                        << ".  Agujero" << endl;
+    cout << STAR                        << ".  Estrella" << endl;
+    cout << WHEEL                       << ".  Rueda" << endl;
+    cout << BANANA                      << ".  Banana Tree" << endl;
+    cout << COMPLETE                    << ".  Completo" << endl;
+    cout << BIPARTITE                   << ".  Bipartito" << endl;
+    cout << BIPARTITE_DENSITY           << ".  Bipartito por densidad de ejes" << endl;
+    cout << BIPARTITE_CONNECTED         << ".  Bipartito Conexo" << endl;
+    cout << BIPARTITE_CONNECTED_DENSITY << ".  Bipartito Conexo por densidad de ejes" << endl;
+    cout << BIPARTITE_COMPLETE          << ".  Bipartito Completo" << endl;
+    cout << TREE                        << ". Arbol" << endl;
+    cout << CONNECTED                   << ". Conexo" << endl;
+    cout << CONNECTED_DENSITY           << ". Conexo por densidad de ejes" << endl;
     cout << "Seleccione una opcion: ";
     cin >> choice;
     nodes_lower = from_how_many_nodes(choice);
@@ -130,10 +145,24 @@ int main(int argc,char* argv[]){
                     random_bipartite_graph(output_file,nodes,false);
             break;
 
+        case BIPARTITE_DENSITY:
+            density = ask_density(nodes_lower);
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
+                for(uint quant = 0; quant<quant_per_size;++quant)
+                    random_bipartite_graph(output_file,nodes,density,false);
+            break;
+
         case BIPARTITE_CONNECTED:
             for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
                 for(uint quant = 0; quant<quant_per_size;++quant)
                     random_bipartite_graph(output_file,nodes,true);
+            break;
+
+        case BIPARTITE_CONNECTED_DENSITY:
+            density = ask_density(nodes_lower);
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
+                for(uint quant = 0; quant<quant_per_size;++quant)
+                    random_bipartite_graph(output_file,nodes,density,true);
             break;
 
         case BIPARTITE_COMPLETE:
@@ -152,6 +181,13 @@ int main(int argc,char* argv[]){
             for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
                 for(uint quant = 0; quant<quant_per_size;++quant)
                     random_connected_graph(output_file,nodes);
+            break;
+
+        case CONNECTED_DENSITY:
+            density = ask_density(nodes_lower);
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
+                for(uint quant = 0; quant<quant_per_size;++quant)
+                    random_connected_graph(output_file,nodes,density);
             break;
 
         default:

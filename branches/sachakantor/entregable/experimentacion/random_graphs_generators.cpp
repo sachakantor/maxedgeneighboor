@@ -242,7 +242,10 @@ void random_bipartite_graph(ostream& output,
                             float density,
                             bool connected)
 {
-    //Variables locales
+    random_bipartite_graph(output,
+                            quant_nodes,
+                            (uint)(density*(quant_nodes*(quant_nodes-1))/2),
+                            connected);
 }
 
 void random_bipartite_graph(ostream& output,
@@ -252,6 +255,12 @@ void random_bipartite_graph(ostream& output,
                             bool connected)
 {
     //Variables locales
+    uint quant_nodes = quant_nodes_V1+quant_nodes_V2;
+    random_bipartite_graph(output,
+                            quant_nodes_V1,
+                            quant_nodes_V2,
+                            (uint)(density*(quant_nodes*(quant_nodes-1))/2),
+                            connected);
 }
 
 void random_bipartite_graph(ostream& output,
@@ -423,6 +432,21 @@ void random_bipartite_graph(ostream& output,
                             connected);
 }
 
+void random_bipartite_graph(ostream& output,
+                            uint quant_nodes,
+                            uint quant_edges,
+                            bool connected)
+{
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+    uint v1_size = rand() % (quant_nodes-1)+1; //Me aseguro nodos en ambas particiones
+
+    random_bipartite_graph(output,
+                            v1_size,
+                            quant_nodes-v1_size,
+                            quant_edges,
+                            connected);
+}
+
 /************************* TREE **************************/
 void random_tree_graph(ostream& output,uint quant_nodes){
     random_connected_graph(output,quant_nodes,quant_nodes-1);
@@ -430,7 +454,8 @@ void random_tree_graph(ostream& output,uint quant_nodes){
 
 /************************* CONNECTED **************************/
 void random_connected_graph(ostream& output,uint quant_nodes,float density){
-    //Variables locales
+    density = max(density,(float)2/(float)quant_nodes); //La minima densidad de un conexo
+    random_connected_graph(output,quant_nodes,(uint)(density*(quant_nodes*(quant_nodes-1))/2));
 }
 
 void random_connected_graph(ostream& output,uint quant_nodes){
