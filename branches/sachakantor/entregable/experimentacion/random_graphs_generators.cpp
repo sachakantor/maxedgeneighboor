@@ -599,7 +599,6 @@ void highest_degree_node_in_CMF(ostream& output,uint quant_nodes){
     vector<node_id>::iterator star_begin_it,star_end_it;
     vector<node_id>::iterator clique_begin_it,clique_end_it;
     vector<node_id>::iterator frontier_begin_it,frontier_end_it;
-    vector<node_id>::const_iterator prev_remaining_it;
     uint quant_edges,frontier_max;
 
     //Seteamos la semilla para el random
@@ -616,7 +615,7 @@ void highest_degree_node_in_CMF(ostream& output,uint quant_nodes){
     frontier_begin_it = clique_end_it;
     frontier_end_it = frontier_begin_it+(nodes.size()+3)/4-1;
     star_begin_it = frontier_end_it;
-    star_end_it = star_begin_it+(nodes.size()+3)/2-1;
+    star_end_it = star_begin_it+(nodes.size()-1)/2;
 
     frontier_max = distance(clique_begin_it,clique_end_it)*distance(frontier_begin_it,frontier_end_it);
     quant_edges =
@@ -641,12 +640,12 @@ void highest_degree_node_in_CMF(ostream& output,uint quant_nodes){
     output << *star_begin_it << ' ' << *clique_begin_it << endl;
 
     //Agrego los posibles nodos disconexos debido de las divisiones
-    //enteras
-    prev_remaining_it = frontier_begin_it;
+    //enteras y dejados afuera para luego cumplir con que un nodo
+    //de la clique sea el de mayor grado del grafo
     for(vector<node_id>::const_iterator remaining_it = star_end_it;
         remaining_it != nodes.end();
-        prev_remaining_it = remaining_it,++remaining_it)
-            output << *prev_remaining_it << ' ' << *remaining_it << endl;
+        ++remaining_it)
+            output << *clique_begin_it << ' ' << *remaining_it << endl;
 }
 
 void highest_degree_node_not_in_CMF(ostream& output,uint quant_nodes){
