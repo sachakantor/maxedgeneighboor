@@ -53,6 +53,7 @@ class graph{
         ~graph();
 
         /*Métodos publicos*/
+        uint cmf_backtracking(uint frontera_min,vector<node_id>& clique) const;
         uint cmf_backtracking(vector<node_id>& clique) const;
         uint cmf_golosa(vector<node_id>& clique) const;
         uint cmf_busqueda_local(vector<node_id>& clique) const;

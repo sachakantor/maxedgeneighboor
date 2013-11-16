@@ -7,7 +7,7 @@ SOURCES=experimentacion.cpp ../src/graph.cpp
 OGDF=../include/OGDF/_release/libOGDF.a
 #OBJECTS=$(SOURCES:.cpp=.o)
 
-BACKTRACKING=experimentacion.ej2.backtracking
+BACKTRACKING=experimentacion.ej2.backtracking experimentacion.ej2.backtracking_golosa
 
 GOLOSA=experimentacion.ej3.golosa.vecinos_no_ordenados \
 	   experimentacion.ej3.golosa.vecinos_ordenados
@@ -35,6 +35,9 @@ generador: graph_generator
 #Archivos ejecutables
 experimentacion.ej2.backtracking: $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^
+
+experimentacion.ej2.backtracking_golosa: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_BACKTRACKING_GOLOSA -o $@ $^
 
 experimentacion.ej3.golosa.vecinos_no_ordenados: $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_GOLOSA -o $@ $^

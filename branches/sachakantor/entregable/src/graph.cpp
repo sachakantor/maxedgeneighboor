@@ -168,12 +168,29 @@ graph::~graph(){
 /*Métodos publicos*/
 uint graph::cmf_backtracking(vector<node_id>& clique) const{
     /*Variables locales*/
+    uint r,max_frontier;
+    double n_pow2;
+
+    /* Buscamos la cota inferior para max_frontier segun
+     * el teorema de Turan
+     */
+    n_pow2 = pow(this->_quant_nodes,2);
+    r = (uint)(ceil(-1 + n_pow2/(n_pow2 - this->_quant_edges*2)));
+    max_frontier = (r+1)/2 * (1+r/2) + 1;
+
+    /*Llamamos al backtracking*/
+    max_frontier = this->cmf_backtracking(max_frontier,clique);
+
+    return max_frontier;
+}
+
+uint graph::cmf_backtracking(uint frontera_min,vector<node_id>& clique) const{
+    /*Variables locales*/
     vector<deque<node_id> > candidates(this->_quant_nodes/2+1);
     vector<node_id> partial_solution;
     stack<uint> bound_best_frontier,bound_joinable_nodes;
     uint partial_frontier,max_frontier,r;
     const uint clique_max_size = this->_quant_nodes/2 + this->_quant_nodes%2;
-    double n_pow2;
 
     /*Comenzamos*/
     clique.clear();
@@ -186,14 +203,8 @@ uint graph::cmf_backtracking(vector<node_id>& clique) const{
         generate_n(back_inserter(clique),this->_quant_nodes/2,[&r](){return ++r;});
 
     } else {
-        /*El grafo no es un Kn, proseguimos
-         *
-         * Buscamos la cota inferior para max_frontier segun
-         * el teorema de Turan
-         */
-        n_pow2 = pow(this->_quant_nodes,2);
-        r = (uint)(ceil(-1 + n_pow2/(n_pow2 - this->_quant_edges*2)));
-        max_frontier = (r+1)/2 * (1+r/2);
+        /*El grafo no es un Kn, proseguimos*/
+        max_frontier = frontera_min-1;
 
         /* Cargamos los datos iniciales del ciclo
          */

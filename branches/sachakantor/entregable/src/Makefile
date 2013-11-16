@@ -5,7 +5,7 @@ LDFLAGS=
 EXTRACXXFLAGS=
 SOURCES=graph.cpp
 #OBJECTS=$(SOURCES:.cpp=.o)
-BACKTRACKING=ej2.backtracking
+BACKTRACKING=ej2.backtracking ej2.backtracking_golosa
 
 GOLOSA=ej3.golosa.vecinos_no_ordenados \
 	   ej3.golosa.vecinos_ordenados
@@ -34,6 +34,9 @@ busqueda: $(BUSQUEDA)
 #Archivos ejecutables
 ej2.backtracking: ej2.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^
+
+ej2.backtracking_golosa: ej2.cpp $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_BACKTRACKING_GOLOSA -o $@ $^
 
 ej3.golosa.vecinos_no_ordenados: ej3_constructiva_golosa.cpp $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^

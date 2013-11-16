@@ -46,7 +46,13 @@ int main(int argc,char* argv[]){
 
         /*Calculamos su frontera maxima por backtracking*/
         clique.clear();
+        #ifdef _BACKTRACKING_GOLOSA
+        frontera = grafo.cmf_golosa(clique);
+        frontera = grafo.cmf_backtracking(frontera,clique);
+
+        #else
         frontera = grafo.cmf_backtracking(clique);
+        #endif//__BACKTRACKING_GOLOSA
 
         /*Imprimimos el resultado por pantallas*/
         cout << frontera << ' ' << clique.size();
@@ -69,7 +75,14 @@ int main(int argc,char* argv[]){
         shared(results,problems)
     for(uint i = 0; i<problems.size(); ++i){
         vector<node_id>* clique_ptr = new vector<node_id>;
+        #ifdef _BACKTRACKING_GOLOSA
+        uint frontera = problems[i]->cmf_golosa(*clique_ptr);
+        results[i] = to_string(problems[i]->cmf_backtracking(frontera,*clique_ptr));
+
+        #else
         results[i] = to_string(problems[i]->cmf_backtracking(*clique_ptr));
+        #endif//__BACKTRACKING_GOLOSA
+
         results[i] += ' '+to_string(clique_ptr->size());
         for(vector<node_id>::const_iterator it = clique_ptr->cbegin();
             it<clique_ptr->cend();
