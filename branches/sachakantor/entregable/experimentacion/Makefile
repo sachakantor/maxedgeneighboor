@@ -1,9 +1,10 @@
 CXX=g++
 CXXFLAGS=-Wall -O2 -std=c++0x
-IDIR=-I../include/
-LDFLAGS=
+IDIR=-I../include/ -I../include/OGDF/
+LDFLAGS=-lpthread
 EXTRACXXFLAGS=
 SOURCES=experimentacion.cpp ../src/graph.cpp
+OGDF=../include/OGDF/_release/libOGDF.a
 #OBJECTS=$(SOURCES:.cpp=.o)
 
 BACKTRACKING=experimentacion.ej2.backtracking
@@ -68,8 +69,11 @@ experimentacion.ej3.busqueda.mejor_salto_intercambiar_golosa: $(SOURCES)
 promedio: promedio.cpp
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^
 
-graph_generator: graph_generator.cpp random_graphs_generators.cpp
-		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^
+graph_generator: graph_generator.cpp random_graphs_generators.cpp $(OGDF)
+		$(CXX) $(CXXFLAGS) $(LDFLAGS) $(IDIR) $(EXTRACXXFLAGS) -o $@ $^
+
+$(OGDF):
+		cd ../include/OGDF/; python2.7 makeMakefile.py && $(MAKE)
 
 clean:
 		@$(RM) $(EXECUTABLES)

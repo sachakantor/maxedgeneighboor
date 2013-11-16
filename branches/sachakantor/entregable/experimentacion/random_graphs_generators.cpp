@@ -12,6 +12,11 @@
 #include<random_graphs_generators.hpp>
 #include<typedefs.hpp>
 
+#include<ogdf/basic/Graph.h>
+#include<ogdf/basic/Graph_d.h>
+#include<ogdf/basic/graph_generators.h>
+#include<ogdf/basic/List.h>
+
 using namespace std;
 
 /************************* HOLE **************************/
@@ -147,13 +152,13 @@ void random_banana_tree_graph(ostream& output,
     const vector<node_id>::iterator it_end)
 {
     //Variables locales
-    node_id banana_center,star_center;
+    node_id banana_center;//,star_center;
 
     //Seteamos la semilla para el random
     srand(std::chrono::system_clock::now().time_since_epoch().count());
 
     //Comenzamos
-    random_shuffle(it_begin,it_end);
+    iter_swap(it_begin,it_begin+rand()%distance(it_begin,it_end));
 
     //Nos guardamos el centro de la banana
     banana_center = *it_begin;
@@ -161,13 +166,8 @@ void random_banana_tree_graph(ostream& output,
 
     //Imprimimos la salida segun el formato pedido
     for(uint star = 0;star<quant_star;++star){
-        star_center = *it_begin;
-        ++it_begin;
-        output << banana_center << ' ' << *it_begin << endl;
-        for(uint point = 0;point < star_size-1;++point){
-            output << star_center << ' ' << *it_begin << endl;
-            ++it_begin;
-        }
+        random_star_graph(output,it_begin+star*star_size,it_begin+star_size*(star+1));
+        output << banana_center << ' ' << *(it_begin+star*star_size+1) << endl;
     }
 }
 
@@ -577,6 +577,25 @@ void random_connected_graph(ostream& output,uint quant_nodes,uint quant_edges){
             }
         }
     }
+}
+
+/************** PLANAR (3-Connected) ******************/
+void random_planar_graph(ostream& output,uint quant_nodes){
+    //Variables locales
+    ogdf::List<ogdf::EdgeElement*> edgeList;
+    ogdf::Graph g;
+
+    //Comenzamos
+    ogdf::planarConnectedGraph(g,quant_nodes,quant_nodes*3-6);
+    g.allEdges(edgeList);
+    output << quant_nodes << ' ' << quant_nodes*3-6 << endl;
+    for(ogdf::ListConstIterator<ogdf::EdgeElement*> edge_it = edgeList.begin();
+        edge_it != edgeList.end();
+        ++edge_it)
+    {
+        output << (*edge_it)->source()->index()+1 << ' ' << (*edge_it)->target()->index()+1 << endl;
+    }
+
 }
 
 /************** GREEDY ******************/

@@ -92,6 +92,9 @@ void random_connected_graph(ostream& output,uint quant_nodes,float density);
 
 void random_connected_graph(ostream& output,uint quant_nodes,float density_lower,float density_upper);
 
+/************** PLANAR (3-Connected) ******************/
+void random_planar_graph(ostream& output,uint quant_nodes);
+
 /************** GREEDY ******************/
 void join_by_bridge(ostream& output,
                     uint node_src,
