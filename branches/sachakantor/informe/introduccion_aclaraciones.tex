@@ -63,6 +63,26 @@
     \emph{STL} nativa de \emph{C++}\footnote{%
     \url{http://www.cplusplus.com/reference/algorithm/random_shuffle/}}.
 
+\par A su vez, hay que mencionar que uno de los objetivos principales de este
+    trabajo es poder comparar distintas formas de resolver el problema
+    presentado. Entonces, es razonable pretender usar siempre el mismo conjunto
+    de instancias de la familia que se desea comparar en los algoritmos. Por
+    ello, si bien usamos instancias generadas aleatoriamente, decidimos guardar
+    estas instancias en un archivo que luego puede ser utilizado m\'ultiples
+    veces o en distintos algoritmos. Como estos archivos contienen miles de
+    instancias que van incrementando su tama\~no, estos archivos adquierieron
+    un gran tama\~no, por lo cual se decidi\'o dejarlos a disposici\'on del
+    corrector tal como se hizo con con las referencias utilizadas en este
+    documento: mediante un repositorio \emph{online} de archivos. La direcci\'on
+    \emph{web} del mismo puede ser encontrada dentro del directorio \emph{%
+    experimentaci\'on} de los archivos provistos junto con este trabajo.
+
+\par Por cada familia fueron creadas 10 instancias aleatorias distintas para
+    cara tama\~no, para as\'i poder tener una muestra un poco m\'as amplia 
+    de los distintos tipos de grafos dentro de una misma familia del mismo tama\~no%
+    \footnote{Consideramos como medida de tama\~no de un grafo como su cantidad
+    de nodos/v\'ertices.}.
+
 \par Hay una familia de grafos particular que merece una menci\'on aparte dada
     la manera en la que implementamos su generador. Esta es la familia de los
     grafos \emph{planares}\footnote{Claude Berge. Planar Graphs. \emph{The Theory
@@ -121,20 +141,6 @@
     ejecuci\'on que requiri\'o menos tiempo en terminar. As\'i
     conseguimos eliminar \emph{Outliers} y poder decir que tenemos una medida
     lo suficientemente precisa.
-
-\par A su vez, hay que mencionar que uno de los objetivos principales de este
-    trabajo es poder comparar distintas formas de resolver el problema
-    presentado. Entonces, es razonable pretender usar siempre el mismo conjunto
-    de instancias de la familia que se desea comparar en los algoritmos. Por
-    ello, si bien usamos instancias generadas aleatoriamente, decidimos guardar
-    estas instancias en un archivo que luego puede ser utilizado m\'ultiples
-    veces o en distintos algoritmos. Como estos archivos contienen miles de
-    instancias que van incrementando su tama\~no, estos archivos adquierieron
-    un gran tama\~no, por lo cual se decidi\'o dejarlos a disposici\'on del
-    corrector tal como se hizo con con las referencias utilizadas en este
-    documento: mediante un repositorio \emph{online} de archivos. La direcci\'on
-    \emph{web} del mismo puede ser encontrada dentro del directorio \emph{%
-    experimentaci\'on} de los archivos provistos junto con este trabajo.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre el entorno de experimentaci\'on}
