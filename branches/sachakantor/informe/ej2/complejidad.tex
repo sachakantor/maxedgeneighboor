@@ -18,10 +18,10 @@
 
     \Statex
     \If{$m = \frac{n(n-1)}{2}$} \Compl{Blue}{}{$1$}{}
-        \State $K \gets \left\{1;\dots;\left\lfloor\frac{n}{2}\right\rfloor\right\}$ \Compl{Blue}{}{$n$}{}
+        \State $K \gets \left\{1;\dots;\left\lfloor\sfrac{n}{2}\right\rfloor\right\}$ \Compl{Blue}{}{$n$}{}
         \Statex
-        \State $\delta_{max} \gets \left\lfloor\frac{n}{2}\right\rfloor\cdot
-            \left\lceil\frac{n}{2}\right\rceil$ \Compl{Blue}{}{$1$}{}
+        \State $\delta_{max} \gets \left\lfloor\sfrac{n}{2}\right\rfloor\cdot
+            \left\lceil\sfrac{n}{2}\right\rceil$ \Compl{Blue}{}{$1$}{}
         \Statex
 
     \Else
@@ -56,10 +56,10 @@
                     \State $push(CMF_{max},pilaCMFs)$ \Compl{YellowOrange}{}{$1$}{}
                 \EndIf \Compl{Fuchsia}{Costo \emph{si}: }{$n-|solucionParcial|$}{}
             \EndIf \Compl{Red}{Costo \emph{si}: }{$n$}{}
-        \EndWhile \Compl{Blue}{Costo \emph{mientras}: }{$2^n$}{veces $\times$ $\mathcal O(2^n) = \mathcal O(n\cdot 2^n)$ }
-    \EndIf \Compl{Brown}{Costo \emph{si}: }{$n + n\cdot log(n) + n\cdot 2^n$}{$= \mathcal O(n\cdot 2^n)$ }%
+        \EndWhile \Compl{Blue}{Costo \emph{mientras}: }{$2^{\sfrac{n}{2}}$}{veces $\times$ $\mathcal O(n) = \mathcal O(n\cdot 2^{\sfrac{n}{2}})$ }
+    \EndIf \Compl{Brown}{Costo \emph{si}: }{$n + n\cdot log(n) + n\cdot 2^{\sfrac{n}{2}}$}{$= \mathcal O(n\cdot 2^{\sfrac{n}{2}})$ }%
 
     \State \Return{$\delta_{max}$, $K$} \Compl{Brown}{}{$1$}{}%
     \Statex
-    \Statex \Compl{Brown}{Costo Total de Algoritmo: }{$n\cdot 2^n$}{}
+    \Statex \Compl{Brown}{Costo Total de Algoritmo: }{$n\cdot 2^{\sfrac{n}{2}}$}{}
 \end{pseudocodigo}

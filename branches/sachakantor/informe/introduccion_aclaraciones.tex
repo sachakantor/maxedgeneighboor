@@ -1,4 +1,35 @@
 \phantomsection
+\addcontentsline{toc}{subsection}{Sobre la nomenclatura}
+\subsection*{Sobre la nomenclatura}
+\par En este trabajo se utilizan algunos acr\'onimos los cuales es inc\'omodo
+    aclarar en cada caso. Por lo tanto presentamos aqu\'i una lista de ellos
+    de manera que queden ya explicados para la extensi\'on de todo este
+    documento.
+
+\begin{description}
+    \item[G: ] Nos referimos a un grafo no dirigido y sin pesos en los ejes
+        cualquiera.
+
+    \item[n: ] Se refiere a la cantidad de nodos de un grafo $G$.
+
+    \item[m: ] Se refiere a la cantidad de aristas de un grafo $G$.
+
+    \item[V(G): ] Es el conjunto de nodos de un grafo $G$.
+
+    \item[E(G): ] Es el conjunto de ejes de un grafo $G$.
+
+    \item[CMF: ] Se refiere a una clique de frontera maximal en un grafo $G$.
+
+    \item[$\delta$(K): ] Es la frontera de una clique $K$ en un grafo $G$.
+
+    \item[$|$G'$|$: ] Es la cantidad de nodos de un subgrafo inducido $G'$ en un grafo $G$.
+
+    \item[K$_k$: ] Es un grafo completo $K$ de $k$ v\'ertices.
+
+    \item[d(v): ] Sea $v \in V(G)$, $d(v)$ es el grado de este en $G$.
+\end{description}
+
+\phantomsection
 \addcontentsline{toc}{subsection}{Sobre las referencias de este documento}
 \subsection*{Sobre las referencias de este documento}
 \par A lo largo de este informe existen referencias tanto a \emph{papers}
@@ -9,6 +40,74 @@
 \par Los mismos han sido puestos a disposici\'on del corrector en un repositorio
     de archivos \emph{online}, cuya direcci\'on \emph{web} est\'a inclu\'ida
     en los archivos provistos con este documento.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre los grafos no conexos}
+\subsection*{Sobre los grafos no conexos}
+\par Durante todo este trabajo se asumen que todos los grafos de entrada son
+    grafos conexos. Esto lo hacemos ya que utilizando alg\'un algoritmo que recorra
+    grafos (como por ejemplo \emph{DFS} o \emph{BFS}) se podr\'ian identificar
+    las componentes conexas y luego resolver el problema para cada componente
+    por separado, y al terminar quedarnos con la mejor soluci\'on, siendo esta
+    la \emph{CMF} de todo el grafo.
+
+\par En t\'erminos de complejidad, todos los algoritmos/heur\'isticas aqu\'i
+    presentados tienen una complejidad mayor a $\mathcal O(n+m)$, que es
+    la complejidad de los algoritmos que nos permiten identificar las componentes
+    conexas de un grafo cualquiera. Por lo tanto, asint\'oticamente hablando,
+    la complejidad de nuestros algoritmos no se ve afectada.
+
+\par Por falta de tiempo, no se implement\'o esta rutina que identifica las componentes
+    conexas, pero considerando que en la complejidad asint\'otica temporal no se
+    ve influ\'ida, se decidi\'o hacer esta aclaraci\'on y asumir para todos los algoritmos que
+    los grafos de entrada son conexos.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre el c\'alculo de la frontera de una clique}
+\subsection*{Sobre el c\'alculo de la frontera de una clique}
+\par Sea $K$ una clique de un grafo $G$, entonces su frontera depender\'a de los
+    grados de los nodos que la componen. Sabemos que $K$ por ser clique, debe inducir
+    un subgrafo completo en $G$, por lo cual cada nodo suma a la frontera
+    todas sus aristas incidentes salvo aquellas que se usan para formar la
+    clique, es decir que un nodo $v \in K$ le suma a $\delta(K)$ una cantidad
+    de aristas expresable como $d(v)-(|K|-1)$.
+
+\bigskip
+\par Entonces, $\delta(K)$, es expresable como $\displaystyle\sum_{v \in K}d(v) - (|K|-1)$.
+\bigskip
+
+\par Como la cantidad de nodos en $K$ es justamente $|K|$, la expresi\'on
+    que nos queda es:
+
+\bigskip
+\par $\delta(K) = -|K|(|K|-1)\displaystyle\sum_{v \in K}d(v)$
+\bigskip
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre la complejidad de instanciar un grafo en la implementaci\'on}
+\subsection*{Sobre la complejidad de instanciar un grafo en la implementaci\'on}
+\par Entre los archivos fuente provistos junto con este trabajo, se opt\'o por
+    crear una clase \emph{Graph} de \emph{C++} que encapsulase todos los algoritmos
+    requeridos por este trabajo.
+
+\par Ahora bien, esta clase contiene ciertas estructuras internas de datos
+    para modelar los grafos de entrada. Las mismas en cuesti\'on son listas
+    de adyacencias y una matriz de adyacencia.
+
+\par Sin entrar mucho en detalles, se puede prevenir al lector que la \emph{%
+    instanciaci\'on} de dichas estructuras tendr\'a un costo de $\mathcal O%
+    (n^2)$ (instanciar una matriz de $n^2$ posiciones, sumado a $n$ listas de
+    hasta $n$ elementos) el cual no se considera en el c\'alculo de la complejidad
+    asint\'otica temporal de los algoritmos dise\~nados durante el curso de este
+    documento ya que todos estos superan dicha complejidad.
+
+\par En algunas de las variantes de los algoritmos presentados aqu\'i, se decide
+    a su vez ordenar las listas de adyacencia con un cierto criterio (explicado
+    en cada caso en particular), pasando la complejidad de la instanciaci\'on
+    de esta clase de $\mathcal O(n^2)$ a $\mathcal O(n^2 \cdot log(n))$, y
+    en algunos casos esta complejidad si ha de tenerse en cuenta para los algorimos
+    propuestos. Estos casos est\'an aclarados apropiadamente en caso de ser
+    necesario.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre la compilaci\'on de los archivos fuente}
@@ -79,14 +178,14 @@
 
 \par Por cada familia fueron creadas 10 instancias aleatorias distintas para
     cara tama\~no, para as\'i poder tener una muestra un poco m\'as amplia 
-    de los distintos tipos de grafos dentro de una misma familia del mismo tama\~no%
+    de los distintos tipos de grafos del mismo tama\~no dentro de una misma familia
     \footnote{Consideramos como medida de tama\~no de un grafo como su cantidad
     de nodos/v\'ertices.}.
 
 \par Hay una familia de grafos particular que merece una menci\'on aparte dada
     la manera en la que implementamos su generador. Esta es la familia de los
     grafos \emph{planares}\footnote{Claude Berge. Planar Graphs. \emph{The Theory
-    of Graphs}, 21:207-2013, 1966.}. La generaci\'on de esta familia convella
+    of Graphs}, 21:207-2013, 1966.}. La generaci\'on de esta familia conlleva
     una mayor dificultad, m\'as a\'un, es un problema en si mismo que ha sido
     y es estudiado a\'un\footnote{\'Eric Fusy. Uniform Random Sampling Of Planar
     Graphs in Linear Time.}. Por este motivo, se decidi\'o utilizar una
@@ -128,18 +227,18 @@
 
 \par El problema de esta metodolog\'ia para medir la complejidad es que no
     toma en cuenta que junto con nuestro algoritmo se encuentra ejecut\'ando
-    muchas otras aplicaciones (\emph{Winning Eleven, Mortal Kombat, etc}, las
-    cuales "comparten" el tiemp de CPU. Es decir, el sistema operativo podr\'ia
+    muchas otras aplicaciones (\emph{Winning Eleven, Mortal Kombat, etc}), las
+    cuales "comparten" el tiempo de CPU. Es decir, el sistema operativo podr\'ia
     (m\'as a\'un, lo hace) desalojar nuestra tarea del procesador y pasar a
     ejecutar otras cosas. Luego ser\'a nuevamente el turno de nuestra
     aplicaci\'on, la que podr\'a terminar. Pero mientras todo esto ocurr\'ia,
     el contador global de "clock" del sistema sigui\'o increment\'andose. Es
-    decir, no llegamos a una medida exacta de lo que tar\'o nuestro programa.
+    decir, no llegamos a una medida exacta de lo que tard\'o nuestro programa.
 
 \par Por estos motivos decidimos, para cada instancia del problema, ejecutarla
-    m\'as de una vez (5 veces, en particular) y luego quedarnos con aquella
+    m\'as de una vez (5 veces, espec\'ificamente) y luego quedarnos con aquella
     ejecuci\'on que requiri\'o menos tiempo en terminar. As\'i
-    conseguimos eliminar \emph{Outliers} y poder decir que tenemos una medida
+    conseguimos eliminar \emph{outliers} y poder decir que tenemos una medida
     lo suficientemente precisa.
 
 \phantomsection
@@ -149,7 +248,7 @@
     generadas aleatoriamente (y en orden de informar al lector en caso
     de querer reproducir los resultados obtenidos), se utiliz\'o la versi\'on
     de los binarios compilada con la opci\'on de \emph{multi-thread} sobre
-    un \emph{HP Proliant DL380 G5} con 32GB de memoria RAM y 4 procesadores
+    un \emph{HP ProLiant DL380 G5} con 32GB de memoria RAM y 4 procesadores
     \emph{intel xeon} de 6 n\'ucleos de XXXGHZ.
 
 \par Dicho \emph{hardware} contaba con un sistema operativo \emph{CentOS 6.4}
