@@ -58,7 +58,7 @@
 
 %Paquetes para dibujar grafos
 \usepackage{tikz}
-\usetikzlibrary{arrows,chains,shapes,matrix,trees,positioning,petri,topaths}
+\usetikzlibrary{arrows,chains,shapes,matrix,trees,positioning,petri,topaths,calc,decorations.pathreplacing}
 \usepackage{tkz-graph} %Especifico de grafos, muy facil, ver doc
 \usepackage{tkz-berge} %especifico para grafos conocidos, arboles, caminos, etc
 %\tikzstyle{vertex}=[circle,fill=black!25,minimum size=20pt,inner sep=0pt]
@@ -68,6 +68,12 @@
 %\tikzstyle{selectedEdge} = [draw,line width=5pt,-,red!50]
 %\tikzstyle{ignoredEdge} = [draw,line width=5pt,-,black!20]
 \usepackage{epstopdf}
+
+%Paquetes para dibujar el arbol de decisiones
+\usepackage{fancybox}
+\usepackage{rotating}
+\newcommand\dotstheta{\overset{\vdots}{\mathcal O(n)}}
+\usepackage{rotfloat}
 
 %paquete para pseudocodigo con algorithmicx
 \usepackage{algorithm}

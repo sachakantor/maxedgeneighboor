@@ -18,7 +18,7 @@
     primera versi\'on un tanto rudimentaria, calcular la frontera de cada una
     de ellas y luego quedarnos con la de mayor frontera.
 
-\subsubsection{El algoritmo exacto}
+\subsubsection{El algoritmo exacto}\label{backtracking:explicacion}
 \par Partiendo de la secci\'on anterior, dise\~namos nuestro algorimo, que lo que hace es
     ir construyendo cliques siempre y cuando determine que es posible, para la
     clique que se est\'a construyendo, superar la mejor frontera encontrada hasta
@@ -121,6 +121,7 @@
                 un nodo podemos incrementar su frontera.
 
         \end{enumerate}
+    \label{tam_max_cmf}
 
     \item[Grafos completos: ] De los datos de entrada de un grafo sabemos ya $n$
         y $m$, por lo cual determinar si el grafo dado es un grafo completo tiene
@@ -201,6 +202,8 @@
             comenzar el \emph{backtracking}, ya que seguro no podremos mejorar la mejor
             soluci\'on encontrada hasta el momento con este $K_k$ y sus $candidatos$
             asociados.
+
+    \label{cota_frontera_max}
 
     \item[Frontera m\'inima: ] Al comenzar a construir las cliques de $G$, la idea pasa
         por encontrar aquella clique que tenga la m\'axima frontera. La idea de esta
@@ -314,7 +317,7 @@
     \Statex
 
     \If{$m = \dfrac{n(n-1)}{2}$} \Comment{Si $G$ es un $K_n$}
-        \State $K \gets \left\{1;\dots;\left\lfloor\dfrac{n}{2}\right\rfloor\right\}$
+        \State $K \gets \left\{1;\dots;\left\lfloor\sfrac{n}{2}\right\rfloor\right\}$
 
     \Else
         \State $\delta_{max} \gets \left\lfloor\dfrac{r+1}{2}\right\rfloor\cdot
@@ -339,19 +342,26 @@
             de notaci\'on, ya que $candidatos(K')$ es una secuencia y $YaProcesados(K')$
             es un conjunto. Se asume que es la secuencia sin los elementos del conjunto.}$
             \neq \emptyset$ $\lor$ $K' \neq \emptyset$}
-
-            \If{$candidatos(K') \setminus YaProcesados(K') \neq \emptyset$ $\land$ $\delta_{max} < \delta_{cota}(K')$%
-                \footnote{Si $K'$ es vac\'io, $\delta_{cota}(K')$ es $m$.}}
-
+            \Statex
+            \If{$\begin{pmatrix}
+                    \text{\Huge$\bigwedge$} &
+                    \begin{matrix}
+                        candidatos(K') \setminus YaProcesados(K') \neq \emptyset\\
+                        \delta_{max} < \delta_{cota}(K')\footnote{Si $K'$ es vac\'io, $\delta_{cota}(K')$ es $m$.}\\
+                        |K'| < \sfrac{n}{2}
+                    \end{matrix}
+                \end{pmatrix}$
+            }
+                \Statex
                 \State $v \gets cabeza(candidatos(K') \setminus YaProcesados(K'))$
                 \State $K' \gets K' \cup \{v'\}$
-                \If{$candidatos(K') = \emptyset$ $\land$ $\delta_{max} < \delta(K')$}
-                    %\Comment{Llegu\'e al final de la rama y obtuve una mejor solucion}
+                \Statex
+            \ElsIf{$K' \neq \emptyset$} \Comment{Llegu\'e al final de la rama}
+                \If{$\delta_{max} < \delta(K')$}
+                    \Comment{Si encontr\'e una mejor soluci\'on \'optima parcial}
                     \State $\delta_{max} \gets \delta(K')$
                     \State $K \gets K'$
                 \EndIf
-
-            \ElsIf{$K' \neq \emptyset$} \Comment{\emph{Backtracking}}
                 \State $v \gets ultimo(K')$\footnote{Donde $ultimo(K')$
                     es el \'ulitmo v\'ertice agregado a $K'$.}
                 \State $K' \gets K' \setminus \{v'\}$

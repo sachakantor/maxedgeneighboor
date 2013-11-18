@@ -92,7 +92,13 @@
 
 \par Ahora bien, esta clase contiene ciertas estructuras internas de datos
     para modelar los grafos de entrada. Las mismas en cuesti\'on son listas
-    de adyacencias y una matriz de adyacencia.
+    de adyacencias y una matriz de adyacencia. Si bien ambas estructuras nos
+    brindan la misma informaci\'on (es decir, son redundantes), a la hora
+    de implementar nuestros algoritmos, tener ambas estructuras nos brindan
+    mayor comodidad seg\'un la operaci\'on que estemos realizando. No es lo
+    mismo verificar si dos nodos son adyacentes en una matriz de adyacencia que
+    recorrer la lista de adyacencia de uno de los nodos (la complejidad en
+    el primer caso es $\mathcal O(1)$ y en el segundo $\mathcal O(n)$).
 
 \par Sin entrar mucho en detalles, se puede prevenir al lector que la \emph{%
     instanciaci\'on} de dichas estructuras tendr\'a un costo de $\mathcal O%
@@ -100,6 +106,12 @@
     hasta $n$ elementos) el cual no se considera en el c\'alculo de la complejidad
     asint\'otica temporal de los algoritmos dise\~nados durante el curso de este
     documento ya que todos estos superan dicha complejidad.
+
+\par A su vez, en la estructura interna de esta clase \emph{Graph}, se tiene
+    un vector\footnote{\url{http://www.cplusplus.com/reference/vector/vector/}}
+    que contiene punteros a nodos (donde \emph{nodo} es un \emph{struct} definido
+    por nosotros) que nos da acceso en tiempo constante a la lista de adyacencia
+    de dicho nodo, a su "id" y a su grado en $G$.
 
 \par En algunas de las variantes de los algoritmos presentados aqu\'i, se decide
     a su vez ordenar las listas de adyacencia con un cierto criterio (explicado
