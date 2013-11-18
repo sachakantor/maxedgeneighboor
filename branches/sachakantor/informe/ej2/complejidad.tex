@@ -200,12 +200,12 @@
                     \State $push(Frontera_{max},pilaFrontera_{max})$ \Compl{YellowOrange}{}{$1$}{}
                 \EndIf \Compl{Fuchsia}{Costo \emph{si}: }{$n-|solucionParcial|$\label{backtracking_end}}{}
             \EndIf \Compl{Red}{Costo \emph{si}: }{$n$\label{backtracking_if}}{}
-        \EndWhile \Compl{Blue}{Costo \emph{mientras}: }{$2^{\sfrac{n}{2}}$}{veces $\times$ $\mathcal O(n) = \mathcal O(n\cdot 2^{\sfrac{n}{2}})$\label{costo_ciclo} }
-    \EndIf \Compl{Brown}{Costo \emph{si}: }{$n + n\cdot log(n) + n\cdot 2^{\sfrac{n}{2}}$}{$= \mathcal O(n\cdot 2^{\sfrac{n}{2}})$ }%
+        \EndWhile \Compl{Blue}{Costo \emph{mientras}: }{$2^n$}{veces $\times$ $\mathcal O(n) = \mathcal O(n\cdot 2^n)$\label{costo_ciclo} }
+    \EndIf \Compl{Brown}{Costo \emph{si}: }{$n + n\cdot log(n) + n\cdot 2^n$}{$= \mathcal O(n\cdot 2^n)$ }%
 
     \State \Return{$\delta_{max}$, $K$} \Compl{Brown}{}{$1$\label{backtracking:return}}{}%
     \Statex
-    \Statex \Compl{Brown}{Costo Total de Algoritmo: }{$n\cdot 2^{\sfrac{n}{2}}$}{}
+    \Statex \Compl{Brown}{Costo Total de Algoritmo: }{$n\cdot 2^n$}{}
 \end{pseudocodigo}
 
 \bigskip
@@ -351,8 +351,8 @@
     de las operaciones son todas de tiempo constante (y ya sin necesidad de explicar
     mucho habiendo ya justificado operaciones similares).
 
-\par Ya terminando, tenemos que como coste final del \emph{si} que est\' dentro
-    del ciclo principal del bucle (l\'inea ~\ref{backtracking_if}), obtenemos un
+\par Ya terminando, tenemos que como coste final del \emph{si} que est\'a dentro
+    del ciclo principal del bucle (l\'inea ~\ref{backtracking_if}), tenemos un
     coste $\mathcal O(n)$ ya que tomamos el m\'aximo de los costos de ambas
     ramas del condicional: $\mathcal O(n-|solucionParcial|)$ por la bifurcaci\'on
     positiva y $\mathcal O(n-|solucionParcial|) + \mathcal O(|solucionParcial|) =
@@ -366,38 +366,31 @@
 
 \par Como ya se explico en la secci\'on ~\ref{backtracking:explicacion}, nuestro
     algoritmo va construyendo cliques contenidas en el grafo $G$. Es decir, en cada
-    instancia de decision, el algoritmo agrega un nodo a la clique parcial que va
-    construyendo, y continua haciendo esto hasta un m\'aximo de $\sfrac{n}{2}$
-    veces (como ya se explico en la secci\'on ~\ref{tam_max_cmf}, el tama\~no
-    m\'aximo de una \emph{CMF} es justamente $\sfrac{n}{2}$). Este m\'aximo no
-    siempre se dar\'a, ya que alguna de las podas implementadas podr\'ia evitarlo,
-    pero como estamos buscando una cota para la m\'axima cantidad de iteraciones
+    instancia de decisi\'on, el algoritmo agrega un nodo a la clique parcial que va
+    construyendo, y continua haciendo esto hasta pasar por todas las posbiles
+    cliques de $G$. Si bien no es estrictamente cierto que se pasen por todas las cliques,
+    ya que alguna de las podas implementadas podr\'ia evitarlo,
+    como estamos buscando una cota para la m\'axima cantidad de iteraciones
     del ciclo, se puede suponer que en el peor de los casos tenemos una instancia
     de un grafo $G$ que "anula" estas podas (en el sentido que tiene una estructura
     que no permiten que las podas act\'uen, por ejemplo podr\'iamos tener un $G$ en
     que cada clique parcial constru\'ida sea de menor frontera que la siguiente,
-    obligando al algoritmo a construir todas las cliques de hasta $\sfrac{n}{2}$
-    nodos del \'arbol de decisiones).
-
-\par Como ya sabemos que el tama\~no de la \emph{CMF} estar\'a acotado por
-    $\sfrac{n}{2}$, podemos concluir que la altura m\'axima de nuestro \'arbol
-    de decisi\'on ser\'a justamente $\sfrac{n}{2}$ (ya que en cada nivel se
-    agrega un nodo a la clique parcial que se est\'a construyendo).
+    obligando al algoritmo a construir todas las cliques de $G$).
 
 \par Ahora bien, en este \'arbol de decisiones podemos pensar que en el primer nodo
     tenemos una bifurcaci\'on: inclu\'imos al primer nodo en la clique parcial o
     no lo hacemos. Luego, en cada bifurcaci\'on se nos presentar\'a la misma
     diyuntiva para con el siguiente nodo. Y as\'i sucesivamente. Es decir, el
     \'arbol de decisiones es un \'arbol binario perfecto (en el peor caso) de
-    altura $\sfrac{n}{2}$. Por lo tanto, la cantidad total de nodos que tendr\'a
+    altura $n$. Por lo tanto, la cantidad total de nodos que tendr\'a
     (contando nodos internos tanto como hojas) es%
     \footnote{\url{http://www.brpreiss.com/books/opus5/html/page257.html}}:
-    $2^{\frac{n}{2}+1} -1$
+    $2^{n+1}-1$
 
 \bigskip
 \par Entonces, habiendo calculado ya una cota para la m\'axima cantidad de iteraciones
     del ciclo, s\'olo nos queda considerar el costo de cada iteraci\'on (que ya
-    lo hemos calculado) por esta cota (l\'inea ~\ref{costo_ciclo}).
+    lo hemos calculado) multiplicada por esta cota (l\'inea ~\ref{costo_ciclo}).
 
 \par El siguiente gr\'afico ilustra el \'arbol de decisiones del que estamos hablando,
     incluyendo los costos de las iteraciones de los ciclos.
@@ -410,13 +403,13 @@
         level 2/.style={sibling distance=40mm},
     ]
         % the tree
-        \node (r1) {$n$}
-        child {node (l2) {$n-1$}
+        \node (r1) {$n$ nodos restantes}
+        child {node (l2) {$n-1$ nodos restantes}
             child{edge from parent node[sloped,anchor=south]{Agregar Nodo}}
             child{edge from parent node[sloped,anchor=south]{No Agregar Nodo}}
             edge from parent node[sloped,anchor=south]{Agregar Nodo}
         }
-        child {node (r2) {$n-1$}
+        child {node (r2) {$n-1$ nodos restantes}
             child{edge from parent node[sloped,anchor=south]{Agregar Nodo}}
             child{edge from parent node[sloped,anchor=south]{No Agregar Nodo}}
             edge from parent node[sloped,anchor=south]{No Agregar Nodo}
@@ -438,13 +431,13 @@
             \draw[->,line width=1pt,dashed] (r\i) -- (t\i);
 
         % the arrow to the left of the tree
-        \draw[<->] (aux2) -- node[fill=white] {$\displaystyle\frac{n}{2}$} (aux2|-theta.184);
+        \draw[<->] (aux2) -- node[fill=white] {$n$} (aux2|-theta.184);
 
         % the brace at the bottom
-        \draw[decorate,decoration={brace,raise=2pt}] (theta.south east) -- node[label={[label distance=5pt]below:$2^{\frac{n}{2}} \times \mathcal O(n)$}]{}  (theta.south west);
+        \draw[decorate,decoration={brace,raise=2pt}] (theta.south east) -- node[label={[label distance=5pt]below:$2^{n} \times \mathcal O(n)$}]{}  (theta.south west);
 
         % the rule with the total
-        \node[below = 7cm of t2.east,anchor=east] {Complejidad Total del Ciclo: $\mathcal O\Biggl(\displaystyle\sum_{k=0}^{\sfrac{n}{2}} 2^k \cdot n\Biggl) = \mathcal O\Biggl(n \cdot \sum_{k=0}^{\sfrac{n}{2}} 2^k\Biggl) = \mathcal O\Bigl(n \cdot 2^{\sfrac{n}{2}}\Bigl)$};
+        \node[below = 7cm of t2.east,anchor=east] {Complejidad Total del Ciclo: $\mathcal O\Biggl(\displaystyle\sum_{k=0}^{n} 2^k \cdot n\Biggl) = \mathcal O\Biggl(n \cdot \sum_{k=0}^{n} 2^k\Biggl) = \mathcal O\Bigl(n \cdot 2^{n}\Bigl)$};
     \end{tikzpicture}
 \end{figure}
 \bigskip
@@ -457,4 +450,4 @@
 \par\hfill
 
 \par As\'i pues, llegamos a la conclusi\'on de que la complejidad asint\'otica
-    temporal de nuestro algoritmo exacto es $\mathcal O(n \cdot 2^{\sfrac{n}{2}})$.
+    temporal de nuestro algoritmo exacto es $\mathcal O(n \cdot 2^{n})$.
