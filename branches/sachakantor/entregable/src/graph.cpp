@@ -562,8 +562,188 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
     return frontier;
 }
 
+//Defines del tabu_search
+#define n this->_quant_nodes
+
+#ifndef _TABU_GLOBAL_COUNTER
+#define _TABU_GLOBAL_COUNTER n*n
+#endif//_TABU_GLOBAL_COUNTER
+
+#ifndef _TABU_GOING_DOWN_COUNTER
+#define _TABU_GOING_DOWN_COUNTER 2*n
+#endif//_TABU_GOING_DOWN_COUNTER
+
+#ifndef _TABU_HOW_OLD
+#define _TABU_HOW_OLD n/2
+#endif//_TABU_HOW_OLD
 uint graph::cmf_tabu_search(vector<node_id>& clique) const{
-    return 0;
+    /*Variables locales*/
+    clique.reserve(this->_quant_nodes);
+    //vector<bool> nodes_ids_in_clique(this->_quant_nodes,false);
+    uint r;
+
+    /*Variables de tabu Search*/
+    deque<node_id> candidates;
+    vector<uint> tabu_add(this->_quant_nodes,0),tabu_remove(this->_quant_nodes,0);
+    uint frontier_if_add,frontier_if_remove;
+    uint frontier,
+         frontier_if_add_tabu,
+         frontier_if_remove_tabu,
+         frontier_if_add_no_tabu,
+         frontier_if_remove_no_tabu,
+         frontier_if_add_tabu_improves_best_sol,
+         frontier_if_remove_tabu_improves_best_sol;
+
+    node_id node_id_add_tabu,node_id_add_no_tabu,
+            node_id_remove_tabu,node_id_remove_no_tabu,
+            node_id_add_tabu_improves_best_sol,node_id_remove_tabu_improves_best_sol;
+
+
+    uint going_down_counter=0,global_counter=0;
+
+    /*Comenzamos*/
+    if(this->_quant_edges == this->_quant_nodes*(this->_quant_nodes-1)/2){
+        /*El grafo de entrada es un Kn*/
+        frontier = this->_quant_nodes/2 * (this->_quant_nodes/2 + this->_quant_nodes%2);
+        clique.reserve(this->_quant_nodes/2);
+        r = 0;
+        generate_n(back_inserter(clique),this->_quant_nodes/2,[&r](){return ++r;});
+
+    } else if(clique.empty()){
+        /* El grafo no es un Kn */
+        /*Buscamos un primer nodo para comenzar*/
+        clique.push_back(
+            (*find_if(
+                this->_nodes.cbegin(),
+                this->_nodes.cend(),
+                [this](const node* v){return v->_degree >= this->_quant_edges/this->_quant_nodes;})
+            )->_id
+        );
+        frontier = this->_nodes[clique.back()-1]->_degree;
+
+    } else {
+        /* El grafo no es un Kn */
+        /* Ya nos dieron un resultado inicial
+         *
+         *Calculamos la frontera de la clique provista
+         */
+        frontier = 0;
+        for(vector<node_id>::const_iterator node_id_it = clique.cbegin();
+            node_id_it != clique.cend();
+            ++node_id_it)
+        {
+            frontier += this->_nodes[*node_id_it-1]->_degree-clique.size()+1;
+        }
+    }
+
+    /*Comenzamos el ciclo del tabu_search*/
+    while(global_counter<_TABU_GLOBAL_COUNTER &&
+            going_down_counter<_TABU_GOING_DOWN_COUNTER)
+    {
+        ++global_counter;
+
+        /*Para cada uno de los movimientos posibles, recorremos la vecindad
+         * y nos quedamos con el mejor movimiento no_tabu y el mas viejo tabu,
+         * y en caso de encontrar algun tabu que mejora la solucion S*, no
+         * los guardamos aparte
+         */
+
+        //Consideramos agregar un nodo
+        node_id_add_no_tabu = 0;
+        node_id_add_tabu = 0;
+        node_id_add_tabu_improves_best_sol = 0;
+        frontier_if_add_tabu = frontier;
+        frontier_if_add_no_tabu = frontier;
+        frontier_if_add_tabu_improves_best_sol = frontier;
+        this->candidates(clique,candidates); //Devuelve los candidatos ordenados de mayor a menor por grado
+        for(deque<node_id>::const_iterator candidate_it = candidates.cbegin();
+            candidate_it != candidates.cend();
+            ++candidate_it)
+        {
+            //Si agregamos el nodo
+            frontier_if_add = frontier+this->_nodes[*candidate_it-1]->_degree-clique.size()*2;
+            if(tabu_add[*candidate_it-1] <= global_counter){
+                //El nodo no es tabu
+                if(frontier_if_add > frontier_if_add_no_tabu){
+                    node_id_add_no_tabu = *candidate_it;
+                    frontier_if_add_no_tabu = frontier_if_add;
+                }
+
+            } else {
+                //El nodo es tabu
+                //Si mejora la mejor solucion hasta el momento (S*), la guardamos
+                if(frontier_if_add > frontier_if_add_tabu_improves_best_sol){
+                    node_id_add_tabu_improves_best_sol = *candidate_it;
+                    frontier_if_add_tabu_improves_best_sol = frontier_if_add;
+                }
+
+                //Si este tabu es mas tabu que el mas tabu hasta el momento, lo guardamos
+                if(node_id_add_tabu == 0 ||
+                    tabu_add[node_id_add_tabu-1] > tabu_add[*candidate_it-1])
+                {
+                    node_id_add_tabu = *candidate_it;
+                    frontier_if_add_tabu = frontier_if_add;
+                }
+            }
+        }
+
+        //Consideramos quitar un nodo
+        node_id_remove_no_tabu = 0;
+        node_id_remove_tabu = 0;
+        node_id_remove_tabu_improves_best_sol = 0;
+        frontier_if_remove_tabu = frontier;
+        frontier_if_remove_no_tabu = frontier;
+        frontier_if_remove_tabu_improves_best_sol = frontier;
+        for(vector<node_id>::const_iterator clique_node_it = clique.cbegin();
+            clique_node_it != clique.cend();
+            ++clique_node_it)
+        {
+            //Si quitamos el nodo
+            frontier_if_remove = frontier-this->_nodes[*clique_node_it-1]->_degree+clique.size()-1;
+            if(tabu_remove[*clique_node_it-1] <= global_counter){
+                //El nodo no es tabu
+                if(frontier_if_remove > frontier_if_remove_no_tabu){
+                    node_id_remove_no_tabu = *clique_node_it;
+                    frontier_if_remove_no_tabu = frontier_if_remove;
+                }
+
+            } else {
+                //El nodo es tabu
+                //Si mejora la mejor solucion hasta el momento (S*), la guardamos
+                if(frontier_if_remove < frontier_if_remove_tabu_improves_best_sol){
+                    node_id_remove_tabu_improves_best_sol = *clique_node_it;
+                    frontier_if_remove_tabu_improves_best_sol = frontier_if_remove;
+                }
+
+                //Si este tabu es mas tabu (viejo) que el mas tabu hasta el momento, lo guardamos
+                if(node_id_remove_tabu == 0 ||
+                    tabu_remove[node_id_remove_tabu-1] > tabu_remove[*clique_node_it-1])
+                {
+                    node_id_remove_tabu = *clique_node_it;
+                    frontier_if_remove_tabu = frontier_if_remove;
+                }
+            }
+        }
+
+        //Decidimos que haremos
+        //Si con alguna decision incremento S*, la tomo sea tabu o no
+        if(frontier < max(frontier_if_add_tabu_improves_best_sol,frontier_if_remove_tabu_improves_best_sol))
+        {
+            if(frontier_if_add_tabu_improves_best_sol > frontier_if_remove_tabu_improves_best_sol)
+            {
+                //He de agregar segun la mejor opcion tabu
+
+            } else {
+                //He de remover segun la mejor opcion tabu
+            }
+
+        } else {
+            //Las soluciones tabu no mejoraban S*
+        }
+
+    }
+
+    return frontier;
 }
 
 /***************************************************************/
