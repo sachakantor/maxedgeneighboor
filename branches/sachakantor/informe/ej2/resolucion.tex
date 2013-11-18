@@ -129,23 +129,36 @@
         \par Entonces, a modo de mejorar la eficiencia (pero no la complejidad temporal
             asint\'otica), podemos verificar esto al comienzo del algoritmo, y en caso
             de ser la entrada un grafo completo, podemos asegurar que la \emph{CMF} tendr\'a
-            $\lceil\frac{n}{2}\rceil$ cualesquiera nodos, y por lo tanto una frontera de
-            $\lfloor\frac{n}{2}\rfloor \cdot \lceil\frac{n}{2}\rceil$.
+            $\lfloor\sfrac{n}{2}\rfloor$ cualesquiera nodos, y por lo tanto una frontera de
+            $\lfloor\sfrac{n}{2}\rfloor \cdot \lceil\sfrac{n}{2}\rceil$.
 
         \par Para justificar esto \'ultimo, afirmamos que la \emph{CMF} de cualquier grafo
-            completo tendr\'a al menos $\lceil\frac{n}{2}\rceil$ nodos. Asumiendo esto como
-            correcto, y sumado a la propiedad ya demostrada en la poda anterior, nos quedar\'ia
-            lo siguiente:
-
-        \bigskip\par $\lceil\frac{n}{2}\rceil \leq |CMF| \leq \lceil\frac{n}{2}\rceil$
-
-        \bigskip\par Por lo cual se deduce que $|CMF| = \lceil\frac{n}{2}\rceil$
-
-        \bigskip\par La demostraci\'on de esta afirmaci\'on es similar (sino casi id\'entica)
+            completo tendr\'a al menos $\lfloor\sfrac{n}{2}\rfloor$ nodos\footnote{La
+            demostraci\'on de esta afirmaci\'on es similar (sino casi id\'entica)
             a la ya expuesta en la poda anterior, con la salvedad que se puede asegurar
             exactamente cuanto suma cada nodo a la frontera de $K$ y que la cota que se
             desea ver es la cota inferior y no la superior. Por lo tanto, se omite esta
-            demostraci\'on por ser trivial.
+            demostraci\'on por ser trivial.}. Asumiendo esto como
+            correcto, y sumado a la propiedad ya demostrada en la poda anterior, nos quedar\'ia
+            lo siguiente:
+
+        \bigskip
+        \par $\lfloor\sfrac{n}{2}\rfloor \leq |CMF| \leq \lceil\sfrac{n}{2}\rceil$
+
+        \bigskip
+        \par Por lo cual se deduce que $|CMF| = \lfloor\sfrac{n}{2}\rfloor$ o 
+        $|CMF| = \lceil\sfrac{n}{2}\rceil$, pues la $|CMF| \in \mathbb{N}$ 
+
+        \bigskip
+        \par Luego, como la $|CMF|$ en un grafo completo es el tama\~no de la clique CMF
+            por la cantidad de nodos que no est\'an en la clique, nos queda que, para
+            cualquiera de los dos posibles tama\~nos de la \emph{CMF}:
+
+        \par $|CMF| = \lfloor\sfrac{n}{2}\rfloor \cdot \lceil\sfrac{n}{2}\rceil$.
+
+        \par Por lo cual, tomar $\lfloor\sfrac{n}{2}\rfloor$ cualesquiera nodos de $V(G)$
+            es lo mismo que tomar $\lceil\sfrac{n}{2}\rceil$, ya que su frontera ser\'a
+            la misma.
 
     \item[M\'axima frontera de la rama: ] Al comenzar a construir las cliques de $G$,
         lo que se hace es considerar el conjunto de nodos \emph{candidatos} que podr\'ian
