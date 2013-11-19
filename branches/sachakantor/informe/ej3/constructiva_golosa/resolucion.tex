@@ -1,3 +1,61 @@
+\subsubsection{G\'enesis del algoritmo propuesto}
+\par La idea central del algoritmo que se describir\'a a continuaci\'on
+    surgi\'on a partir del estudio/definici\'on del problema presentado
+    y de un an\'alisis r\'apido de la estructura de un gran subconjunto
+    de la familia de grafos conexos.
+
+\par B\'asicamente, como lo que se trata de encontrar es una clique
+    en un grafo conexo tal que se maximice la cantidad de aristas
+    incidentes en la misma (que no sean parte de la clique, obviamente),
+    existe una tenedencia a que en la soluci\'on de las distintas
+    instancias del problema incluya a alg\'un(os) nodos de grado
+    alto (o al menos, por encima del grado promedio del grafo).
+
+\par Esto es razonable, aunque es claro que es una tendencia y no
+    una norma general que se cumple siempre (de hecho, en la secci\'on
+    de experimentaci\'on que corresponde a este algoritmo se exponen
+    familias de grafos para las cuales justamente no se cumple). Asi pues,
+    esto da motivo a pensar que a partir de los nodos de mayor grado
+    de un grafo existe una buena probabilidad de encontrar la clique
+    de frontera m\'axima, o alguna que tenga una frontera cercana
+    a la m\'axima.
+
+\subsubsection{El algoritmo goloso}\label{backtracking:explicacion}
+\par El algoritmo que se propone a continuaci\'on es bastante simple.
+    Por lo ya explicado, consideramos que los nodos de mayor/alto
+    grado de un grafo seguramente esten inclu\'idos en una clique
+    de frontera m\'axima o cercana a la m\'axima.
+
+\par Tomamos entonces el nodo de mayor grado (ya que debemos elegir uno)
+    del grafo de entrada. Este pasar\'ia a ser nuestra clique inicial.
+
+\par Luego, consideramos como nodos candidatos a a\~nadirse a esta
+    clique a aquellos que sean adyacentes a todos los nodos de la
+    clique parcial (en el primer caso se\'an los nodos vecinos del
+    nodo de mayor grado) y que cumplan con la condici\'on de incrementar
+    la frontera en caso de ser inclu\'idos en la clique (este es
+    exactamente el mismo principo explicado en la Secci\'on%
+    ~\ref{backtracking:poda:candidatos_que_sumen}).
+
+\par Luego, agregamos al nodo candidato que m\'as incremente la frontera
+    de la clique (esta ser\'ia la caracter\'istica \emph{golosa}
+    del algoritmo), es decir, el de mayor grado (como ya se explic\'o
+    en ~\ref{backtracking:poda:candidatos_que_sumen}).
+
+\par Al haber incrementado el tama\~no de la clique, la lista de
+    nodos candidatos a la misma se habr\'a modificado.
+
+\par Por \'ultimo, repetimos este proceso hasta que no haya m\'as
+    nodos candidatos para agregar a la clique.
+
+\bigskip
+
+\subsubsection{Pseudoc\'odigo descriptivo}
+\par Se presenta a continuaci\'on un pseudoc\'odigo que describe los pasos que sigue
+    nuestro algoritmo propuesto. El mismo no contempla estructuras de datos sobre
+    los cuales se implement\'o (cosa que se realiza en el c\'alculo de complejidad),
+    simplemente tiene como objetivo describir el algoritmo.
+
 \begin{pseudocodigo}[Heur\'istica Golosa Constructiva para \emph{CMF} - Descriptivo]
     \Require\Statex
         \begin{itemize}
