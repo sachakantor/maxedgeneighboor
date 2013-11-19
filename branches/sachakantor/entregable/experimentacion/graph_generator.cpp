@@ -21,6 +21,7 @@
 #define GREEDY_NOT_IN_CMF 14
 #define GREEDY_IN_CMF 15
 #define PLANAR 16
+#define STAR_BRIDGE_DOUBLE_STAR 17
 
 using namespace std;
 
@@ -45,6 +46,10 @@ uint from_how_many_nodes(uint choice){
 
         case PLANAR:
             cout << "Cantidad de nodos de la instancia mas chica [min:3]: ";
+            break;
+
+        case STAR_BRIDGE_DOUBLE_STAR:
+            cout << "Cantidad de nodos de la instancia mas chica [min:15]: ";
             break;
 
         default:
@@ -136,6 +141,7 @@ int main(int argc,char* argv[]){
     cout << GREEDY_NOT_IN_CMF           << ". Estrella+Puente+CMF" << endl;
     cout << GREEDY_IN_CMF               << ". Estrella+CMF" << endl;
     cout << PLANAR                      << ". Planar" << endl;
+    cout << STAR_BRIDGE_DOUBLE_STAR     << ". Estrella+Puente+Doble Estrella" << endl;
     cout << "Seleccione una opcion: ";
     cin >> choice;
     nodes_lower = from_how_many_nodes(choice);
@@ -250,6 +256,12 @@ int main(int argc,char* argv[]){
             for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
                 for(uint quant = 0; quant<quant_per_size;++quant)
                     random_planar_graph(output_file,nodes);
+            break;
+
+        case STAR_BRIDGE_DOUBLE_STAR:
+            for(uint nodes = nodes_lower; nodes<=nodes_upper;nodes+=inc)
+                for(uint quant = 0; quant<quant_per_size;++quant)
+                    random_star_bridge_double_star(output_file,nodes);
             break;
 
         default:

@@ -714,3 +714,57 @@ void highest_degree_node_not_in_CMF(ostream& output,uint quant_nodes){
                             true);
     join_by_bridge(output,*(star_begin_it+1),*clique_begin_it,bridge_begin_it,bridge_end_it);
 }
+
+/************** TABU ******************/
+void random_star_bridge_double_star(ostream& output,uint quant_nodes){
+    //Variables locales
+    vector<node_id> nodes(quant_nodes);
+
+    //Seteamos la semilla para el random
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+    //Comenzamos
+    std::iota(nodes.begin(),nodes.end(),1);
+    random_shuffle(nodes.begin(),nodes.end());
+
+    output << quant_nodes << ' ' << quant_nodes-1 << endl;
+    random_star_bridge_double_star(output,nodes.begin(),nodes.end());
+}
+
+void random_star_bridge_double_star(ostream& output,
+                    vector<node_id>::iterator it_begin,
+                    const vector<node_id>::const_iterator it_end)
+{
+    //Variables locales
+    vector<node_id>::iterator mayor_star_begin_it,mayor_star_end_it;
+    vector<node_id>::iterator minor_star_begin_it,minor_star_end_it;
+    vector<node_id>::iterator minor_star2_begin_it,minor_star2_end_it;
+    vector<node_id>::const_iterator bridge_begin_it,bridge_end_it;
+
+    //Seteamos la semilla para el random
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
+
+    //Comenzamos
+    mayor_star_begin_it = it_begin;
+    mayor_star_end_it = mayor_star_begin_it+6;
+
+    minor_star_begin_it = mayor_star_end_it;
+    minor_star_end_it = minor_star_begin_it+4;
+
+    minor_star2_begin_it = minor_star_end_it;
+    minor_star2_end_it = minor_star2_begin_it+4;
+
+    bridge_begin_it = minor_star2_end_it;
+    bridge_end_it = it_end;
+
+    //Hago las estrellas
+    random_star_graph(output,mayor_star_begin_it,mayor_star_end_it);
+    random_star_graph(output,minor_star_begin_it,minor_star_end_it);
+    random_star_graph(output,minor_star2_begin_it,minor_star2_end_it);
+
+    //Uno las estrellas menores por su centro
+    output << *minor_star_begin_it << ' ' << *minor_star2_begin_it << endl;
+
+    //Hago el puente con alguna de las punta de las estrellas
+    join_by_bridge(output,*(mayor_star_begin_it+1),*(minor_star_begin_it+1),bridge_begin_it,bridge_end_it);
+}

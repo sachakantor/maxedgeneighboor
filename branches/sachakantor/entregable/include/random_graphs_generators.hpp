@@ -95,7 +95,7 @@ void random_connected_graph(ostream& output,uint quant_nodes,float density_lower
 /************** PLANAR (3-Connected) ******************/
 void random_planar_graph(ostream& output,uint quant_nodes);
 
-/************** GREEDY ******************/
+/************** GREEDY/LOCAL SEARCH ******************/
 void join_by_bridge(ostream& output,
                     uint node_src,
                     uint node_dest,
@@ -105,4 +105,11 @@ void join_by_bridge(ostream& output,
 void highest_degree_node_in_CMF(ostream& output,uint quant_nodes);
 
 void highest_degree_node_not_in_CMF(ostream& output,uint quant_nodes);
+
+/************** TABU ******************/
+void random_star_bridge_double_star(ostream& output,uint quant_nodes);
+
+void random_star_bridge_double_star(ostream& output,
+                    vector<node_id>::iterator it_begin,
+                    const vector<node_id>::const_iterator it_end);
 #endif
