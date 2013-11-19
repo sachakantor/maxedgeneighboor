@@ -80,7 +80,7 @@ int main(int argc,char* argv[]){
 
         #else
         results[i] = to_string(problems[i]->cmf_tabu_search(*clique_ptr));
-        #endif//__BACKTRACKING_GOLOSA
+        #endif//_TABU_GOLOSA
 
         results[i] += ' '+to_string(clique_ptr->size());
         for(vector<node_id>::const_iterator it = clique_ptr->cbegin();

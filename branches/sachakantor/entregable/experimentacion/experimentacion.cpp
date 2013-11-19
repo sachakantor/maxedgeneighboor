@@ -102,6 +102,10 @@ int main(int argc,char* argv[]){
                 #elif defined(_HEUR_TABU)
                 frontera = grafo.cmf_tabu_search(clique);
 
+                #elif defined(_HEUR_TABU_GOLOSA)
+                grafo.cmf_golosa(clique);
+                frontera = grafo.cmf_tabu_search(clique);
+
                 #elif defined(_BACKTRACKING_GOLOSA)
                 frontera = grafo.cmf_golosa(clique);
                 frontera = grafo.cmf_backtracking(frontera,clique);
@@ -156,6 +160,10 @@ int main(int argc,char* argv[]){
                 frontera = grafo.cmf_busqueda_local(clique);
 
                 #elif defined(_HEUR_TABU)
+                frontera = grafo.cmf_tabu_search(clique);
+
+                #elif defined(_HEUR_TABU_GOLOSA)
+                grafo.cmf_golosa(clique);
                 frontera = grafo.cmf_tabu_search(clique);
 
                 #elif defined(_BACKTRACKING_GOLOSA)
