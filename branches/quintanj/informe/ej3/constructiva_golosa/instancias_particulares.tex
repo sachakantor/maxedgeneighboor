@@ -179,7 +179,9 @@ es constante.
 	el mismo grado, la heur\'istica funciona bien. Cuando esto no pasa, puede suceder que la 
 	heur\'istica produzca el resultado \'optimo como tambi\'en que produzca un resultado sub-\'optimo.
 	Esta situaci\'on puede verse en el \'ultimo ejemplo mostrado m\'as abajo, ambos resultados pueden
-	ser arrojados por el algoritmo dependiendo de la implementaci\'on.
+	ser arrojados por el algoritmo dependiendo de la implementaci\'on. 
+	
+
 	\begin{center}
 		\begin{tabular}{ |c||c||c| }
 			\hline
@@ -213,6 +215,44 @@ es constante.
 		\end{tabular}
 	\end{center}
 	
+	Para construir un ejemplo extremo 
+	en el que se rompe el funcionamiento de la heur\'istica se parte de la idea de tener dos nodos
+	de grado m\'aximo $\Delta$, uno de los cuales est\'a conectado con todos los nodos de la otra
+	partici\'on excepto con un nodo distinguido, todos los nodos de la otra partici\'on tendr\'an
+	grado $\leq 2$ excepto el nodo distinguido que tendr\'a grado $\Delta -1$, el otro nodo de grado
+	m\'aximo estar\'a conectado con todos los nodos de la partici\'on opuesta, excepto con alguno
+	que no sea el nodo distinguido. Los nodos restantes de la partici\'on que contiene a los de 
+	grado m\'aximo solo estar\'an conectados con el nodo distinguido de la partici\'on contraria.
+
+	\begin{center}
+		\begin{tabular}{|c||c||c||c|}
+		\hline
+		& Grafo de entrada & Paso 1 & Paso 2 \\ 
+			\hline
+			resultado sub-\'optimo &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/k5,4Nocompleto_st0.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/k5,4Nocompleto_st01.png} & \\
+			\hline
+			resultado \'optimo &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/k5,4Nocompleto_st0.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/k5,4Nocompleto_st11.png} & 
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/k5,4Nocompleto_st12.png} \\
+		\hline
+		\end{tabular}
+	\end{center}
+
+	Aqu\'i se puede ver que por construcci\'on, si llamamos a los nodos de grado m\'aximo en el grafo
+	$v$ y $v'$, definimos $d(v) = d(v') = \Delta$ y llamamos al nodo distinguido de la partici\'on
+	alternativa $x$, con $v$ no adyacente a $x$, tenemos que $d(x) = \Delta -1$. 
+	Si luego asumimos que la estructura del grafo de entrada viene ordenada de forma tal que la 
+	heur\'istica seleccione como primer nodo de la clique al nodo $v$, tenemos la frontera
+	devuelta por la heur\'istica ($\delta(SH)$)
+	\[\delta(SH) = \Delta -1 \]
+	y la frontera de la $CMF$
+	\[\delta(CMF) = 2 \Delta -3 \]
+
+	Con esto, haciendo abuso de notacion tenemos $\delta(SH) = O(\Delta)$ y $\delta(CMF) = O(\Delta)$ con 
+	lo que nuevamente la raz\'on entre entre ambas es constante.
 
 \subsection{Grafos circulares}
 	En este tipo de grafos, si bien nos encontramos con el problema de empate en el 
@@ -615,8 +655,8 @@ esto generaliza la familia construida, pero el procedimiento es completamente an
 al realizado con la otra familia y el agregado del procedimiento detallado no aporta 
 demasiado.
 
-\[ K_{\Delta -1} \]
-\[ d(v) = \Delta \]
-\[ d(v') = \Delta -1 \]
-\[ K_{\left\lfloor \frac{\Delta -1}{2} \right\rfloor} \]
-\[ C.I._{\left\lceil \frac{\Delta -1}{2} \right\rceil} \]
+%\[ K_{\Delta -1} \]
+%\[ d(v) = \Delta \]
+%\[ d(v') = \Delta -1 \]
+%\[ K_{\left\lfloor \frac{\Delta -1}{2} \right\rfloor} \]
+%\[ C.I._{\left\lceil \frac{\Delta -1}{2} \right\rceil} \]
