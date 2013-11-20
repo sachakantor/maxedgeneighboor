@@ -44,7 +44,8 @@
 
 \subsubsection{Podas del algoritmo exacto}
 \begin{description}
-    \item[Tama\~no m\'aximo \emph{CMF}: ] Dado cualquier grafo $G$ conexo, proponemos
+    \item[Tama\~no m\'aximo CMF\label{backtracking:poda:tam_max_cmf}]
+        Dado cualquier grafo $G$ conexo, proponemos
         que la \emph{CMF} tendr\'a a lo sumo $\left\lceil\frac{n}{2}\right\rceil$ nodos.
         Luego, en el algoritmo, podemos utilizar esto como l\'imite en las cliques que
         vamos construyendo. Si en el proceso de construcci\'on de la clique ya tenemos
@@ -121,9 +122,9 @@
                 un nodo podemos incrementar su frontera.
 
         \end{enumerate}
-    \label{tam_max_cmf}
 
-    \item[Grafos completos: ] De los datos de entrada de un grafo sabemos ya $n$
+    \item[Grafos completos\label{backtracking:poda:grafo_completo}]
+        De los datos de entrada de un grafo sabemos ya $n$
         y $m$, por lo cual determinar si el grafo dado es un grafo completo tiene
         una complejidad $\mathcal O(1)$ (verificar si $m = \frac{n \cdot (n-1)}{2}$).
 
@@ -161,7 +162,8 @@
             es lo mismo que tomar $\lceil\sfrac{n}{2}\rceil$, ya que su frontera ser\'a
             la misma.
 
-    \item[M\'axima frontera de la rama: ] Al comenzar a construir las cliques de $G$,
+    \item[M\'axima frontera de la rama\label{backtracking:poda:cota_frontera_max}]
+        Al comenzar a construir las cliques de $G$,
         lo que se hace es considerar el conjunto de nodos \emph{candidatos} que podr\'ian
         ser agregados preservando la caracter\'istica de "clique" (subgrafo completo
         inducido). Por lo tanto, teniendo ya una clique $K_k$ y un conjunto de nodos
@@ -203,9 +205,7 @@
             soluci\'on encontrada hasta el momento con este $K_k$ y sus $candidatos$
             asociados.
 
-    \label{cota_frontera_max}
-
-    \item[Frontera m\'inima: ] Al comenzar a construir las cliques de $G$, la idea pasa
+    \item[Frontera m\'inima] Al comenzar a construir las cliques de $G$, la idea pasa
         por encontrar aquella clique que tenga la m\'axima frontera. La idea de esta
         poda es tratar de mejorar la frontera parcial inicial con la que comienza el
         algoritmo, para de esta manera poder cortar ramas del \emph{backtracking} mediante
@@ -241,7 +241,8 @@
             $\lfloor\frac{r+1}{2}\rfloor \cdot \lceil\frac{r+1}{2}\rceil$, que en grafos con una
             relacion $\frac{m}{n}$ alta, es una cota un tanto mejor que empezar con 0.
 
-    \item[Candidatos que sumen frontera: ] En cada paso nuestro algorimo tiene
+    \item[Candidatos que sumen frontera\label{backtracking:poda:candidatos_que_sumen}]
+        En cada paso nuestro algorimo tiene
         una clique $K$ y su $\delta(K)$. A su vez, calcula su conjunto de $candidatos$
         asociados, es decir, el conjunto de nodos de $G$ que no forman parte de $K$ y
         que podr\'ian ser a\~nadidos a este manteniendo su caracter\'istica de clique%
@@ -277,7 +278,6 @@
         \par De esta manera, quitamos de la lista de candidatos nodos que no nos
             llevar\'an seguro a resultados que mejoren la frontera parcial, reduciendo
             as\'i ramas del \emph{backtracking}
-        \label{backtracking:poda:candidatos_que_sumen}
 
 \end{description}
 
@@ -317,8 +317,9 @@
 
     \Statex
 
-    \If{$m = \dfrac{n(n-1)}{2}$} \Comment{Si $G$ es un $K_n$}
-        \State $K \gets \left\{1;\dots;\left\lfloor\sfrac{n}{2}\right\rfloor\right\}$
+    \If{$G$ es un grafo completo $K_n$}
+        \State $K \gets \lfloor\sfrac{n}{2}\rfloor$ nodos distintos de $V(G)$ cualesquiera.
+        \Statex
 
     \Else
         \State $\delta_{max} \gets \left\lfloor\dfrac{r+1}{2}\right\rfloor\cdot

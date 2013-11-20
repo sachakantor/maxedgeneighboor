@@ -1,0 +1,176 @@
+\subsubsection{Estructuras de Datos}
+\par Como ya se mencion\'o en~\nameref{grafo:estructuras}, ya contamos en el grafo
+    de entrada con listas/vectores de adyacencias y una matriz de adyacencias.
+
+\par Para esta heur\'istica no fueron necesarias estructuras de datos adicionales,
+   el \'unico (y verdaeramente influyente en el costo asint\'otico) pasa por el
+   c\'alculo de los nodos candidatos para cada clique parcial y la selecci\'on
+   del nodo candidato que m\'as incremente la frontera. La manera algor\'itmica
+   en la que resolvimos esto se detalla en la siguiente secci\'on.
+
+\par Cabe aclarar que representamos nuevamente con un \emph{deque}\footnote{\url{%
+    http://www.cplusplus.com/reference/deque/deque/}} al conjunto de nodos candidatos
+    y con un vector\footnote{\url{http://www.cplusplus.com/reference/vector/vector/}}
+    a la \emph{clique}.
+
+\subsubsection{Pseudoc\'odigo de complejidad}
+\par Se presenta a continuaci\'on un pseudoc\'odigo m\'as espec\'ifico de la implementaci\'on
+    de este algoritmo provista junto con este trabajo. El mismo tiene en cuenta
+    las estructuras de datos explicadas en el punto anterior.
+
+\par Luego del pseudoc\'odigo se justifican detalladamente las complejidades
+    expuestas a continuaci\'on que no sean evidentes\footnote{Consideramos
+    como "complejidades evidentes" las asignaciones de variables, operaciones
+    m\'atematicas simples, asignaciones/inicializaci\'on de posiciones de
+    un vector/\emph{deque} o cualquier contenedor de acceso aleatorio/arbitrario}.
+
+\bigskip
+
+\begin{pseudocodigo}[Heur\'istica Golosa Constructiva para \emph{CMF} - Complejidad]
+    \Require Un grafo $G$ con $n$ v\'ertices numerados de $1$ a $n$ y $m$ aristas. El mismo
+        cuenta con las siguientes estructuras de datos que lo modelan:
+        \begin{itemize}
+            \item Vectores de adyacencia: Dado un vertice $v$, $vecinos(v)$ nos da todos los
+                nodos adyacentes a $v$ en $G$.
+
+            \item Matriz de adyacencia: Dados los v\'ertices $v$ y $w$, $adyacentes(v,w)$ y
+                $adyacentes(w,v)$ nos devuelven $true$ si y s\'olo si $v$ es adyacente
+                a $w$ en $G$.
+
+            \item Vector de nodos de $G$.
+        \end{itemize}
+    \Ensure\Statex
+        \begin{itemize}
+            \item Un vector $K$ correspondiente a la \emph{clique} de m\'axima frontera
+                encontrada por la heur\'istica.
+
+            \item El cardinal de $\delta(K)$, siendo $K$ la \emph{clique} del item anterior.
+        \end{itemize}
+    \Statex
+
+    \State $K \gets \emptyset$ \Compl{Brown}{}{$n$}{}
+    \If{$m = \frac{n(n-1)}{2}$} \Compl{Blue}{}{$1$}{}
+        \State $K \gets \left\{1;\dots;\left\lfloor\sfrac{n}{2}\right\rfloor\right\}$ \Compl{Blue}{}{$n$}{}
+        \State $\delta_{max} \gets \left\lfloor\sfrac{n}{2}\right\rfloor\cdot
+            \left\lceil\sfrac{n}{2}\right\rceil$ \Compl{Blue}{}{$1$}{}
+        \Statex
+
+    \Else
+        \State $v \gets$ El nodo de $V(G)$ de mayor grado \Compl{Blue}{}{$n$}{}
+        \State $K \gets K \cup \{v\}$ \Compl{Blue}{}{$1$}{}
+        \State $\delta(K) \gets d(v)$ \Compl{Blue}{}{$1$}{}
+        \State $candidatos \gets vecinos(v)$ \Compl{Blue}{}{$n$}{}
+        \State Ordeno los $candidatos$ de mayor a menor seg\'un su grado \Compl{Blue}{}{$n\cdot log(n)$}{}
+        \While{$candidatos \neq \emptyset$} \Compl{Red}{}{$1$}{}
+            \State $\delta(K) \gets \delta(K) + d(cabeza(candidatos)) - 2|K|$ \Compl{Red}{}{$1$}{}
+            \State $K \gets K \cup \{cabeza(candidatos)\}$ \Compl{Red}{}{$1$}{}
+            \State $candidatos \gets cola(candidatos)$ \Compl{Red}{}{$1$}{}
+            \State Actualizo $candidatos$ \Compl{Red}{}{$n$}{}
+        \EndWhile \Compl{Blue}{Costo \emph{mientras}: }{$n$}{veces $\times$ $\mathcal O(n) = \mathcal O(n^2)$}
+    \EndIf \Compl{Brown}{Costo \emph{si}: }{$n^2 + n\cdot log(n)$}{$= \mathcal O(n^2)$}
+
+    \State \Return{$\delta(K)$, $K$} \Compl{Brown}{}{$1$\label{greedy:return}}{}
+    \Statex
+    \Statex \Compl{Brown}{Costo Total de la Heur\'istica: }{$n^2 + n$}{$= \mathcal O(n^2)$}
+\end{pseudocodigo}
+
+\bigskip
+
+\par En la primer parte del pseudoc\'odigo se puede observar como se instancia
+    al vector $K$. Esto tiene un coste $\mathcal O(n)$ ya que lo hacemos con
+    el m\'etodo \emph{reserve}\footnote{\url{http://www.cplusplus.com/reference/vector/vector/reserve/}}%
+    , para as\'i evitar posibles costos amortizados $\mathcal O(n)$ durante
+    la ejecuci\'on de la heur\'istica.
+
+\par Siguiendo con esta instanci\'aci\'on, se observa que se verifica si el
+    grafo de entrada es un $K_n$, es decir, un grafo completo. Esta operaci\'on
+    tiene un coste $\mathcal O(1)$ ya que es una simple operaci\'on matem\'atica.
+
+\par En caso de resultar $G$ un $K_n$, el coste de guardar la \emph{CMF} en $K$ es
+    $\mathcal O(n)$ ya que se deben guardar $\sfrac{n}{2}$ elementos\footnote{Secci\'on
+    \ref{backtracking:poda:tam_max_cmf}, \emph{\nameref{backtracking:poda:tam_max_cmf}}}
+    en un vector (cada asignaci\'on tendr\'a costo $\mathcal O(1)$ y ser\'an
+    $\sfrac{n}{2}$ asignaciones). El c\'alculo de su frontera tiene coste
+    constante ya que se trata de una operaci\'on matem\'atica con datos ($n$ y $m$)
+    que son accesibles en tiempo constante\footnote{Ver \emph{\nameref{grafo:estructuras}}
+    en la Secci\'on \emph{\nameref{notas_preliminares}}.}.
+
+\par Ahora bien, si el grafo de entrada no es un grafo completo, tenemos una serie
+    de instanciaciones de variables y un ciclo.
+
+\par En las instanciaciones, encontrar el nodo de mayor grado tiene una complejidad
+    $\mathcal O(n)$ ya que la estructura de $G$ nos da un vector de nodos,
+    y encontrar el m\'aximo en un vector es lineal\footnote{\url{%
+    http://www.cplusplus.com/reference/algorithm/max_element/}}. Luego, copiar
+    los, a lo sumo, $n-1$ posibles vecinos de un nodo (que se pueden acceder gracias a las
+    listas/\emph{deques} de adyacencia de $G$ en tiempo constante) tiene como costo
+    la cantidad de elementos copiados, es decir, $\mathcal O(n)$.
+
+\par Luego, ordenar un \emph{deque} tendr\'a coste $\mathcal O(n\cdot log(n))$, ya
+    que los algoritmos conocidos de ordenamiento tiene dicho costo cuando el contenedor
+    es de acceso aleatorio/arbitrario\footnote{\url{%
+    http://www.cplusplus.com/reference/algorithm/sort/}} (que es justamente nuestro caso%
+    \footnote{\url{http://www.cplusplus.com/reference/deque/deque/}}). Este ordenamiento
+    se realiza ya que luego nos permite evitar buscar al nodo que m\'as incrementa
+    la frontera, ya que este siempre ser\'a el nodo candidato (es decir, que
+    puede ser a\~nadido a la clique e incrementa su frontera\footnote{Secci\'on
+    \ref{backtracking:poda:candidatos_que_sumen}, \emph{\nameref{backtracking:poda:candidatos_que_sumen}}})
+    de mayor grado. Y habiendo ordenado los nodos candidatos, y manteniendo
+    su orden al actualizarlos a medida que se incrementa el tama\~no de la clique
+    parcial, sabemos que ser\'a siempre el primer nodo del \emph{deque} candidatos.
+
+\par El resto de las operaciones previas al ciclo son constantes, ya que insertar un 
+    elemento en un vector\footnote{%
+    \url{http://www.cplusplus.com/reference/vector/vector/push_back/}} o en un
+    \emph{deque}\footnote{\url{http://www.cplusplus.com/reference/deque/deque/push_back/}}
+    lo es.
+
+\par Ya en el ciclo, consultar si un \emph{deque} es vac\'io tiene costo constante%
+    \footnote{\url{http://www.cplusplus.com/reference/deque/deque/empty/}}, actualizar
+    el valor de la frontera de la clique parcial es constante ya que podemos acceder
+    a todos los datos de la operaci\'on matem\'atica en tiempo constante (gracias al
+    vector de nodos de $G$) y mover el primer elemento de $candidatos$ a $K$ es constante
+    mediante las operaciones
+    $push\_back$\footnote{\url{http://www.cplusplus.com/reference/vector/vector/push_back/}}
+    y $pop\_front$\footnote{\url{http://www.cplusplus.com/reference/deque/deque/pop_front/}}.
+
+\par Nos queda justificar el coste de actualizar $candidatos$ una vez que se agrego
+    un elemento a $K$ y la cantidad de veces que itera el ciclo.
+
+\par Actualizar los nodos candidatos es, en el peor caso (y acotando un poco holgadamente),
+    lineal. Supongamos que $v$ es el nodo que se agrega a $K$. Como ya se tiene
+    la lista de $candidatos$ de $K$, actualizarla para que se corresponda con
+    $K+v$ es simplemente recorrer los $candidatos$ previos y verificar cuales de
+    ellos son adyacentes a $v$ y cuales suman frontera. Esta operaci\'on, al
+    estar siempre los $candidatos$ ordenados de mayor a menor seg\'un su grado,
+    puede ser eficiente en el sentido que encontrado un nodo candidato que 
+    no incrementa la frontera de $K+v$ en caso de ser a\~nadido, los subsiguientes
+    tampoco lo har\'an (ya que son de menor grado). Pero a\'un as\'i, en el
+    peor de los casos, se deber\'a recorrer toda esta lista que en un comienzo
+    podr\'ia llegar a tener $n-1$ elementos (los vecinos del primer nodo
+    elegido por la heur\'istica).
+
+\par Por \'ultimo, nos interesa acotar la m\'axima cantidad de iteraciones del ciclo.
+    Como en cada ciclo la clique parcial $K$ se incrementa en 1, y los nodos
+    candidatos se reducen en al menos 1 (el nodo que paso de candidatos a $K$), y
+    sabiendo que los nodos de $G$ son finitos, podemos acotar la cantidad de
+    iteraciones por $n-1$, suponiendo que en un peor caso $n-1$ nodos ser\'an
+    a\~nadidos a $K$ (si se an\~nadiesen $n$ la frontera ser\'ia 0, lo cual
+    nunca pasar\'a)  Por lo tanto, podemos acotar la cantidad de iteraciones
+    por $n$.
+
+\par Entonces, teniendo que el costo por ciclo es $\mathcal O(n)$, y nuestra
+    cota para la cantidad de iteraciones es $n$, nos termina quedando una complejidad
+    $\mathcal O(n^2)$ para el ciclo. Luego, la rama del condicional \emph{si}
+    correspondiente a $G \neq K_n$ es el costo del ordenamiento de los primeros
+    nodos candidatos suamdo al costo del ciclo. Es decir: $\mathcal O(n^2 + n\cdot log(n))
+    = \mathcal O(n^2)$.
+
+\par Ya terminando, el costo del algoritmo ser\'a equivalente a la rama m\'as
+    costosa del condicional ($\mathcal O(n^2)$), sumado al costo de devolver
+    los resultados e inicializar $K$. En el primer caso, el costo es constante
+    ya que $\delta(K)$ es un entero (tipo primitivo del lenguaje) y $K$ es
+    un valor devuelto por referencia (es decir, un puntero, que es otro tipo
+    primitivo del lenguaje). Por lo tanto el costo de la heur\'istica termina
+    siendo $\mathcal O(n^2) + \mathcal O(n) = \mathcal O(n^2)$.
+

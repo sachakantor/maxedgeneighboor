@@ -53,6 +53,19 @@
 }
 \usepackage{nameref}
 
+%Para usar referencias por el nombre en las listings de "description"\makeatletter
+\let\orgdescriptionlabel\descriptionlabel
+\renewcommand*{\descriptionlabel}[1]{%
+  \let\orglabel\label
+  \let\label\ %\@gobble
+  \phantomsection
+  \edef\@currentlabel{#1}%
+  %\edef\@currentlabelname{#1}%
+  \let\label\orglabel
+  \orgdescriptionlabel{#1}%
+}
+\makeatother
+
 %Paquetes para hacer tablas especificas
 \usepackage{multirow}
 

@@ -1,3 +1,4 @@
+\label{notas_preliminares}
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre la nomenclatura}
 \subsection*{Sobre la nomenclatura}
@@ -85,13 +86,13 @@
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre la complejidad de instanciar un grafo en la implementaci\'on}
-\subsection*{Sobre la complejidad de instanciar un grafo en la implementaci\'on}
+\subsection*{Sobre la complejidad de instanciar un grafo en la implementaci\'on}\label{grafo:estructuras}
 \par Entre los archivos fuente provistos junto con este trabajo, se opt\'o por
     crear una clase \emph{Graph} de \emph{C++} que encapsulase todos los algoritmos
     requeridos por este trabajo.
 
 \par Ahora bien, esta clase contiene ciertas estructuras internas de datos
-    para modelar los grafos de entrada. Las mismas en cuesti\'on son listas
+    para modelar los grafos de entrada. Las mismas en cuesti\'on son listas/\emph{deques}
     de adyacencias y una matriz de adyacencia. Si bien ambas estructuras nos
     brindan la misma informaci\'on (es decir, son redundantes), a la hora
     de implementar nuestros algoritmos, tener ambas estructuras nos brindan
@@ -102,7 +103,7 @@
 
 \par Sin entrar mucho en detalles, se puede prevenir al lector que la \emph{%
     instanciaci\'on} de dichas estructuras tendr\'a un costo de $\mathcal O%
-    (n^2)$ (instanciar una matriz de $n^2$ posiciones, sumado a $n$ listas de
+    (n^2)$ (instanciar una matriz de $n^2$ posiciones, sumado a $n$ listas/\emph{deques} de
     hasta $n$ elementos) el cual no se considera en el c\'alculo de la complejidad
     asint\'otica temporal de los algoritmos dise\~nados durante el curso de este
     documento ya que todos estos superan dicha complejidad.
@@ -120,6 +121,10 @@
     en algunos casos esta complejidad si ha de tenerse en cuenta para los algorimos
     propuestos. Estos casos est\'an aclarados apropiadamente en caso de ser
     necesario.
+
+\par Por \'ultimo, entre las estructuras tambi\'en se guarda la cantidad
+    de nodos y de ejes en dos \emph{unsigned int} para poder acceder a dicha
+    informaci\'on en tiempo constante.
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre la compilaci\'on de los archivos fuente}
@@ -148,6 +153,31 @@
 \par Para poder compilar el binario de esta manera, se requiere tener la 4.4
     o superior del compilador \emph{GNU Compiler Collection}\footnote{\url{%
     http://gcc.gnu.org/}}.
+
+\bigskip
+\par A su vez, dada la cantidad de variantes por heur\'istica que se
+    proveen, existen reglas para compilar los binarios relacionados
+    \'unicamente con una heur\'istica particular. Estas reglas son:
+
+\begin{itemize}
+    \item \textbf{backtracking: } Compila el algoritmo exacto.
+    \item \textbf{golosa: } Compila las heur\'isticas golosas.
+    \item \textbf{busqueda: } Compila las heur\'isticas de b\'usqueda local.
+    \item \textbf{tabu: } Compila las heur\'isticas de b\'usqueda tab\'u\footnote{%
+        Un total de 54 binarios para esta opci\'on. Compilar con paciencia}.
+\end{itemize}.
+
+\par Por ejemplo, si s\'olo se quisiera compilar el algoritmo exacto
+    y la heur\'istica constructiva-golosa, habr\'ia que ejecutar:
+
+\bigskip
+\par make backtracking golosa
+\bigskip
+
+\bigskip
+\par O, si se quiere habilitar la funcionalidad \emph{multi-thread}:
+\bigskip
+\par make EXTRACXXFLAGS=-fopenmp backtracking golosa
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre los generadores de instancias aleatorias}
@@ -269,5 +299,5 @@
     de memoria RAM y 4 procesadores \emph{Intel Xeon X7460 (family 6, model 29)}
     de 6 n\'ucleos de 2.66GHZ.
 
-\par Dicho \emph{hardware} contaba con un sistema operativo \emph{CentOS 6.4}
-    x86\_64\footnote{\url{http://www.centos.org/}}.
+\par Dicho \emph{hardware} contaba al momento de la experimentaci\'on con un 
+    sistema operativo \emph{CentOS 6.4} x86\_64\footnote{\url{http://www.centos.org/}}.

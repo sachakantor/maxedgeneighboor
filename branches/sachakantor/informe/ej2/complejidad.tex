@@ -63,7 +63,9 @@
 \par En nuestro caso particular, decidimos establecer el orden de mayor a menor
     seg\'un el grado de los nodos. A su vez, mantenemos este orden al calcular
     los candidatos de cada clique parcial. De esta manera, a la hora de calcular
-    la cota para la frontera m\'axima de una rama (ver secci\'on ~\ref{cota_frontera_max})
+    la cota para la frontera m\'axima de una rama\footnote{Secci\'on
+    \ref{backtracking:poda:cota_frontera_max},
+    \emph{\nameref{backtracking:poda:cota_frontera_max}}}
     simplemente debemos recorrer la lista de candidatos y detenernos en el primer
     candidato que al ser considerado para a\~nadirse no incremente la frontera
     (esto funciona pues los nodos candidatos siguientes al tener menor grado
@@ -103,7 +105,8 @@
     De esta manera, podr\'iamos guardar los candidatos de cada clique parcial
     en un vector e indexar los mismos seg\'un el tama\~no de las cliques
     parciales, teniendo a los sumo $\sfrac{n}{2}$ cliques parciales/conjuntos
-    de candidatos (esta cota fue explicada en ~\ref{tam_max_cmf}).
+    de candidatos\footnote{Secci\'on~\ref{backtracking:poda:tam_max_cmf},
+    \emph{\nameref{backtracking:poda:tam_max_cmf}}}.
 
 \par Por lo tanto, para calcular los candidatos decidimos usar un vector de
     \emph{deques} de tama\~no $sfrac{n}{2}$.
@@ -128,23 +131,27 @@
 \par Luego del pseudoc\'odigo se justifican detalladamente las complejidades
     expuestas a continuaci\'on que no sean evidentes\footnote{Consideramos
     como "complejidades evidentes" las asignaciones de variables, operaciones
-    m\'atematicas simples, asignaciones/inicializaci\'on de $n$ posiciones de
-    un vector/\emph{deque}, etc.}.
+    m\'atematicas simples, asignaciones/inicializaci\'on de posiciones de
+    un vector/\emph{deque} o cualquier contenedor de acceso aleatorio/arbitrario}.
+
+\bigskip
 
 \begin{pseudocodigo}[Algoritmo Exacto para \emph{CMF} - Complejidad]
     \Require Un grafo $G$ con $n$ v\'ertices numerados de $1$ a $n$ y $m$ aristas. El mismo
         cuenta con las siguientes estructuras de datos que lo modelan:
         \begin{itemize}
-            \item Listas de adyacencia: Dado un vertice $v$, $vecinos(v)$ nos da todos los
+            \item Vectores de adyacencia: Dado un vertice $v$, $vecinos(v)$ nos da todos los
                 nodos adyacentes a $v$ en $G$.
 
             \item Matriz de adyacencia: Dados los v\'ertices $v$ y $w$, $adyacentes(v,w)$ y
                 $adyacentes(w,v)$ nos devuelven $true$ si y s\'olo si $v$ es adyacente
                 a $w$ en $G$.
+
+            \item Vector de nodos de $G$.
         \end{itemize}
     \Ensure\Statex
         \begin{itemize}
-            \item Una \emph{clique} $K$ correspondiente a la \emph{clique} de m\'axima frontera.
+            \item Un vector $K$ correspondiente a la \emph{clique} de m\'axima frontera.
 
             \item El cardinal de $\delta(K)$, siendo $K$ la \emph{clique} del item anterior.
         \end{itemize}
@@ -210,17 +217,18 @@
 
 \bigskip
 
-\par Inicialmente, en las l\'ineas ~\ref{init:candidatos} y ~\ref{init:solucionParcial} ,
+\par Inicialmente, en las l\'ineas~\ref{init:candidatos} y~\ref{init:solucionParcial} ,
     se ve como se inicializan ciertos vectores: $solucionParcial$ (representa una clique),
     $candidatos$ (ser\'a el vector que contendr\'a a los \emph{deques} de candidatos
     de cada clique parcial). El costo de estos es $\mathcal O(n)$ ya que si bien
     inicializar un vector tiene costo constante\footnote{\url{http://www.cplusplus.com/reference/vector/vector/vector/}}
     , queremos evitar el costo amortizado que tienen las inserciones en el mismo. Como
-    se sabe de antemano cual es el m\'aximo tama\~no que podr\'an alcanzar debido a la
-    cota de tama\~no m\'aximo de \emph{CMF} (explicada en la Secci\'on ~\ref{tam_max_cmf}),
+    se sabe de antemano cual es la m\'axima cantidad de cliques parciales que pueden llegar
+    a haber\footnote{Secci\'on~\ref{backtracking:poda:tam_max_cmf},
+    \emph{\nameref{backtracking:poda:tam_max_cmf}}},
     utilizamos el m\'etodo \emph{reserve}\footnote{\url{%
     http://www.cplusplus.com/reference/vector/vector/reserve/}} para reservarnos
-    $sfrac{n}{2}$ posiciones de memoria. Por lo tanto, el costo de estas operaciones
+    $\sfrac{n}{2}$ posiciones de memoria. Por lo tanto, el costo de estas operaciones
     es $\mathcal O(\sfrac{n}{2}) = \mathcal O(n)$. A su vez, en el caso de $candidatos$,
     tambi\'en se inicializa su primer posici\'on (que es un \emph{deque}), en esta
     se colocan todos los nodos del grafo $G$ de entrada. El coste de inicializar
@@ -230,41 +238,41 @@
     http://www.cplusplus.com/reference/iterator/back_inserter/}}, con lo cual la complejidad
     sigue manteni\'endose lineal.
 
-\par En la l\'inea ~\ref{init:pilaFrontera_Max} se ve como se inicializa un \emph{stack},
+\par En la l\'inea~\ref{init:pilaFrontera_Max} se ve como se inicializa un \emph{stack},
     siendo su costo $\mathcal O(1)$ seg\'un lo asegura la documentaci\'on de la \emph{STL}
     de \emph{C++}\footnote{\url{http://www.cplusplus.com/reference/stack/stack/stack/} y
     \url{http://www.cplusplus.com/reference/deque/deque/deque/}}.
 
 \par Continuando, luego de inicializar los valores se pasa a ordenar los $candidatos$
-    iniciales de mayor a menor seg\'un su grado en $G$ (l\'inea ~\ref{ordenar}).
+    iniciales de mayor a menor seg\'un su grado en $G$ (l\'inea~\ref{ordenar}).
     El coste de este es $\mathcal O(n \cdot log(n))$ pues la estructura sobre la que
     se trabaja es un \emph{deque} que cuenta con iteradores de acceso aleatorio\footnote{%
     \url{http://www.cplusplus.com/reference/algorithm/sort/}} y el acceso a este
     \emph{deque} se realiza en tiempo constante pues es una acceso indizado en
     el vector $candidatos$.
 
-\par En el paso siguiente (l\'inea ~\ref{init:cota_front_max}) pasamos a calcular
+\par En el paso siguiente (l\'inea~\ref{init:cota_front_max}) pasamos a calcular
     la cota de frontera m\'axima de la rama para una clique parcial que a\'un
     no tiene ning\'un elemento (es decir, es vac\'ia). Esto se realiza siguiendo
-    los pasos enumerados en ~\ref{cota_frontera_max} (ver cota de m\'axima
-    frontera de la rama) y aprovechando que los
+    los pasos enumerados en la Secci\'on~\ref{backtracking:poda:cota_frontera_max}
+    (\emph{\nameref{backtracking:poda:cota_frontera_max}}) y aprovechando que los
     $candidatos[0]$ est\'an ya ordenados. Por lo tanto, esta operatoria
     debe recorrer los candidatos en orden y calcular la cota seg\'un sus
-    grados como se coment\'o en la Secci\'on ~\ref{orden_establecido}. Como
+    grados como se coment\'o en la Secci\'on~\ref{orden_establecido}. Como
     el grafo instanciado cuenta con un vector de punteros a \emph{nodo}, y este
     nos da acceso en tiempo constante a su grado, acceder al grado de un nodo
     en los $candidatos[0]$ pasa a ser tiempo constante, y en el peor de los
-    casos se deben recorrer los primeros $\sfrac{n}{2}$ nodos de $candidatos[0]$
-    (ver la cota de m\'aximo tama\~no de \emph{CMF} en la secci\'on ~\ref{tam_max_cmf}),
+    casos se deben recorrer los primeros $\sfrac{n}{2}$ nodos de $candidatos[0]$%
+    \footnote{Secci\'on~\ref{backtracking:poda:tam_max_cmf}, \emph{\nameref{backtracking:poda:tam_max_cmf}}},
     d\'andonos un total de hasta $\sfrac{n}{2}$ operaciones $\mathcal O(1)$. Entonces
     el costo final pasa a ser $\mathcal O(n)$.
 
-\par A continuaci\'on, en la l\'inea ~\ref{primer_push}, se inserta el primer elemento
+\par A continuaci\'on, en la l\'inea~\ref{primer_push}, se inserta el primer elemento
     en $pilaFrontera_{max}$, cuyo costo es constante ya que su estructura interna
     es un \emph{stack} que utiliza un \emph{deque} como contenedor\footnote{\url{%
     http://www.cplusplus.com/reference/stack/stack/push/} y \url{http://www.cplusplus.com/reference/deque/deque/push_back/}}.
 
-\par En la l\'inea ~\ref{if:rama_viva} tenemos por un lado el coste de acceder
+\par En la l\'inea~\ref{if:rama_viva} tenemos por un lado el coste de acceder
     a una posici\'on del vector $candidatos$\footnote{\url{%
     http://www.cplusplus.com/reference/vector/vector/operator[]/}}, el coste
     de obtener el tama\~no del vector $solucionParcial$\footnote{\url{%
@@ -275,7 +283,7 @@
     que tambi\'en son de costo constante y al estar acotadas por 3 podemos concluir
     que el coste de toda la operaci\'on es $\mathcal O(1)$.
 
-\par Siguiendo, en la l\'inea ~\ref{agrego_nodo} se pasa un elemento de los $candidatos[|solucionParcial|]$
+\par Siguiendo, en la l\'inea~\ref{agrego_nodo} se pasa un elemento de los $candidatos[|solucionParcial|]$
     a la clique/vector $solucionParcial$. Esta operaci\'on consiste
     en consultar el tama\~no del vector $solucionParcial$, un acceso
     indizado a $candidatos$ (ambas operaciones que ya se han hecho y se a explicado
@@ -286,7 +294,7 @@
     2 operaciones tambi\'en tiene costo constante, obteni\'endose entonces
     un costo total para la operaci\'on de $\mathcal O(1)$.
 
-\par En el paso siguiente, en la l\'inea ~\ref{actualizo_frontera_parcial}
+\par En el paso siguiente, en la l\'inea~\ref{actualizo_frontera_parcial}
     expresamos que al agregar un nuevo nodo a la clique $solucionParcial$,
     calcular su frontera tiene coste $\mathcal O(1)$. Esto es as\'i pues
     ya teniendo el valor de la $fronteraParcial$ para la clique sin este
@@ -310,7 +318,7 @@
 
 \par En este proceso de agregado de nodos a la clique parcial, tambi\'en debemos
     calcular los candidatos de la nueva $solucionParcial$ (que ahora tiene otro
-    nodo). En la l\'inea ~\ref{calculo_candidatos_front_max} hacemos esto. Su coste
+    nodo). En la l\'inea~\ref{calculo_candidatos_front_max} hacemos esto. Su coste
     es l\'ineal en la cantidad de nodos que no forman parte de la clique parcial,
     ya que lo que se hace es recorrer los nodos candidatos de la $solucionParcial$
     antes de agregarle un nodo, y verificar cuales de ellos son adyacentes tambi\'en
@@ -329,10 +337,10 @@
     por rama. Como ya se explic\'o, el costo de este se calcula recorriendo los
     candidatos de la soluci\'on parcial (que ya fueron calculados), y como ya vimos,
     estos estar\'an acotados por $n - |solucionParcial|$, quedando la complejidad
-    final de la l\'inea ~\ref{calculo_candidatos_front_max} en $\mathcal O(2\cdot
+    final de la l\'inea~\ref{calculo_candidatos_front_max} en $\mathcal O(2\cdot
     n - |solucionParcial|) = \mathcal O(n - |solucionParcial|)$.
 
-\par En el \emph{si} de la l\'inea ~\ref{mejoro_sol} tenemos un costo final de
+\par En el \emph{si} de la l\'inea~\ref{mejoro_sol} tenemos un costo final de
     $\mathcal O(|solucionParcial|)$. Esto se debe a que al llegar al final de una
     rama (ya sea porque fue "podada" o porque no quedan m\'as candidatos), se verifica
     si se mejor\'o la mejor soluci\'on constru\'ida hasta el momento. En caso de ser
@@ -340,7 +348,7 @@
     un costo lineal en la cantidad de elementos copiados\footnote{\url{%
     http://www.cplusplus.com/reference/vector/vector/operator=/}}.
 
-\par Finalizando el ciclo \emph{mientras}, entre las l\'ineas ~\ref{backtracking_init} y
+\par Finalizando el ciclo \emph{mientras}, entre las l\'ineas~\ref{backtracking_init} y%
     ~\ref{backtracking_end}, se\~nalamos un coste total $\mathcal O(n -|solucionParcial|)$.
     En la primera operaci\'on nos encargamos de limpiar los candidatos de la clique
     parcial actual (simplemente hacemos esto porque al calcular los candidatos
@@ -352,7 +360,7 @@
     mucho habiendo ya justificado operaciones similares).
 
 \par Ya terminando, tenemos que como coste final del \emph{si} que est\'a dentro
-    del ciclo principal del bucle (l\'inea ~\ref{backtracking_if}), tenemos un
+    del ciclo principal del bucle (l\'inea~\ref{backtracking_if}), tenemos un
     coste $\mathcal O(n)$ ya que tomamos el m\'aximo de los costos de ambas
     ramas del condicional: $\mathcal O(n-|solucionParcial|)$ por la bifurcaci\'on
     positiva y $\mathcal O(n-|solucionParcial|) + \mathcal O(|solucionParcial|) =
@@ -361,10 +369,10 @@
 
 \par Por \'ultimo, llegando a la parte m\'as compleja de justificar, debemos
     acotar la cantidad de iteraciones que hara el ciclo \emph{mientras} de la
-    l\'inea ~\ref{mientras}. Esto lo haremos bas\'andonos en el \'arbol de
+    l\'inea~\ref{mientras}. Esto lo haremos bas\'andonos en el \'arbol de
     decisiones que sigue nuestro algoritmo.
 
-\par Como ya se explico en la secci\'on ~\ref{backtracking:explicacion}, nuestro
+\par Como ya se explico en la secci\'on~\ref{backtracking:explicacion}, nuestro
     algoritmo va construyendo cliques contenidas en el grafo $G$. Es decir, en cada
     instancia de decisi\'on, el algoritmo agrega un nodo a la clique parcial que va
     construyendo, y continua haciendo esto hasta pasar por todas las posbiles
@@ -390,7 +398,7 @@
 \bigskip
 \par Entonces, habiendo calculado ya una cota para la m\'axima cantidad de iteraciones
     del ciclo, s\'olo nos queda considerar el costo de cada iteraci\'on (que ya
-    lo hemos calculado) multiplicada por esta cota (l\'inea ~\ref{costo_ciclo}).
+    lo hemos calculado) multiplicada por esta cota (l\'inea~\ref{costo_ciclo}).
 
 \par El siguiente gr\'afico ilustra el \'arbol de decisiones del que estamos hablando,
     incluyendo los costos de las iteraciones de los ciclos.
@@ -442,7 +450,7 @@
 \end{figure}
 \bigskip
 
-\par Por \'ultimo, en la l\'inea ~\ref{backtracking:return} el coste es
+\par Por \'ultimo, en la l\'inea~\ref{backtracking:return} el coste es
     $\mathcal O(1)$ ya que $\delta_{max}$ es un tipo primitivo del lenguaje (un
     entero) y la clique/vector $K$ se devuelve por referencia (otro tipo primitivo
     -puntero- de \emph{C++}).
