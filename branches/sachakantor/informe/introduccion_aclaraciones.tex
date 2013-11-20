@@ -28,6 +28,11 @@
     \item[K$_k$: ] Es un grafo completo $K$ de $k$ v\'ertices.
 
     \item[d(v): ] Sea $v \in V(G)$, $d(v)$ es el grado de este en $G$.
+
+    \item[K+v: ] Sea $v \in V(G)$, y $K \subset V(G)$ tal que induce un grafo
+        $K$\footnote{Peque\~no abuso de notaci\'on, nos referimos a $K$ como el
+        (sub)conjunto de nodos as\'i como al subgrafo que induce en $G$.}, decimos
+        entonces que $K+v$ es agregar al nodo $v$ a $K$.
 \end{description}
 
 \phantomsection
@@ -44,7 +49,7 @@
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre los grafos no conexos}
-\subsection*{Sobre los grafos no conexos}
+\subsection*{Sobre los grafos no conexos\label{notas:conexos}}
 \par Durante todo este trabajo se asumen que todos los grafos de entrada son
     grafos conexos. Esto lo hacemos ya que utilizando alg\'un algoritmo que recorra
     grafos (como por ejemplo \emph{DFS} o \emph{BFS}) se podr\'ian identificar

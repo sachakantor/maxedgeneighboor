@@ -1,0 +1,55 @@
+\subsubsection{Estructuras de Datos}
+
+\subsubsection{Pseudoc\'odigo de complejidad}
+\par Se presenta a continuaci\'on un pseudoc\'odigo m\'as espec\'ifico de la implementaci\'on
+    de este algoritmo provista junto con este trabajo. El mismo tiene en cuenta
+    las estructuras de datos explicadas en el punto anterior.
+
+\par Luego del pseudoc\'odigo se justifican detalladamente las complejidades
+    expuestas a continuaci\'on que no sean evidentes\footnote{Consideramos
+    como "complejidades evidentes" las asignaciones de variables, operaciones
+    m\'atematicas simples, asignaciones/inicializaci\'on de posiciones de
+    un vector/\emph{deque} o cualquier contenedor de acceso aleatorio/arbitrario}.
+
+\bigskip
+
+\begin{pseudocodigo}[Heur\'istica de B\'usqueda Local para \emph{CMF} - Complejidad]
+    \Require Un grafo $G$ con $n$ v\'ertices numerados de $1$ a $n$ y $m$ aristas. El mismo
+        cuenta con las siguientes estructuras de datos que lo modelan:
+        \begin{itemize}
+            \item Vectores de adyacencia: Dado un vertice $v$, $vecinos(v)$ nos da todos los
+                nodos adyacentes a $v$ en $G$.
+
+            \item Matriz de adyacencia: Dados los v\'ertices $v$ y $w$, $adyacentes(v,w)$ y
+                $adyacentes(w,v)$ nos devuelven $true$ si y s\'olo si $v$ es adyacente
+                a $w$ en $G$.
+
+            \item Vector de nodos de $G$.
+        \end{itemize}
+    \Ensure\Statex
+        \begin{itemize}
+            \item Un vector $K$ correspondiente a la \emph{clique} de m\'axima frontera
+                encontrada por la heur\'istica.
+
+            \item El cardinal de $\delta(K)$, siendo $K$ la \emph{clique} del item anterior.
+        \end{itemize}
+    \Statex
+
+    \State $K \gets \emptyset$ \Compl{Brown}{}{$n$}{}
+    \If{$m = \frac{n(n-1)}{2}$} \Compl{Blue}{}{$1$}{}
+        \State $K \gets \left\{1;\dots;\left\lfloor\sfrac{n}{2}\right\rfloor\right\}$ \Compl{Blue}{}{$n$}{}
+        \State $\delta_{max} \gets \left\lfloor\sfrac{n}{2}\right\rfloor\cdot
+            \left\lceil\sfrac{n}{2}\right\rceil$ \Compl{Blue}{}{$1$}{}
+        \Statex
+
+    \Else
+    \EndIf \Compl{Brown}{Costo \emph{si}: }{}{}
+
+    \State \Return{$\delta(K)$, $K$} \Compl{Brown}{}{$1$\label{bl:return}}{}
+    \Statex
+    \Statex \Compl{Brown}{Costo Total de la Heur\'istica: }{}{}
+\end{pseudocodigo}
+
+\bigskip
+
+\par

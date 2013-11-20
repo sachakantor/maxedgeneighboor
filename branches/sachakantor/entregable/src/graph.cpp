@@ -382,7 +382,7 @@ uint graph::cmf_busqueda_local(vector<node_id>& clique) const{
             (*find_if(
                 this->_nodes.cbegin(),
                 this->_nodes.cend(),
-                [this](const node* v){return v->_degree >= this->_quant_edges/this->_quant_nodes;})
+                [this](const node* v){return v->_degree >= (this->_quant_edges*2)/this->_quant_nodes;})
             )->_id
         );
         frontier = this->_nodes[clique.back()-1]->_degree;

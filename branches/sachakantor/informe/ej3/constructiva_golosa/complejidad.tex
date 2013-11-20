@@ -57,13 +57,13 @@
 
     \Else
         \State $v \gets$ El nodo de $V(G)$ de mayor grado \Compl{Blue}{}{$n$}{}
-        \State $K \gets K \cup \{v\}$ \Compl{Blue}{}{$1$}{}
+        \State $K \gets K+v$ \Compl{Blue}{}{$1$}{}
         \State $\delta(K) \gets d(v)$ \Compl{Blue}{}{$1$}{}
         \State $candidatos \gets vecinos(v)$ \Compl{Blue}{}{$n$}{}
         \State Ordeno los $candidatos$ de mayor a menor seg\'un su grado \Compl{Blue}{}{$n\cdot log(n)$}{}
         \While{$candidatos \neq \emptyset$} \Compl{Red}{}{$1$}{}
             \State $\delta(K) \gets \delta(K) + d(cabeza(candidatos)) - 2|K|$ \Compl{Red}{}{$1$}{}
-            \State $K \gets K \cup \{cabeza(candidatos)\}$ \Compl{Red}{}{$1$}{}
+            \State $K \gets K+cabeza(candidatos)$ \Compl{Red}{}{$1$}{}
             \State $candidatos \gets cola(candidatos)$ \Compl{Red}{}{$1$}{}
             \State Actualizo $candidatos$ \Compl{Red}{}{$n$}{}
         \EndWhile \Compl{Blue}{Costo \emph{mientras}: }{$n$}{veces $\times$ $\mathcal O(n) = \mathcal O(n^2)$}
