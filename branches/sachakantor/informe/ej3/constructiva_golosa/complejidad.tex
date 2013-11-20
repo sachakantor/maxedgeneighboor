@@ -66,12 +66,12 @@
             \State $K \gets K+cabeza(candidatos)$ \Compl{Red}{}{$1$}{}
             \State $candidatos \gets cola(candidatos)$ \Compl{Red}{}{$1$}{}
             \State Actualizo $candidatos$ \Compl{Red}{}{$n$}{}
-        \EndWhile \Compl{Blue}{Costo \emph{mientras}: }{$n$}{veces $\times$ $\mathcal O(n) = \mathcal O(n^2)$}
+        \EndWhile \Compl{Blue}{Costo \emph{mientras}: }{$n$}{veces $\times$ $\mathcal O(n) = \mathcal O(n^2)$ }
     \EndIf \Compl{Brown}{Costo \emph{si}: }{$n^2 + n\cdot log(n)$}{$= \mathcal O(n^2)$}
 
     \State \Return{$\delta(K)$, $K$} \Compl{Brown}{}{$1$\label{greedy:return}}{}
     \Statex
-    \Statex \Compl{Brown}{Costo Total de la Heur\'istica: }{$n^2 + n$}{$= \mathcal O(n^2)$}
+    \Statex \Compl{Brown}{Costo Total de la Heur\'istica: }{$n^2 + n$}{$= \mathcal O(n^2)$ }
 \end{pseudocodigo}
 
 \bigskip

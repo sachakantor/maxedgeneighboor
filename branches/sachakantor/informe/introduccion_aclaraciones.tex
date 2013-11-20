@@ -70,7 +70,7 @@
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre el c\'alculo de la frontera de una clique}
-\subsection*{Sobre el c\'alculo de la frontera de una clique}
+\subsection*{Sobre el c\'alculo de la frontera de una clique\label{notas:calc_front}}
 \par Sea $K$ una clique de un grafo $G$, entonces su frontera depender\'a de los
     grados de los nodos que la componen. Sabemos que $K$ por ser clique, debe inducir
     un subgrafo completo en $G$, por lo cual cada nodo suma a la frontera
@@ -88,6 +88,25 @@
 \bigskip
 \par $\delta(K) = -|K|(|K|-1)\displaystyle\sum_{v \in K}d(v)$
 \bigskip
+
+\par M\'as a\'un, de aqu\'i podemos tambi\'en calcular cuantas aristas
+    incrementar\'ia un nodo al ser a\~nadido a una clique $|K|$. Supongamos
+    que tenemos un nodo $v$ que puede ser agregado a $K$ tales que $K+v$
+    es clique. Sea $\delta(K)$ la frontera de $K$. Entonces, como ya explicamos,
+    $v$ le agrega $d(v)-(|K+v|-1)$ nodos a esta nueva clique $K+v$. Pero $|K+v|$
+    no es otra cosa que $|K|+1$, quedando entonces que $v$ le a\~nade
+    $d(v)-|K|$ aristas.
+
+\par Pero al agreg\'arsele un nodo a $K$, esta pierde $|K|$ aristas de su frontera,
+    que son las utilizadas para poder incluir a $v$ en $K+v$ y no perder la
+    condici\'on de clique. Entonces, podemos expresar la frontera de $\delta(K+v)$
+    en funci\'on de la frontera de $K$, las aristas que se pierden y ganan por agregar
+    a $v$:
+
+\bigskip
+
+\par $\delta(K+v) = \delta(K) + \underbrace{d(v)-|K|}_{\text{Lo que se gana}}
+    - \underbrace{|K|}_{Lo que se pierde} = \delta(K) + d(v) - 2|K|$
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre la complejidad de instanciar un grafo en la implementaci\'on}
