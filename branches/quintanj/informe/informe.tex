@@ -33,7 +33,9 @@
 \usepackage{enumerate}
 \usepackage{float}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{comment}
+\usepackage{xfrac}
 
 % url – Ver­ba­tim with URL-sen­si­tive line breaks - para el formato de referencias
 \usepackage{url}
@@ -51,12 +53,25 @@
 }
 \usepackage{nameref}
 
+%Para usar referencias por el nombre en las listings de "description"\makeatletter
+\let\orgdescriptionlabel\descriptionlabel
+\renewcommand*{\descriptionlabel}[1]{%
+  \let\orglabel\label
+  \let\label\ %\@gobble
+  \phantomsection
+  \edef\@currentlabel{#1}%
+  %\edef\@currentlabelname{#1}%
+  \let\label\orglabel
+  \orgdescriptionlabel{#1}%
+}
+\makeatother
+
 %Paquetes para hacer tablas especificas
 \usepackage{multirow}
 
 %Paquetes para dibujar grafos
 \usepackage{tikz}
-\usetikzlibrary{arrows,chains,shapes,matrix,trees,positioning,petri,topaths}
+\usetikzlibrary{arrows,chains,shapes,matrix,trees,positioning,petri,topaths,calc,decorations.pathreplacing}
 \usepackage{tkz-graph} %Especifico de grafos, muy facil, ver doc
 \usepackage{tkz-berge} %especifico para grafos conocidos, arboles, caminos, etc
 %\tikzstyle{vertex}=[circle,fill=black!25,minimum size=20pt,inner sep=0pt]
@@ -66,6 +81,12 @@
 %\tikzstyle{selectedEdge} = [draw,line width=5pt,-,red!50]
 %\tikzstyle{ignoredEdge} = [draw,line width=5pt,-,black!20]
 \usepackage{epstopdf}
+
+%Paquetes para dibujar el arbol de decisiones
+\usepackage{fancybox}
+\usepackage{rotating}
+\newcommand\dotstheta{\overset{\vdots}{\mathcal O(n)}}
+\usepackage{rotfloat}
 
 %paquete para pseudocodigo con algorithmicx
 \usepackage{algorithm}
@@ -204,33 +225,33 @@
     \pagebreak
 
     \phantomsection
-    \addcontentsline{toc}{section}{Introducci\'on y aclaraciones}
-    \section*{Introducci\'on y Aclaraciones}
+    \addcontentsline{toc}{section}{Notas Preliminares}
+    \section*{Notas Preliminares}
         \input{introduccion_aclaraciones}
         \pagebreak
 
 % ------------ Ejercicios ----------
-    \section{Situaciones de la Vida Real}
+    \section{Situaciones de la vida real}
         \input{ej1/ejercicio1}
         \pagebreak
 
-    \section{Algoritmo Exacto}
+    \section{Algoritmo Exacto\label{backtracking}}
         \input{ej2/ejercicio2}
         \pagebreak
 
-    \section{Heur\'istica Constructiva Golosa}
+    \section{Heur\'istica Constructiva Golosa\label{golosa}}
         \input{ej3/constructiva_golosa/constructiva_golosa}
         \pagebreak
 
-    \section{Heur\'istica de B\'usqueda Local}
+    \section{Heur\'istica de B\'usqueda Local\label{busqueda}}
         \input{ej3/busqueda_local/busqueda_local}
         \pagebreak
 
-    \section{Metaheur\'istica de B\'usqueda Tab\'u}
+    \section{Metaheur\'istica de B\'usqueda Tab\'u\label{tabu}}
         \input{ej3/tabu_search/tabu_search}
         \pagebreak
 
-    \section{Experimentaci\'on Computacional}
+    \section{Experimentaci\'on Computacional\label{experimentacion}}
         \input{ej4/ejercicio4}
         \pagebreak
 \end{document}

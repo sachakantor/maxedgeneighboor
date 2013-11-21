@@ -1,38 +1,327 @@
+\label{notas_preliminares}
 \phantomsection
-\addcontentsline{toc}{subsection}{Notas sobre la Experimentaci\'on}
-\subsection*{Notas sobre la Experimentaci\'on}\label{aclaraciones}
-	\par Llegados a esta instancia del ejercicio, lo que nos importa es poder
-		comprobar emp\'iricamente las conclusiones te\'oricas, particularmente
-		las relacionadas con la complejidad del algoritmo (ya en el punto anterior
-		pudimos comprobar -por lo menos hasta un punto razonable- que el algoritmo
-		es correcto). 
-	\par Entonces nos encontramos en la situaci\'on de tratar de "medir"
-		la complejidad del algoritmo propuesto e implementado. Solo que aqu\'i ya no podremos
-		comprobar que el resultado devuelto por el algoritmo es correcto por dos
-		motivos en especial: llegaremos a un punto donde probaremos con instancias
-		muy grandes como para saber a ciencia cierta cual debe ser el resultado y
-		pues decidimos darle un grado importante (sino principal) de aletoriedad
-		a la selecci\'on/generaci\'on de estas intancias.
-	\par Para medir la complejidad se decidi\'o usar el \emph{clock} del sistema,
-		el mismo es un n\'umero global relacionado al hardware/sistema operativo
-		que se incrementa con cada instrucci\'on ejecutada por el ordenador. La idea
-		es tomar este n\'umero \footnote{\url{http://www.cplusplus.com/reference/ctime/clock/}}
-		justo antes e inmediatamente despu\'es de que corra nuestro algoritmo 
-		(dejando de lado -siguiendo las directivas del enunciado de este TP- 
-		todas aquellas funcionalidades encargadas de cosas ajenas, como
-		por ejemplo el parseo de los datos de entrada/salida). Luego, alcanza con
-		calcular la diferencia entre estos dos valores para saber cu\'anto tiempo
-		insumi\'o el programa para arribar a una soluci\'on.
-	\par El problema de esta metodolog\'ia para medir la complejidad es que no
-		toma en cuenta que junto con nuestro algoritmo se encuentra ejecut\'ando
-		muchas otras aplicaciones (\emph{Winning Eleven, Mortal Kombat, etc}, las
-		cuales "comparten" el tiemp de CPU. Es decir, el sistema operativo podr\'ia
-		(m\'as a\'un, lo hace) desalojar nuestra tarea del procesador y pasar a
-		ejecutar otras cosas. Luego ser\'a nuevamente el turno de nuestra
-		aplicaci\'on, la que podr\'a terminar. Pero mientras todo esto ocurr\'ia,
-		el contador global de "clock" del sistema sigui\'o increment\'andose. Es
-		decir, no llegamos a una medida exacta de lo que tar\'o nuestro programa.
-	\par Por estos motivos decidimos, para cada instancia del problema, ejecutarla
-		m\'as de una vez (10 veces, en particular) y luego sacar el promedio. As\'i 
-		conseguimos eliminar \emph{Outliers} y poder decir que tenemos una medida
-		lo suficientemente precisa.
+\addcontentsline{toc}{subsection}{Sobre la nomenclatura}
+\subsection*{Sobre la nomenclatura}
+\par En este trabajo se utilizan algunos acr\'onimos los cuales es inc\'omodo
+    aclarar en cada caso. Por lo tanto presentamos aqu\'i una lista de ellos
+    de manera que queden ya explicados para la extensi\'on de todo este
+    documento.
+
+\begin{description}
+    \item[G: ] Nos referimos a un grafo no dirigido y sin pesos en los ejes
+        cualquiera.
+
+    \item[n: ] Se refiere a la cantidad de nodos de un grafo $G$.
+
+    \item[m: ] Se refiere a la cantidad de aristas de un grafo $G$.
+
+    \item[V(G): ] Es el conjunto de nodos de un grafo $G$.
+
+    \item[E(G): ] Es el conjunto de ejes de un grafo $G$.
+
+    \item[CMF: ] Se refiere a una clique de frontera maximal en un grafo $G$.
+
+    \item[$\delta$(K): ] Es la frontera de una clique $K$ en un grafo $G$.
+
+    \item[$|$G'$|$: ] Es la cantidad de nodos de un subgrafo inducido $G'$ en un grafo $G$.
+
+    \item[K$_k$: ] Es un grafo completo $K$ de $k$ v\'ertices.
+
+    \item[d(v): ] Sea $v \in V(G)$, $d(v)$ es el grado de este en $G$.
+
+    \item[K+v: ] Sea $v \in V(G)$, y $K \subset V(G)$ tal que induce un grafo
+        $K$\footnote{Peque\~no abuso de notaci\'on, nos referimos a $K$ como el
+        (sub)conjunto de nodos as\'i como al subgrafo que induce en $G$.}, decimos
+        entonces que $K+v$ es agregar al nodo $v$ a $K$.
+\end{description}
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre las referencias de este documento}
+\subsection*{Sobre las referencias de este documento}
+\par A lo largo de este informe existen referencias tanto a \emph{papers}
+    encontrados durante la elaboraci\'on de las resoluciones como as\'i
+    referencias a cap\'itulos espec\'ificos de libros que son parte de la
+    bibliograf\'ia de la materia.
+
+\par Los mismos han sido puestos a disposici\'on del corrector en un repositorio
+    de archivos \emph{online}, cuya direcci\'on \emph{web} est\'a inclu\'ida
+    en los archivos provistos con este documento.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre los grafos no conexos}
+\subsection*{Sobre los grafos no conexos\label{notas:conexos}}
+\par Durante todo este trabajo se asumen que todos los grafos de entrada son
+    grafos conexos. Esto lo hacemos ya que utilizando alg\'un algoritmo que recorra
+    grafos (como por ejemplo \emph{DFS} o \emph{BFS}) se podr\'ian identificar
+    las componentes conexas y luego resolver el problema para cada componente
+    por separado, y al terminar quedarnos con la mejor soluci\'on, siendo esta
+    la \emph{CMF} de todo el grafo.
+
+\par En t\'erminos de complejidad, todos los algoritmos/heur\'isticas aqu\'i
+    presentados tienen una complejidad mayor a $\mathcal O(n+m)$, que es
+    la complejidad de los algoritmos que nos permiten identificar las componentes
+    conexas de un grafo cualquiera. Por lo tanto, asint\'oticamente hablando,
+    la complejidad de nuestros algoritmos no se ve afectada.
+
+\par Por falta de tiempo, no se implement\'o esta rutina que identifica las componentes
+    conexas, pero considerando que en la complejidad asint\'otica temporal no se
+    ve influ\'ida, se decidi\'o hacer esta aclaraci\'on y asumir para todos los algoritmos que
+    los grafos de entrada son conexos.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre el c\'alculo de la frontera de una clique}
+\subsection*{Sobre el c\'alculo de la frontera de una clique\label{notas:calc_front}}
+\par Sea $K$ una clique de un grafo $G$, entonces su frontera depender\'a de los
+    grados de los nodos que la componen. Sabemos que $K$ por ser clique, debe inducir
+    un subgrafo completo en $G$, por lo cual cada nodo suma a la frontera
+    todas sus aristas incidentes salvo aquellas que se usan para formar la
+    clique, es decir que un nodo $v \in K$ le suma a $\delta(K)$ una cantidad
+    de aristas expresable como $d(v)-(|K|-1)$.
+
+\bigskip
+\par Entonces, $\delta(K)$, es expresable como $\displaystyle\sum_{v \in K}d(v) - (|K|-1)$.
+\bigskip
+
+\par Como la cantidad de nodos en $K$ es justamente $|K|$, la expresi\'on
+    que nos queda es:
+
+\bigskip
+\par $\delta(K) = -|K|(|K|-1)\displaystyle\sum_{v \in K}d(v)$
+\bigskip
+
+\par M\'as a\'un, de aqu\'i podemos tambi\'en calcular cuantas aristas
+    incrementar\'ia un nodo al ser a\~nadido a una clique $|K|$. Supongamos
+    que tenemos un nodo $v$ que puede ser agregado a $K$ tales que $K+v$
+    es clique. Sea $\delta(K)$ la frontera de $K$. Entonces, como ya explicamos,
+    $v$ le agrega $d(v)-(|K+v|-1)$ nodos a esta nueva clique $K+v$. Pero $|K+v|$
+    no es otra cosa que $|K|+1$, quedando entonces que $v$ le a\~nade
+    $d(v)-|K|$ aristas.
+
+\par Pero al agreg\'arsele un nodo a $K$, esta pierde $|K|$ aristas de su frontera,
+    que son las utilizadas para poder incluir a $v$ en $K+v$ y no perder la
+    condici\'on de clique. Entonces, podemos expresar la frontera de $\delta(K+v)$
+    en funci\'on de la frontera de $K$, las aristas que se pierden y ganan por agregar
+    a $v$:
+
+\bigskip
+
+\par $\delta(K+v) = \delta(K) + \underbrace{d(v)-|K|}_{\text{Lo que se gana}}
+    - \underbrace{|K|}_{\text{Lo que se pierde}} = \delta(K) + d(v) - 2|K|$
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre la complejidad de instanciar un grafo en la implementaci\'on}
+\subsection*{Sobre la complejidad de instanciar un grafo en la implementaci\'on\label{grafo:estructuras}}
+\par Entre los archivos fuente provistos junto con este trabajo, se opt\'o por
+    crear una clase \emph{Graph} de \emph{C++} que encapsulase todos los algoritmos
+    requeridos por este trabajo.
+
+\par Ahora bien, esta clase contiene ciertas estructuras internas de datos
+    para modelar los grafos de entrada. Las mismas en cuesti\'on son listas/\emph{deques}
+    de adyacencias y una matriz de adyacencia. Si bien ambas estructuras nos
+    brindan la misma informaci\'on (es decir, son redundantes), a la hora
+    de implementar nuestros algoritmos, tener ambas estructuras nos brindan
+    mayor comodidad seg\'un la operaci\'on que estemos realizando. No es lo
+    mismo verificar si dos nodos son adyacentes en una matriz de adyacencia que
+    recorrer la lista de adyacencia de uno de los nodos (la complejidad en
+    el primer caso es $\mathcal O(1)$ y en el segundo $\mathcal O(n)$).
+
+\par Sin entrar mucho en detalles, se puede prevenir al lector que la \emph{%
+    instanciaci\'on} de dichas estructuras tendr\'a un costo de $\mathcal O%
+    (n^2)$ (instanciar una matriz de $n^2$ posiciones, sumado a $n$ listas/\emph{deques} de
+    hasta $n$ elementos) el cual no se considera en el c\'alculo de la complejidad
+    asint\'otica temporal de los algoritmos dise\~nados durante el curso de este
+    documento ya que todos estos superan dicha complejidad.
+
+\par A su vez, en la estructura interna de esta clase \emph{Graph}, se tiene
+    un vector\footnote{\url{http://www.cplusplus.com/reference/vector/vector/}}
+    que contiene punteros a nodos (donde \emph{nodo} es un \emph{struct} definido
+    por nosotros) que nos da acceso en tiempo constante a la lista de adyacencia
+    de dicho nodo, a su "id" y a su grado en $G$.
+
+\par En algunas de las variantes de los algoritmos presentados aqu\'i, se decide
+    a su vez ordenar las listas de adyacencia con un cierto criterio (explicado
+    en cada caso en particular), pasando la complejidad de la instanciaci\'on
+    de esta clase de $\mathcal O(n^2)$ a $\mathcal O(n^2 \cdot log(n))$, y
+    en algunos casos esta complejidad si ha de tenerse en cuenta para los algorimos
+    propuestos. Estos casos est\'an aclarados apropiadamente en caso de ser
+    necesario.
+
+\par Por \'ultimo, entre las estructuras tambi\'en se guarda la cantidad
+    de nodos y de ejes en dos \emph{unsigned int} para poder acceder a dicha
+    informaci\'on en tiempo constante.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre la compilaci\'on de los archivos fuente}
+\subsection*{Sobre la compilaci\'on de los archivos fuente}
+\par En los archivos provistos junto con este trabajo se pueden distinguir dos
+    directorios donde hay archivos fuentes compilables: \emph{src} y
+    \emph{experimentaci\'on}. En ambos hay ya un archivo \emph{Makefile} con el
+    cual se pueden compilar todos los binarios desarrollados y utilizados en
+    el marco de este trabajo.
+
+\par Cabe destacar, que en la implementaci\'on provista, se permite compilar
+    dichos binarios con un dise\~no \emph{multi-thread}\footnote{\url{%
+    http://www.openmp.org}}, donde cada \emph{hilo} de ejecuci\'on tomar\'a
+    una instancia distinta del problema provista por el \emph{standard input}
+    y la resolver\'a con el algoritmo correspondiente en paralelo. Esto nos
+    permite ejecutar muchas instancias en simult\'aneo, pero sin afectar
+    el tiempo medido (ya que cada \emph{thread} es resuelta en un procesador
+    diferente). En caso de querer compilar de esta manera los binarios, se
+    debe ejecutar el siguiente comando desde el directorio \emph{src} o
+    \emph{experimentaci\'on}:
+
+\bigskip
+\par make EXTRACXXFLAGS=-fopenmp
+\bigskip
+
+\par Para poder compilar el binario de esta manera, se requiere tener la 4.4
+    o superior del compilador \emph{GNU Compiler Collection}\footnote{\url{%
+    http://gcc.gnu.org/}}.
+
+\bigskip
+\par A su vez, dada la cantidad de variantes por heur\'istica que se
+    proveen, existen reglas para compilar los binarios relacionados
+    \'unicamente con una heur\'istica particular. Estas reglas son:
+
+\begin{itemize}
+    \item \textbf{backtracking: } Compila el algoritmo exacto.
+    \item \textbf{golosa: } Compila las heur\'isticas golosas.
+    \item \textbf{busqueda: } Compila las heur\'isticas de b\'usqueda local.
+    \item \textbf{tabu: } Compila las heur\'isticas de b\'usqueda tab\'u\footnote{%
+        Un total de 108 binarios para esta opci\'on. Compilar con paciencia.}.
+\end{itemize}.
+
+\par Por ejemplo, si s\'olo se quisiera compilar el algoritmo exacto
+    y la heur\'istica constructiva-golosa, habr\'ia que ejecutar:
+
+\bigskip
+\par make backtracking golosa
+\bigskip
+
+\bigskip
+\par O, si se quiere habilitar la funcionalidad \emph{multi-thread}:
+\bigskip
+\par make EXTRACXXFLAGS=-fopenmp backtracking golosa
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre los generadores de instancias aleatorias}
+\subsection*{Sobre los generadores de instancias aleatorias}
+\par Una vez que se implementaron los algoritmos que resuelven los problemas
+    presentados por el enunciado de este trabajo, se llega a la etapa de
+    an\'alisis/experimentaci\'on donde se quieren verificar los resultados
+    te\'oricos obtenidos con informaci\'on emp\'irica. Para ello, en cada caso/%
+    algoritmo, se hizo un an\'alisis sobre alg\'un subconjunto/familia de grafos
+    de inter\'es (explicado en cada caso particular durante este informe). Luego,
+    se implement\'o un generador de instancias aleatorias para estas familias
+    (el cual es compilado seg\'un como se indica en el punto anterior) el cual,
+    mediante una interfaz de men\'u por l\'inea de comando, nos permite seleccionar
+    la familia, el tama\~no de las instancias a generar, cuantas instancias por
+    tama\~no generar y el archivo donde se desea guardar toda esta informaci\'on%
+    \footnote{Puede ocurrir que para ciertas familias se requiera alg\'un otro dato,
+    el cual ser\'a demandado al usuario por la pantalla.}.
+
+\par El concepto de aleatoriedad en estos generadores ocurre a la hora de elegir
+    los extremos de las aristas (siempre preservando la estructura de la familia
+    elegida). Para poder hacer esta selecci\'on aleatoria, se utilizaron funciones
+    del a \emph{STL} de \emph{C} portadas a \emph{C++}\footnote{%
+    \url{http://www.cplusplus.com/reference/cstdlib/rand/}} y algunas de la
+    \emph{STL} nativa de \emph{C++}\footnote{%
+    \url{http://www.cplusplus.com/reference/algorithm/random_shuffle/}}.
+
+\par A su vez, hay que mencionar que uno de los objetivos principales de este
+    trabajo es poder comparar distintas formas de resolver el problema
+    presentado. Entonces, es razonable pretender usar siempre el mismo conjunto
+    de instancias de la familia que se desea comparar en los algoritmos. Por
+    ello, si bien usamos instancias generadas aleatoriamente, decidimos guardar
+    estas instancias en un archivo que luego puede ser utilizado m\'ultiples
+    veces o en distintos algoritmos. Como estos archivos contienen miles de
+    instancias que van incrementando su tama\~no, estos archivos adquierieron
+    un gran tama\~no, por lo cual se decidi\'o dejarlos a disposici\'on del
+    corrector tal como se hizo con con las referencias utilizadas en este
+    documento: mediante un repositorio \emph{online} de archivos. La direcci\'on
+    \emph{web} del mismo puede ser encontrada dentro del directorio \emph{%
+    experimentaci\'on} de los archivos provistos junto con este trabajo.
+
+\par Por cada familia fueron creadas 10 instancias aleatorias distintas para
+    cara tama\~no, para as\'i poder tener una muestra un poco m\'as amplia 
+    de los distintos tipos de grafos del mismo tama\~no dentro de una misma familia
+    \footnote{Consideramos como medida de tama\~no de un grafo como su cantidad
+    de nodos/v\'ertices.}.
+
+\par Hay una familia de grafos particular que merece una menci\'on aparte dada
+    la manera en la que implementamos su generador. Esta es la familia de los
+    grafos \emph{planares}\footnote{Claude Berge. Planar Graphs. \emph{The Theory
+    of Graphs}, 21:207-2013, 1966.}. La generaci\'on de esta familia conlleva
+    una mayor dificultad, m\'as a\'un, es un problema en si mismo que ha sido
+    y es estudiado a\'un\footnote{\'Eric Fusy. Uniform Random Sampling Of Planar
+    Graphs in Linear Time.}. Por este motivo, se decidi\'o utilizar una
+    biblioteca de funciones de \emph{C++} que ya nos provee dicho generador
+    de grafos aleatorios\footnote{\url{http://www.ogdf.net/}}. Sus archivos
+    fuentes son provistos junto con este trabajo como as\'i tambi\'en su
+    compilaci\'on fue configurada en los \emph{Makefile}'s ya mencionados en
+    esta secci\'on.\footnote{La versi\'on de \emph{python} 2.7 es requerida para
+    que esto funcione sin ninguna modificaci\'on.}.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre la experimentaci\'on}
+\subsection*{Sobre la experimentaci\'on}
+\par Llegados a esta instancia del ejercicio, lo que nos importa es poder
+    comprobar emp\'iricamente las conclusiones te\'oricas, particularmente
+    las relacionadas con la complejidad temporal y "cuan bueno" son los
+    algoritmos/heur\'isticas.
+
+\par Entonces nos encontramos en la situaci\'on de tratar de "medir"
+    la complejidad del algoritmo propuesto e implementado. Solo que aqu\'i ya no podremos
+    comprobar que el resultado devuelto por el algoritmo es correcto por dos
+    motivos en especial: llegaremos a un punto donde probaremos con instancias
+    muy grandes como para saber a ciencia cierta cual debe ser el resultado y
+    pues decidimos darle un grado importante (sino principal) de aletoriedad
+    a la selecci\'on/generaci\'on de estas intancias.
+
+\par Para medir la complejidad se decidi\'o usar el \emph{clock} del sistema,
+    el mismo es un n\'umero global relacionado al hardware/sistema operativo
+    que se incrementa con cada instrucci\'on ejecutada por el ordenador. La idea
+    es tomar este n\'umero \footnote{%
+    \url{http://www.cplusplus.com/reference/chrono/high_resolution_clock/now/}}
+    justo antes e inmediatamente despu\'es de que corra nuestro algoritmo
+    (dejando de lado -siguiendo las directivas del enunciado de este TP-
+    todas aquellas funcionalidades encargadas de cosas ajenas, como
+    por ejemplo el \emph{parseo}\footnote{%
+    \url{http://es.wikipedia.org/wiki/Analizador_sint\%C3\%A1ctico}} de los datos
+    de entrada/salida). Luego, alcanza con calcular la diferencia entre estos dos
+    valores para saber cu\'anto tiempo insumi\'o el programa para arribar a una soluci\'on.
+
+\par El problema de esta metodolog\'ia para medir la complejidad es que no
+    toma en cuenta que junto con nuestro algoritmo se encuentra ejecut\'ando
+    muchas otras aplicaciones (\emph{Winning Eleven, Mortal Kombat, etc}), las
+    cuales "comparten" el tiempo de CPU. Es decir, el sistema operativo podr\'ia
+    (m\'as a\'un, lo hace) desalojar nuestra tarea del procesador y pasar a
+    ejecutar otras cosas. Luego ser\'a nuevamente el turno de nuestra
+    aplicaci\'on, la que podr\'a terminar. Pero mientras todo esto ocurr\'ia,
+    el contador global de "clock" del sistema sigui\'o increment\'andose. Es
+    decir, no llegamos a una medida exacta de lo que tard\'o nuestro programa.
+
+\par Por estos motivos decidimos, para cada instancia del problema, ejecutarla
+    m\'as de una vez (5 veces, espec\'ificamente) y luego quedarnos con aquella
+    ejecuci\'on que requiri\'o menos tiempo en terminar. As\'i
+    conseguimos eliminar \emph{outliers} y poder decir que tenemos una medida
+    lo suficientemente precisa.
+
+\phantomsection
+\addcontentsline{toc}{subsection}{Sobre el entorno de experimentaci\'on}
+\subsection*{Sobre el entorno de experimentaci\'on}
+\par A la hora de ejecutar los algoritmos con las \emph{suites} de testeo
+    generadas aleatoriamente (y en orden de informar al lector en caso
+    de querer reproducir los resultados obtenidos), se utiliz\'o la versi\'on
+    de los binarios compilada con la opci\'on de \emph{multi-thread} sobre
+    un \emph{HP ProLiant DL580 G5}\footnote{\url{%
+    http://h20566.www2.hp.com/portal/site/hpsc/template.PAGE/action.process/public%
+    /psi/learnUseDisplay/?sp4ts.oid=3454575&javax.portlet.action=true&spf_p.tpst=%
+    psiContentDisplay&javax.portlet.begCacheTok=com.vignette.cachetoken&spf_p.prp_%
+    psiContentDisplay=wsrp-interactionState\%3DdocId\%253Demr_na-c01154573\%257CdocLocale%
+    \%253Den_US&javax.portlet.endCacheTok=com.vignette.cachetoken}} con 32GB
+    de memoria RAM y 4 procesadores \emph{Intel Xeon X7460 (family 6, model 29)}
+    de 6 n\'ucleos de 2.66GHZ.
+
+\par Dicho \emph{hardware} contaba al momento de la experimentaci\'on con un 
+    sistema operativo \emph{CentOS 6.4} x86\_64\footnote{\url{http://www.centos.org/}}.

@@ -36,10 +36,14 @@ T algo3InputParser<T,Container>::next(){
 
 template<typename T, typename Container>
 void algo3InputParser<T,Container>::copy_to_container(Container& output,const T& termination){
+    unsigned int read = 0;
     for(std::back_insert_iterator<Container > back_it (output);
-        _input_stream_it != std::istream_iterator<T> () && *_input_stream_it != termination;
+        _input_stream_it != std::istream_iterator<T> () && (*_input_stream_it != termination || read < 2);
         ++_input_stream_it)
+    {
         back_it = *_input_stream_it;
+        ++read;
+    }
 }
 
 template<typename T, typename Container>
