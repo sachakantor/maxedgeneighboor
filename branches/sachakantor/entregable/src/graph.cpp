@@ -756,6 +756,11 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
                     if(frontier_if_add_tabu_improves_best_sol > frontier_if_remove_tabu_improves_best_sol){
                         clique.push_back(node_id_add_tabu_improves_best_sol);
                         best_frontier = frontier_if_add_tabu_improves_best_sol;
+                        #ifdef _ASPIRATION
+                        current_clique.push_back(node_id_add_tabu_improves_best_sol);
+                        current_frontier = best_frontier;
+                        tabu_add[node_id_add_tabu_improves_best_sol-1] = global_counter+_TABU_HOW_OLD_COUNTER;
+                        #endif//_ASPIRATION
 
                     } else {
                         iter_swap(
@@ -764,9 +769,25 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
                         );
                         clique.pop_back();
                         best_frontier = frontier_if_remove_tabu_improves_best_sol;
+                        #ifdef _ASPIRATION
+                        iter_swap(
+                            current_clique.end()-1,
+                            find(current_clique.begin(),current_clique.end(),node_id_remove_tabu_improves_best_sol)
+                        );
+                        current_clique.pop_back();
+                        current_frontier = best_frontier;
+                        tabu_remove[node_id_remove_tabu_improves_best_sol-1] = global_counter+_TABU_HOW_OLD_COUNTER;
+                        #endif//_ASPIRATION
                     }
+                #ifdef _ASPIRATION
+                going_down_counter = 0;
+                #endif//_ASPIRATION
                 }
+            #ifndef _ASPIRATION
             }
+            #else
+            } else
+            #endif//_ASPIRATION
 
             if(node_id_add_no_tabu != 0 || node_id_remove_no_tabu != 0){
                 //Tengo al menos una opcion no tabu

@@ -21,78 +21,118 @@ BUSQUEDA=experimentacion.ej3.busqueda.primer_salto \
 		 experimentacion.ej3.busqueda.mejor_salto_intercambiar \
 		 experimentacion.ej3.busqueda.mejor_salto_intercambiar_golosa
 
-TABU=experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2 \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_n \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2 \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2 \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_n \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_n2 \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_nlogn \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_n \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_n2 \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_n \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_n2 \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.golosa \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.golosa \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.golosa \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.golosa \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.golosa \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.golosa \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.golosa \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.golosa \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.golosa \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.golosa \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_n.golosa \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_n2.golosa \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.golosa \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_n.golosa \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_n2.golosa \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.golosa \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_n.golosa \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_n2.golosa \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_n.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_n2.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_n.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_n2.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_n.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_n2.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_n.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_2n.old_n2.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_n.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n.old_n2.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_n.golosa.tabu_no_improves \
-	 experimentacion.ej3.tabu.iter_n.down_n2.old_n2.golosa.tabu_no_improves
+TABU_IMPROVES=experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2 \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_n \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2 \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2 \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_n \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_n2 \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_nlogn \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_n \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_n2 \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_n \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_n2 \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.golosa \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.golosa \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.golosa \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.golosa \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.golosa \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.golosa \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.golosa \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.golosa \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.golosa \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.golosa \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_n.golosa \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_n2.golosa \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.golosa \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_n.golosa \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_n2.golosa \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.golosa \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_n.golosa \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_n2.golosa
+
+TABU_IMPROVES=experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_n.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_n2.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_n.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_n2.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_n.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_n2.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_n.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_2n.old_n2.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_n.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n.old_n2.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_n.golosa.tabu_no_improves \
+			  experimentacion.ej3.tabu.iter_n.down_n2.old_n2.golosa.tabu_no_improves
+
+TABU_NO_IMPROVES_ASPIRATION=experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_2n.old_n.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_2n.old_n2.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n.old_n.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n.old_n2.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n2.old_n.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n2.old_n2.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_2n.old_n.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_2n.old_n2.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n.old_n.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n.old_n2.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n2.old_n.golosa.tabu_no_improves.aspiration \
+							experimentacion.ej3.tabu.iter_n.down_n2.old_n2.golosa.tabu_no_improves.aspiration
+
+TABU=$(TABU_IMPROVES) $(TABU_NO_IMPROVES) $(TABU_NO_IMPROVES_ASPIRATION)
 
 EXECUTABLES=graph_generator promedio $(BACKTRACKING) $(GOLOSA) $(BUSQUEDA) $(TABU)
 
@@ -102,6 +142,9 @@ golosa: $(GOLOSA)
 busqueda: $(BUSQUEDA)
 generador: graph_generator
 tabu: $(TABU)
+tabu_improves: $(TABU_IMPROVES)
+tabu_no_improves: $(TABU_NO_IMPROVES)
+tabu_no_improves_aspiration: $(TABU_NO_IMPROVES_ASPIRATION)
 
 #Archivos ejecutables
 experimentacion.ej2.backtracking: $(SOURCES)
@@ -364,6 +407,114 @@ experimentacion.ej3.tabu.iter_n.down_n2.old_n.golosa.tabu_no_improves: $(SOURCES
 
 experimentacion.ej3.tabu.iter_n.down_n2.old_n2.golosa.tabu_no_improves: $(SOURCES)
 		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_2n.old_n.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_2n.old_n2.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n.old_n.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n.old_n2.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n2.old_n.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n2.old_n2.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_2n.old_nlogn.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_2n.old_n2.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n.old_nlogn.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n.old_n.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n.old_n2.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n2.old_nlogn.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_nlogn.down_n2.old_n2.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n*log2(n)" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_2n.old_nlogn.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_2n.old_n.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_2n.old_n2.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="2*n" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n.old_nlogn.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n.old_n.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n.old_n2.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n2.old_nlogn.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n*log2(n)" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n2.old_n.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
+
+experimentacion.ej3.tabu.iter_n.down_n2.old_n2.golosa.tabu_no_improves.aspiration: $(SOURCES)
+		$(CXX) $(CXXFLAGS) $(IDIR) $(EXTRACXXFLAGS) -D_HEUR_TABU_GOLOSA -D_TABU_GLOBAL_COUNTER="n" -D_TABU_GOING_DOWN_COUNTER="n/2" -D_TABU_HOW_OLD_COUNTER="n/2" -D_TABU_NO_IMPROVE -D_ASPIRATION -o $@ $^
 
 clean:
 		@$(RM) $(EXECUTABLES)
