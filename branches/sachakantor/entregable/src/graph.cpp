@@ -766,19 +766,14 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
                         best_frontier = frontier_if_remove_tabu_improves_best_sol;
                     }
                 }
-                //#ifdef _TABU_NO_IMPROVE
-                //going_down_counter = 0;
-                //#endif//_TABU_NO_IMPROVE
             }
 
             if(node_id_add_no_tabu != 0 || node_id_remove_no_tabu != 0){
                 //Tengo al menos una opcion no tabu
-                //#ifndef _TABU_NO_IMPROVE
                 if(max(frontier_if_add_no_tabu,frontier_if_remove_no_tabu) > current_frontier)
                     going_down_counter = 0;
                 else
                     ++going_down_counter;
-                //#endif//_TABU_NO_IMPROVE
 
                 if(frontier_if_add_no_tabu > frontier_if_remove_no_tabu){
                     current_clique.push_back(node_id_add_no_tabu);
@@ -799,11 +794,6 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
                 if(current_frontier > best_frontier){
                     clique = current_clique;
                     best_frontier = current_frontier;
-                //#ifdef _TABU_NO_IMPROVE
-                //    going_down_counter = 0;
-                //} else {
-                //    ++going_down_counter;
-                //#endif//_TABU_NO_IMPROVE
                 }
 
             } else {
