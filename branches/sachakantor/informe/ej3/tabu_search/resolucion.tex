@@ -93,6 +93,19 @@
         \end{enumerate}
 \end{itemize}
 
+\bigskip
+
+\par En nuestra heur\'istica particular, decidimos inicialmente (antes de implementar
+    y experimentar con las variantes) utilizar una funci\'on de aspiraci\'on que nos
+    permita saltar a un vecino que mejore nuestra soluci\'on \'optima parcial aunque
+    sea este tab\'u. Tambi\'en, decidimos que el contador de iteraciones sin mejoras
+    de la soluci\'on actual ser\'ia reestablecido (es decir, volver\'ia cero, o
+    equivalemente, consideramos que mejor\'o la soluci\'on actual) solamente cuando
+    la funci\'on objetivo se viera incrementada mediante la funci\'on de aspiraci\'on
+    o mediante un movimiento \textbf{no} tab\'u. Es decir, si se tiene que realizar
+    un movimiento tab\'u que no sea parte de la funci\'on de aspiraci\'on, este contador
+    ser\'a incrementado aunque dicho movimiento haya incrementado la funci\'on objetivo.
+
 \subsubsection{Pseudoc\'odigo descriptivo}
 \par Se presenta a continuaci\'on un pseudoc\'odigo que describe los pasos que sigue
     nuestra heur\'istica propuesta. El mismo no contempla estructuras de datos sobre

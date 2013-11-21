@@ -234,6 +234,165 @@
 
 \bigskip
 
-\par
+\par Al igual que en las dos heur\'isticas anteriores, la primera parte
+    del algoritmo verifica si el grafo $G$ es un grafo completo. En caso
+    de serlo, devuelve la respuesta exacta en tiempo lineal\footnote{%
+    Secci\'on \ref{backtracking:poda:grafo_completo},
+    \emph{\nameref{backtracking:poda:grafo_completo}}.}.
+
+\par Si el grafo $G$ no es un $K_n$, entonces comenzamos a recorrer
+    la otra rama del condicional. En la misma, en primera instancia,
+    se inicializan ciertas estructuras de datos y variables que usaremos
+    m\'as adelante. En el caso de la clique $K$, el costo es lineal
+    ya que se utiliza la funci\'on \emph{reserve}\footnote{\url{%
+    http://www.cplusplus.com/reference/vector/vector/reserve/}} para
+    luego evitar los posibles costos amortizado de la clase. Lo mismo
+    ocurre con las listas/vectores tab\'u $tabu\_agregar$ y $tabu\_quitar$-
+
+\par Luego, buscar un primer nodo que cumpla una condici\'on (para generar
+    la clique inicial) cuesta $\mathcal O(n)$ ya que hay que recorrer
+    todos los elementos y quedarnos con el primero que cumpla dicha condici\'on
+    (en este caso, que sea de grado mayor o igual al grado promedio)%
+    \footnote{\url{http://www.cplusplus.com/find_if/}}.
+
+\par Acceder luego al \'ultimo o primer elemento de un vector\emph{deque} tiene
+    costo constante\footnote{%
+    \url{http://www.cplusplus.com/reference/vector/vector/front/},%
+    \url{http://www.cplusplus.com/reference/vector/vector/back/},%
+    \url{http://www.cplusplus.com/reference/deque/deque/front/},%
+    \url{http://www.cplusplus.com/reference/deque/deque/back/}}, por lo
+    cual inicializar las variables que representan la frontera \'optima
+    parcial ($\delta_{max}$) y la frontera de la clique actual ($\delta(K)$)
+    es constante ya que acceder al \'unico elemento de $K$ (o $K^*$ en esta
+    instancia) y sumado al vector de nodos provisto por $G$ son operaciones
+    constantes.
+
+\par Una vez comenzado el ciclo, las primeras operaciones que requieren
+    una explicaci\'on es la identificaci\'on de los nodos distintos que tienen
+    las cliques de la vecindad que nos pueden ser \'utiles.
+
+\par En particular, podemos dividir este recorrido de la vecindad en 2
+    partes: la b\'usqueda en las cliques que tienen un nodo m\'as que la
+    clique actual y la de las cliques que tienen un nodo menos.
+
+\par En la primer b\'usqueda, lo que se hace es calcular los candidatos
+    para los nodos de la clique actual. Esto, como ya se explic\'o en
+    la Secci\'on \ref{bl:compl}, \emph{\nameref{bl:compl}}, tiene
+    un costo $\mathcal O(n^2)$. 
+
+\par Teniendo ya los candidatos, esta heur\'istica los recorre buscando
+    nodos que incrementen la funci\'on objetivo, recorriendo la vecindad
+    completamente (sin detenerse cuando encuentra un nodo que incrementa
+    efectivamente la frontera). Al seguir recorriendo, podemos ir comparando
+    el mejor resultado encontrado hasta el momento y aseguramos de quedarnos
+    aquellos nodos de "m\'as" que tienen los vecinos para 3 casos particulares:
+    nodos cuyo movimiento de agregado no sea tab\'u (y nos quedamos con el que
+    m\'as incrementa la frontera) y cuyo movimiento sea tab\'u (nos
+    quedamos con el que m\'as incremente y con el "menos" tab\'u\footnote{%
+    Entendemos por menos tab\'u como el movimiento que ha sido marcado como
+    tab\'u hace m\'as tiempo.}).
+
+\par La complejidad se mantiene lineal ya que recorremos un vector de nodos
+    (los candidatos) y tenemos acceso en tiempo constante a la informaci\'on
+    de los estos (gracias a la estructura de datos interna de $G$). Luego,
+    basta con hacer comparaciones y operaciones matem\'aticas entre el grado
+    de estos nodos y la frontera actual para saber si incrementan o no la
+    funci\'on objetivo y cuanto\footnote{\emph{\nameref{notas_preliminares},
+    \nameref{notas:calc_front}}.}, con lo cual el costo sigue siendo constante.
+    Por \'ultimo, saber si un nodo es tab\'u (y hace cuanto) se hace
+    en tiempo constante mediante el vector $tabu\_agregar$ y $contador\_global$.
+    Por lo tanto, tenemos un costo constante por cada elemento de $candidatos$,
+    cuyo tama\~no est\'a acotado por $n$, qued\'andonos un costo $\mathcal O(n)$.
+
+\par El proceso de recorrer la vecindad de las cliques con un nodo menos es
+    exactamente igual al reci\'en descripto para las cliques con un nodo m\'as,
+    con la diferencia de que en lugar de recorrer los nodos $candidatos$ se
+    recorren los nodos de la clique y se calcula como se ver\'ia afectada
+    la funci\'on objetivo en caso de no pertenecer dicho nodo a $K$. Por
+    lo tanto, haciendo hincapi\'e en las justificaciones ya dadas, este
+    costo es tambi\'en $\mathcal O(n)$.
+
+\par En el resto del pseudoc\'odigo se observ\'a que las complejidades
+    de la mayor\'ia de las operaciones es trivial. Son comparaciones de
+    enteros accesibles en tiempo constante, asignaciones/consultas a variables
+    o posiciones de vectores. Vale aclarar que las fronteras para
+    cada nodo identificado en el paso anterior (los $\delta$'s), son
+    calculados matem\'aticamente siguiendo lo descripto en la
+    secci\'on \emph{\nameref{notas:calc_front}}, m\'as a\'un, en nuestra implementaci\'on
+    dichos n\'umeros son calculados mientras se identifican los nodos
+    de importancia y se almacenan en distintas variables, por lo cual
+    si su c\'alculo es $\mathcal O(1)$, no afectan a la complejidad de
+    los pasos anteriores y en particular al tenerlos en variables se
+    podr\'an acceder en tiempo constante durante el resto del ciclo.
+
+\par Dentro del ciclo, queda otra operaci\'on (de costo lineal) que
+    merece una r\'apida menci\'on. Cuando se opta por ir a un vecino
+    con un nodo menos, el mismo ha de ser eliminado de $K$. Al ser
+    $K$ un vector, esta remoci\'on ha de tener (en el peor caso) costo
+    constante ya que a \emph{prior\'i} no se sabe en que posici\'on
+    de $K$ se encuentra dicho nodo. Por lo tanto primero debemos encontrarlo
+    (lo cual tiene costo lineal\footnote{\url{%
+    http://www.cplusplus.com/reference/algorithm/find/}}), y luego eliminarlo
+    puede ser hecho en tiempo constante mediante un \emph{swap}\footnote{%
+    \url{http://www.cplusplus.com/iter_swap/}} con el \'ultimo elemento
+    de $K$ y un \emph{pop\_back}\footnote{\url{%
+    http://www.cplusplus.com/reference/vector/vector/pop_back/}}.
+
+\par Tambi\'en dentro del ciclo hay otra operaci\'on de costo l\'ineal,
+    un tanto trivial, que aparece cuando se encuentra una nueva soluci\'on
+    \'optima parcial. En estos casos, debemos copiar $K$ a $K^*$, lo
+    cual tiene un costo lineal en el tama\~no de $K$\footnote{\url{%
+    http://www.cplusplus.com/reference/vector/vector/operator=/}},
+    que est\'a acotado por $n$, quedando entonces una complejidad
+    $\mathcal O(n)$.
+
+\par Para terminar, basta mencionar que la cantidad m\'axima de ciclos
+    que realizar\'a esta heur\'istica estar\'a acotada por un par\'ametro
+    con el cual experimentaremos, por lo tanto, la complejidad asint\'otica
+    temporal quedar\'a expresada en funci\'on de estos par\'ametros. En
+    particular, sabemos que el costo de una iteraci\'on del ciclo tiene
+    costo $\mathcal O(n^2)$ (debido al c\'alculo de la vecindad de 
+    cliques con un nodo m\'as que se hace encontrando todos los nodos
+    candidatos que se podr\'ian agregar a $K$). Luego, la cantidad de
+    iteraciones est\'a acotada por $MAX\_GLOBAL$, quedando entonces
+    espresada la complejidad del ciclo completo como $\mathcal O(%
+    MAX\_GLOBAL \cdot n^2)$.
+
+\par El resto de las operaciones fuera del ciclo son de menor orden que
+    esta complejidad, siendo esta finalmente la complejidad asint\'otica
+    final de la heur\'istica.
 
 \subsubsection{Complejidad de las Variantes\label{tabu:compl:variantes}}
+\par Como ya se describi\'o en la Secci\'on \ref{tabu:variantes},
+    \emph{\nameref{tabu:variantes}}, hemos planteado 3 variantes (y sus combinaciones)
+    adem\'as de las variantes referidas a los par\'ametros n\'umericos
+    de la b\'usqueda ($MAX\_GLOBAL$, $MAX\_SIN\_MEJORAR$ y $TIEMPO\_TABU$).
+    Las complejidades relacionadas con estos \'ultimos par\'ametros son
+    f\'aciles de calcular ya que son parte de la expresi\'on de la complejidad
+    calculada para la heur\'istica.
+
+\par La pregunta que nos queda hacernos es si la complejidad se ver\'a
+    afectada por alguna de las otras variantes.
+
+\par En los casos de trabajar sin funci\'on de aspiraci\'on o permitiendo
+    que los movimientos tab\'u mejoren reestablezcan el contador de
+    iteraciones sin mejorar, no estamos afectando la complejidad asint\'otica,
+    ya que dicho contador no tuvo peso en los calculos hechos (ya
+    que mediante \'el no se puede acotar determin\'isticamente la cantidad
+    de iteraciones del ciclo tab\'u). Adem\'as, cualquier operaci\'on\footnote{%
+    Cualquier operaci\'on razonable.} que involucre a este contador tendr\'a un 
+    costo $\mathcal O(1)$. 
+
+\par En el caso de la funci\'on de aspiraci\'on, al
+    no utilizar dicha metodolog\'ia, simplemente estamos ahorrandonos el costo
+    de la copia de un vector (de $K$ a $K^*$) y de otras operaciones de costo
+    constante en el caso de encontrar un vecino tab\'u que mejore la soluci\'on
+    \'optima parcial. Pero la complejidad tiene su peso en el recorrido de los
+    vecinos (en particular, el de los vecinos con un nodo m\'as que $K$), que
+    tiene un costo cu\'adratico mientras que lo "ahorrado" tiene un costo
+    lineal, por lo cual la complejidad calculada no se ve afectada.
+
+\par Por \'ultimo, con una justificaci\'on id\'entica a la expuesta en el
+    p\'arrafo anterior, podemos justificar que como el coste de la heur\'istica
+    golosa es $\mathcal O(n^2)$, la misma no a\~nade (ni quita) complejidad
+    temporal a nuestra heur\'istica de b\'usqueda tab\'u.
