@@ -94,10 +94,10 @@
             \State $\delta(K-v_{rem}) \gets \delta(K)-d(v_{rem})+2(|K|-1)$ \Compl{Red}{}{$1$}{}
             \Statex
         \EndWhile \Compl{Blue}{Costo del \emph{mientras}: }{$n^2$}{veces $\times$ $\mathcal O(n^2 + log(n)) = \mathcal O(n^4)$ }
-    \EndIf \Compl{Brown}{Costo \emph{si}: }{$n^4 + n$}{$= \mathcal O(n^4)$}
+    \EndIf \Compl{Brown}{Costo del \emph{si}: }{$n^4 + n$}{$= \mathcal O(n^4)$ }
     \State \Return{$\delta(K)$, $K$} \Compl{Brown}{}{$1$\label{bl:return}}{}
     \Statex
-    \Statex \Compl{Brown}{Costo Total de la Heur\'istica: }{$n^4 +n$}{$= \mathcal O(n^4)$}
+    \Statex \Compl{Brown}{Costo Total de la Heur\'istica: }{$n^4 +n$}{$= \mathcal O(n^4)$ }
 \end{pseudocodigo}
 
 \bigskip
@@ -327,7 +327,7 @@
                 \Statex
             \Else
                 \State Intercambio en $K$ los nodos $v_{exchOUT}$ y $v_{exchIN}$ \Compl{Fuchsia}{}{$1$}{}
-                \State Mantengo la estructura del \emph{heap} \Compl{Fuchsia}{}{$log(n)$}
+                \State Mantengo la estructura del \emph{heap} \Compl{Fuchsia}{}{$log(n)$}{}
                 \State $\delta(K) \gets \delta(K) - d(v_{exchOUT}) + d(v_{exchIN})$ \Compl{Fuchsia}{}{$1$}{}
             \EndIf \Compl{Red}{Costo del \emph{si}: }{$log(n)$}{}
             \Statex
@@ -344,10 +344,10 @@
             \State $\delta(K-v_{exchOUT}+v_{exchIN}) \gets \delta(K) - d(v_{exchOUT}) + d(v_{exchIN})$ \Compl{Red}{}{$1$}{}
             \Statex
         \EndWhile \Compl{Blue}{Costo del \emph{mientras}: }{$n^2$}{veces $\times$ $\mathcal O(n^3 + n^2 + log(n)) = \mathcal O(n^5)$ }
-    \EndIf \Compl{Brown}{Costo \emph{si}: }{$n^5 + n$}{$= \mathcal O(n^5)$}
+    \EndIf \Compl{Brown}{Costo del \emph{si}: }{$n^5 + n$}{$= \mathcal O(n^5)$ }
     \State \Return{$\delta(K)$, $K$} \Compl{Brown}{}{$1$\label{bl:return}}{}
     \Statex
-    \Statex \Compl{Brown}{Costo Total de la Heur\'istica: }{$n^5 + n$}{$= \mathcal O(n^5)$}
+    \Statex \Compl{Brown}{Costo Total de la Heur\'istica: }{$n^5 + n$}{$= \mathcal O(n^5)$ }
 \end{pseudocodigo}
 
 \bigskip

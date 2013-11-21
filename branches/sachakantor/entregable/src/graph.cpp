@@ -766,14 +766,19 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
                         best_frontier = frontier_if_remove_tabu_improves_best_sol;
                     }
                 }
+                //#ifdef _TABU_NO_IMPROVE
+                //going_down_counter = 0;
+                //#endif//_TABU_NO_IMPROVE
             }
 
             if(node_id_add_no_tabu != 0 || node_id_remove_no_tabu != 0){
                 //Tengo al menos una opcion no tabu
+                //#ifndef _TABU_NO_IMPROVE
                 if(max(frontier_if_add_no_tabu,frontier_if_remove_no_tabu) > current_frontier)
                     going_down_counter = 0;
                 else
                     ++going_down_counter;
+                //#endif//_TABU_NO_IMPROVE
 
                 if(frontier_if_add_no_tabu > frontier_if_remove_no_tabu){
                     current_clique.push_back(node_id_add_no_tabu);
@@ -794,6 +799,11 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
                 if(current_frontier > best_frontier){
                     clique = current_clique;
                     best_frontier = current_frontier;
+                //#ifdef _TABU_NO_IMPROVE
+                //    going_down_counter = 0;
+                //} else {
+                //    ++going_down_counter;
+                //#endif//_TABU_NO_IMPROVE
                 }
 
             } else {
@@ -801,20 +811,24 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
                 //la "menos" tabu (la mas vieja)
                 if(node_id_add_tabu != 0 && node_id_remove_tabu != 0){
                     if(tabu_add[node_id_add_tabu-1] < tabu_remove[node_id_remove_tabu-1]){
+                        #ifndef _TABU_NO_IMPROVE
                         if(frontier_if_add_tabu > current_frontier)
                             going_down_counter = 0;
                         else
                             ++going_down_counter;
+                        #endif//_TABU_NO_IMPROVE
 
                         current_clique.push_back(node_id_add_tabu);
                         current_frontier = frontier_if_add_tabu;
                         tabu_add[node_id_add_tabu-1] = global_counter+_TABU_HOW_OLD_COUNTER;
 
                     } else {
+                        #ifndef _TABU_NO_IMPROVE
                         if(frontier_if_remove_tabu > current_frontier)
                             going_down_counter = 0;
                         else
                             ++going_down_counter;
+                        #endif//_TABU_NO_IMPROVE
 
                         iter_swap(
                             current_clique.end()-1,
@@ -826,20 +840,24 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
                     }
 
                 } else if(node_id_add_tabu != 0){
+                    #ifndef _TABU_NO_IMPROVE
                     if(frontier_if_add_tabu > current_frontier)
                         going_down_counter = 0;
                     else
                         ++going_down_counter;
+                    #endif//_TABU_NO_IMPROVE
 
                     current_clique.push_back(node_id_add_tabu);
                     current_frontier = frontier_if_add_tabu;
                     tabu_add[node_id_add_tabu-1] = global_counter+_TABU_HOW_OLD_COUNTER;
 
                 } else {
+                    #ifndef _TABU_NO_IMPROVE
                     if(frontier_if_remove_tabu > current_frontier)
                         going_down_counter = 0;
                     else
                         ++going_down_counter;
+                    #endif//_TABU_NO_IMPROVE
 
                     iter_swap(
                         current_clique.end()-1,
@@ -849,6 +867,9 @@ uint graph::cmf_tabu_search(vector<node_id>& clique) const{
                     current_frontier = frontier_if_remove_tabu;
                     tabu_remove[node_id_remove_tabu-1] = global_counter+_TABU_HOW_OLD_COUNTER;
                 }
+                #ifdef _TABU_NO_IMPROVE
+                ++going_down_counter;
+                #endif//_TABU_NO_IMPROVE
             }
         }
     }

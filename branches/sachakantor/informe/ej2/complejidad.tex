@@ -69,7 +69,7 @@
     simplemente debemos recorrer la lista de candidatos y detenernos en el primer
     candidato que al ser considerado para a\~nadirse no incremente la frontera
     (esto funciona pues los nodos candidatos siguientes al tener menor grado
-    debido al orden establecido seguro que tampoco no incrementaran la cota
+    debido al orden establecido seguro que tampoco incrementaran la cota
     de la frontera de la rama). \label{orden_establecido}
 
 \par Habiendo resuelto esto nos queda comentar como resolvemos el otro problema:
@@ -109,7 +109,7 @@
     \emph{\nameref{backtracking:poda:tam_max_cmf}}}.
 
 \par Por lo tanto, para calcular los candidatos decidimos usar un vector de
-    \emph{deques} de tama\~no $sfrac{n}{2}$.
+    \emph{deques} de tama\~no $\sfrac{n}{2}$.
 
 \par A su vez, para poder llevar a cabo la poda de \emph{"M\'axima frontera de
     la rama"} de manera eficiente, utilizamos un \emph{stack}\footnote{%
