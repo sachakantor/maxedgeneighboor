@@ -261,7 +261,111 @@
     asint\'oticamente hablando es $\mathcal O(n^4)$.
 
 \subsubsection{Complejidad de las Variantes\label{bl:compl:variantes}}
-\par 
+\par Para esta heur\'istica se han presentado numerosas variantes, que
+    a su vez pueden ser combinadas para conseguir m\'as variantes. En
+    particular, en la Secci\'on \ref{bl:compl:variantes} se presentaron
+    3 par\'ametros con 2 variantes:
+
+\begin{enumerate}
+    \item \textbf{Vecindad} tenemos dos opciones, una vecindad de cliques
+        que tengan un nodo m\'as o uno menos que la clique actual o
+        una extensi\'on de esta definici\'on que incluye a las cliques
+        que tienen la misma cantidad de nodos pero uno distinto.
+
+    \item \textbf{Clique Inicial} podemos empezar con alg\'un nodo
+        de grado mayor o igual al promedio o una clique encontrada
+        por la heur\'istica golosa.
+
+    \item \textbf{Primer/Mejor Vecino} al recorrer la vecindad decidimos
+        quedarnos con el primer vecino que encontramos que mejora
+        la funci\'on objetivo o con el vecino que maximiza esta mejora
+        (en caso de existir varios vecinos que la mejoren).
+\end{enumerate}
+
+\bigskip
+
+\par Tan solo observando estas opciones, se puede ver que existen 8
+    variantes distintas.
+
+\par En el an\'alisis de complejidad ya expuesto se analiz\'o una versi\'on
+    donde se selecciona al \textbf{primer vecino}, donde se comienza
+    con un \textbf{nodo de al menos grado promedio} como clique inicial y
+    con una vecindad de \textbf{cliques con un nodo m\'as o uno menos}. En
+    dicho an\'alisis concluimos que la complejidad asint\'otica temporal
+    es $\mathcal O(n^4)$
+
+\par Sin necesidad de presentar 8 pseudoc\'odigos de complejidad, podemos
+    analizar la complejidad de las variantes a partir de este resultado.
+
+\par En el caso de utilizar como clique inicial el resultado de la
+    heur\'istica golosa, se nos sumar\'ia a la complejidad ya calculada
+    el costo de la heur\'istica ($\mathcal O(n^2)$), m\'as la inicializaci\'on
+    de la frontera inicial que luego se va actualizando a medida que la b\'usqueda
+    local se mueve entre los vecinos. Para calcular esta frontera, alcanza
+    con recorrer el vector/clique pasado por la heur\'istica golosa y calcular
+    la frontera como ya se explic\'o en las \emph{\nameref{notas_preliminares},
+    \nameref{notas:calc_front}}. Como el acceso a los grados de los nodos
+    es constante gracias a la estructura del grafo (vector de nodos), el
+    costo de este calculo esta acotado por la cantidad de nodos de la
+    clique que nos da la heur\'istica golosa: $\mathcal O(n)$. Por \'ultimo,
+    en nuestra implementaci\'on se utiliza un \emph{min heap}. En la versi\'on
+    inicial no nos preocupamos por inicializarlo ya que comienza con un \'unico
+    nodo, pero ahora tenemos la clique provista por la heur\'istica, por lo
+    cual debemos realizar una llamada a $make\_heap$\footnote{\url{%
+    http://www.cplusplus.com/reference/algorithm/make_heap/}} que tiene un
+    costo tambi\'en lineal.
+
+\par Nos queda entonces como complejidad para las variantes con la heur\'istica golosa:
+
+\bigskip
+\par $\underbrace{\mathcal O(n^4)}_{\text{Costo B\'usqueda Local}} +
+    \underbrace{\mathcal O(n^2)}_{\text{Costo Golosa}} +
+    \underbrace{\mathcal O(n)}_{\text{Costo extra de calculo de Frontera}} +
+    \underbrace{\mathcal O(n)}_{\text{Costo $make\_heap$}}
+    = \mathcal O(n^4)$
+\bigskip
+
+\par Vemos entonces, que utilizar como entrada el resultado de la heur\'istica
+    golosa no afecta a nuestra complejidad asint\'otica.
+
+\par Luego, tenemos la variante del \textbf{mejor vecino}. Para implementar
+    esta de manera c\'omoda, se decidi\'o ordenar las listas/vectores
+    de adyacencia de la estructura interna del grafo\footnote{Seccion
+    \emph{\nameref{grafo:estructuras}, \nameref{notas_preliminares}}}
+    seg\'un el grado de estos, de mayor a menor. De esta manera, ya que
+    siempre recorrermos las listas de adyacencia y los vectores siguiendo
+    este nuevo orden, al encontrar un nodo que sirva a los prop\'ositos
+    de la heur\'istica, este seguro ser\'a la mejor opci\'on. En el caso
+    de agregar un nodo, habremos encontrado al nodo de mayor grado
+    que podemos agregar, y como ya se a explicado en este documento,
+    este sumar\'a m\'as a la frontera que cualquier nodo de menor grado
+    (ya que las aristas de la frontera que se pierden al agregar un nodo
+    se mantienen constantes para todos los posibles nodos candidatos a
+    a\~nadirse). Y, en el caso de quitar un nodo, en realidad ya est\'abamos
+    trabajando con la mejor opci\'on al utilizar un \emph{min heap}. Esto
+    se hizo as\'i pues era m\'as barato (en complejidad asint\'otica temporal)
+    que tener que recorrer todos los nodos de la clique y buscar a un
+    nodo que al eliminarse incrementase la frontera (que hubiese tenido
+    un coste $\mathcal O(n)$).
+
+\par Por lo tanto, debemos tener en cuenta la nueva complejidad de instanciaci\'on
+    de las estructuras del grafo. Como ya se mencion\'o en la Secci\'on
+    \emph{\nameref{notas_preliminares}},
+    este costo pasa a ser $\mathcal O(n^2\cdot log(n))$. Entonces la complejidad
+    de la variante quedar\'ia expresada (para la variante con la heur\'istica golosa
+    tambi\'en, ya que la complejidad del ordenamiento es superior a la complejidad
+    de la heur\'istica) como:
+
+\bigskip
+\par $\underbrace{\mathcal O(n^4)}_{\text{Costo B\'usqueda Local}} +
+    \underbrace{\mathcal O(n^2\cdot log(n))}_{\text{Costo Ordenamientos}} =
+    \mathcal O(n^4)$
+\bigskip
+
+\par Por \'ultimo, nos queda ver las variantes donde extendemos la vecindad. Para este
+    caso s\'i se decidi\'o presentar un pseudoc\'odigo de complejidad dada la complejidad
+    para recorrer la nueva vecidad. Se presenta el mismo a continuaci\'on para las variantes
+    de \textbf{nodo de al menos grado promedio} y \textbf{primer vecino}.
 
 \bigskip
 
@@ -332,7 +436,7 @@
             \EndIf \Compl{Red}{Costo del \emph{si}: }{$log(n)$}{}
             \Statex
             \Statex $\triangleright$ Ya salte a un vecino, recorro la nueva vecindad
-            \If{$\exists v \in candidatos(K)$ tal que $d(v) > 2|K|$} \Compl{Fuchsia}{}{$n^2$}{}
+            \If{$\exists v \in candidatos(K)$ tal que $d(v) > 2|K|$\label{bl:candidatos}} \Compl{Fuchsia}{}{$n^2$}{}
                 \State $v_{add} \gets v$ \Compl{Fuchsia}{}{$1$}{}
                 \State $\delta(K+v_{add}) \gets \delta(K) + d(v_{add}) - 2|K|$ \Compl{Fuchsia}{}{$1$}{}
             \EndIf \Compl{Red}{Costo del \emph{si}: }{$n^2$}{}
@@ -351,3 +455,40 @@
 \end{pseudocodigo}
 
 \bigskip
+
+\par Para este nuevo pseudoc\'odigo, queda claro que lo nuevo (y lo que quedar\'ia por
+    justificar) es el costo de mantener la estructura del heap cuando se intercambia
+    un elemento que no fue removido/agregado mediante las funciones $push\_heap$/%
+    $pop\_heap$ y el costo encontrar los nodos $v_{exchIN}$ y $v_{exchOUT}$.
+
+\par En el primer caso, para mantener la estructura del \emph{min heap}, la \emph{STL}
+    de \emph{C++} no nos provee de un mecanimos para cambiar un nodo arbitrario en
+    el vector que mantiene la estructura. Por ende, revisando/releyendo la documentaci\'on
+    de la materia \emph{Algoritmos y Estructuras de Datos 2}, se implement\'o
+    dicha funcionalidad que nos permite "bajar" (o "subir") un nodo en la estructura
+    del \emph{heap} con costo $\mathcal O(log(n))$\footnote{\url{%
+    http://dc.uba.ar/materias/aed2/actual/descargas/teoricas/heaps/view}}.
+
+\par En cuanto a la b\'usqueda de los nodos que se podr\'ian intercambiar,
+    la idea/problema pasa a ser que si se considera la clique actual del ciclo
+    sin un nodo, los candidatos de dicha $K-v$ podr\'ian tener nuevos elementos. Por
+    lo tanto, lo que se hizo fue recorrer los nodos de la clique actual ($\mathcal O(n)$ veces) y
+    calcular los nodos $candidatos$ de la clique sin el nodo en el cual se est\'a
+    parado en el momento ($\mathcal O(n^2)$, tal como ocurre en la l\'inea
+    \ref{bl:candidatos}, y cuya complejidad fue explicada en el primer
+    pseudoc\'odigo de esta heur\'istica), y a medida que se hace esto,
+    ver si cada nodo que se agrega a los candidatos incrementa la frontera de
+    $K-v$ lo suficiente para superar la frontera de $K$. Luego, nos quedamos
+    con el mejor intercambio\footnote{Es decir, el que m\'as incrementa la
+    funci\'on objetivo.} (ya que este proceso se realiza para todos
+    los nodos de la clique actual).
+
+\par Por lo tanto, el costo de encontrar el mejor intercambio es, efectivamente,
+    $\mathcal O(n)\text{veces} \times \mathcal O(n^2) = \mathcal O(n^3)$.
+
+\par Ya finalizando, se puede ver para las variantes con la heur\'istica golosa
+    y los vecinos ordenados que los costos adicionales no superan el costo
+    de esta variante con la vecindad extendida ($\mathcal O(n^5)$), por lo tanto,
+    usando los mismos fundamentos de las variantes para la vecindad "reducida",
+    llegamos a la conclusi\'on de que para las variantes con esta vecindad el
+    costo asint\'otico temporal se mantiene en $\mathcal O(n^5)$.
