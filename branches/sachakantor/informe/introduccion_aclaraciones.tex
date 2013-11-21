@@ -106,11 +106,11 @@
 \bigskip
 
 \par $\delta(K+v) = \delta(K) + \underbrace{d(v)-|K|}_{\text{Lo que se gana}}
-    - \underbrace{|K|}_{Lo que se pierde} = \delta(K) + d(v) - 2|K|$
+    - \underbrace{|K|}_{\text{Lo que se pierde}} = \delta(K) + d(v) - 2|K|$
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre la complejidad de instanciar un grafo en la implementaci\'on}
-\subsection*{Sobre la complejidad de instanciar un grafo en la implementaci\'on}\label{grafo:estructuras}
+\subsection*{Sobre la complejidad de instanciar un grafo en la implementaci\'on\label{grafo:estructuras}}
 \par Entre los archivos fuente provistos junto con este trabajo, se opt\'o por
     crear una clase \emph{Graph} de \emph{C++} que encapsulase todos los algoritmos
     requeridos por este trabajo.
@@ -188,7 +188,7 @@
     \item \textbf{golosa: } Compila las heur\'isticas golosas.
     \item \textbf{busqueda: } Compila las heur\'isticas de b\'usqueda local.
     \item \textbf{tabu: } Compila las heur\'isticas de b\'usqueda tab\'u\footnote{%
-        Un total de 72 binarios para esta opci\'on. Compilar con paciencia}.
+        Un total de 108 binarios para esta opci\'on. Compilar con paciencia.}.
 \end{itemize}.
 
 \par Por ejemplo, si s\'olo se quisiera compilar el algoritmo exacto

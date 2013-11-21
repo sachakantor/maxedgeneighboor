@@ -1,0 +1,239 @@
+\subsubsection{Estructuras de Datos}
+\par Nuevamente, en l\'inea con las heur\'isticas anteriores, se decidi\'o
+    utilizar la estructura \emph{deque}\footnote{\url{%
+    http://www.cplusplus.com/reference/deque/deque/}} para trabajar con
+    los nodos candidatos y vectores\footnote{\url{%
+    http://www.cplusplus.com/reference/vector/vector/}} para representar a
+    las cliques.
+
+\par A diferencia de la b\'usqueda local, para esta heur\'istica no fue
+    necesario trabajar con un \emph{min heap}, ya que en este caso particular
+    debemos sn todas las iteraciones recorrer la vecindad completa (en lugar
+    de buscar hasta encontrar una soluci\'on pausible que mejore la funci\'on
+    objetivo, como era el caso).
+
+\par Por otro lado, en esta heur\'istica debemos trabajar con una nueva estructura:
+    la lista tab\'u. En nuestra implementaci\'on, decidimos trabajar con dos vectores
+    de enteros, donde cada posici\'on de los vectores se corresponde con un \'unico
+    nodo del grafo de entrada (indizado por su n\'umero de nodo), y cada uno de
+    los vectores corresponde a uno de los dos movimientos posibles: agregar al nodo,
+    o quitarlo de la clique. La idea es guardar en estos vectores tab\'u el n\'umero
+    de iteraci\'on al partir del cual dejar\'ian de ser tab\'u.
+
+\par A su vez, nuevamente, contamos con las estrucutras del grafo de entrada:
+    listas/vectores de adyacencias y una matriz de adyacencias\footnote{%
+    Secci\'on \emph{\nameref{notas_preliminares}, \nameref{grafo:estructuras}}.}.
+
+\subsubsection{Pseudoc\'odigo de complejidad}
+\par Se presenta a continuaci\'on un pseudoc\'odigo m\'as espec\'ifico de la implementaci\'on
+    de este algoritmo provista junto con este trabajo. El mismo tiene en cuenta
+    las estructuras de datos explicadas en el punto anterior.
+
+\par Luego del pseudoc\'odigo se justifican detalladamente las complejidades
+    expuestas a continuaci\'on que no sean evidentes\footnote{Consideramos
+    como "complejidades evidentes" las asignaciones de variables, operaciones
+    m\'atematicas simples, asignaciones/inicializaci\'on de posiciones de
+    un vector/\emph{deque} o cualquier contenedor de acceso aleatorio/arbitrario}.
+
+\par En particular expresaremos la complejidad en funci\'on de los par\'ametros
+    mencionados en~\ref{tabu:variantes}, ya que la idea luego es experimentar
+    con distintos valores para $MAX\_GLOBAL$, $MAX\_SIN\_MEJORAR$ y $TIEMPO\_TABU$
+    (este \'ultimo corresponde al tiempo que se considera un movimiento como tab\'u
+    a partir del momento en que es realizado).
+
+\par El an\'alisis de complejidad de las variantes se realiza en la secci\'on
+    \ref{tabu:compl:variantes}.
+
+\bigskip
+
+\begin{pseudocodigo}[Heur\'istica de B\'usqueda Tab\'u para \emph{CMF} - Complejidad]
+    \Require Un grafo $G$ con $n$ v\'ertices numerados de $1$ a $n$ y $m$ aristas. El mismo
+        cuenta con las siguientes estructuras de datos que lo modelan:
+        \begin{itemize}
+            \item Vectores de adyacencia: Dado un vertice $v$, $vecinos(v)$ nos da todos los
+                nodos adyacentes a $v$ en $G$.
+
+            \item Matriz de adyacencia: Dados los v\'ertices $v$ y $w$, $adyacentes(v,w)$ y
+                $adyacentes(w,v)$ nos devuelven $true$ si y s\'olo si $v$ es adyacente
+                a $w$ en $G$.
+
+            \item Vector de nodos de $G$.
+        \end{itemize}
+    \Ensure\Statex
+        \begin{itemize}
+            \item Un vector $K$ correspondiente a la \emph{clique} de m\'axima frontera
+                encontrada por la heur\'istica.
+
+            \item El cardinal de $\delta(K)$, siendo $K$ la \emph{clique} del item anterior.
+        \end{itemize}
+    \Statex
+    \State $K^* \gets \emptyset$ \Compl{Brown}{}{$n$}{}
+    \If{$m = \frac{n(n-1)}{2}$} \Compl{Blue}{}{$1$}{}
+        \State $K^* \gets \left\{1;\dots;\left\lfloor\sfrac{n}{2}\right\rfloor\right\}$ \Compl{Blue}{}{$n$}{}
+        \State $\delta_{max} \gets \left\lfloor\sfrac{n}{2}\right\rfloor\cdot
+            \left\lceil\sfrac{n}{2}\right\rceil$ \Compl{Blue}{}{$1$}{}
+        \Statex
+    \Else
+        \State $K \gets \emptyset$ \Compl{Blue}{}{$n$}{}
+        \State Inicializo $tabu\_agregar$ y $tabu\_quitar$ con $n$ posiciones en $0$ \Compl{Blue}{}{$n$}{}
+        \State $contador\_global \gets 0$, $sin\_mejorar \gets 0$ \Compl{Blue}{}{$1$}{}
+        \State $candidatos \gets \emptyset$ \Compl{Blue}{}{$1$}{}
+        \Statex
+        \State $K^* \gets$ Primer nodo de grado mayor o igual al grado promedio \Compl{Blue}{}{$n$}{}
+        \State $\delta_{max} \gets d(cabeza(K^*))$ \Compl{Blue}{}{$1$}{}
+        \State $K \gets K^*$ \Compl{Blue}{}{$1$}{}
+        \State $\delta(K) \gets \delta_{max}$
+        \Statex
+        \While{%
+        $\begin{pmatrix}
+            \text{\Huge{$\land$}} &
+            \begin{matrix}
+                contador\_global < MAX\_GLOBAL\\
+                sin\_mejorar < MAX\_SIN\_MEJORAR
+            \end{matrix}
+        \end{pmatrix}$%
+        } \Compl{Red}{}{$1$}{}
+            \Statex
+            \State $contador\_global \gets contador\_global+1$ \Compl{Red}{}{$1$}{}
+            \State Calculo los nodos $candidatos$ de $K$ \Compl{Red}{}{$n^2$}{}
+            \Statex
+            \State Identifico los nodos:
+                $\left\{\begin{array}{lr}
+                        agregable\_mejor\_no\_tabu\\
+                        agregable\_mejor\_tabu\\
+                        agregable\_menos\_tabu
+                    \end{array}
+                \right.$ \Compl{Red}{}{$n$}{}
+            \Statex
+            \State Identifico los nodos:
+                $\left\{\begin{array}{lr}
+                        removible\_mejor\_no\_tabu\\
+                        removible\_mejor\_tabu\\
+                        removible\_menos\_tabu
+                    \end{array}
+                \right.$ \Compl{Red}{}{$n$}{}
+            \Statex
+            \Statex
+            \If{$%
+            \begin{pmatrix}
+                \delta(K+agregable\_mejor\_tabu)\\
+                >\\
+                maximo\begin{pmatrix}
+                    \delta(K+agregable\_mejor\_no\_tabu)\\
+                    \delta(K+removible\_mejor\_no\_tabu)\\
+                    \delta(K+removible\_mejor\_tabu)\\
+                    \delta_{max}
+                \end{pmatrix}
+            \end{pmatrix}%
+            $} \Compl{Fuchsia}{}{$1$}{}
+                \Statex
+                \State $tabu\_agregar[agregable\_mejor\_tabu] \gets contador\_global+TIEMPO\_TABU$ \Compl{Fuchsia}{}{$1$}{}
+                \State $push\_back(K,agregable\_mejor\_tabu)$ \Compl{Fuchsia}{}{$1$}{}
+                \State $\delta(K) \gets \delta(K) + d(agregable\_mejor\_tabu) - 2|K|$ \Compl{Fuchsia}{}{$1$}{}
+                \State $K^* \gets K$ \Compl{Fuchsia}{}{$n$}{}
+                \State $\delta_{max} \gets \delta(K)$ \Compl{Fuchsia}{}{$1$}{}
+                \State $sin\_mejorar \gets 0$ \Compl{Fuchsia}{}{$1$}{}
+                \Statex
+            \ElsIf{$%
+            \begin{pmatrix}
+                \delta(K+removible\_mejor\_tabu)\\
+                >\\
+                maximo\begin{pmatrix}
+                    \delta(K+agregable\_mejor\_no\_tabu)\\
+                    \delta(K+removible\_mejor\_no\_tabu)\\
+                    \delta_{max}
+                \end{pmatrix}
+            \end{pmatrix}%
+            $} \Compl{Fuchsia}{}{$1$}{}
+                \Statex
+                \State $tabu\_quitar[removible\_mejor\_tabu] \gets contador\_global+TIEMPO\_TABU$ \Compl{Fuchsia}{}{$1$}{}
+                \State $remover(K,removible\_mejor\_tabu)$ \Compl{Fuchsia}{}{$n$}{}
+                \State $\delta(K) \gets \delta(K) - d(removible\_mejor\_tabu) + 2(|K|-1)$ \Compl{Fuchsia}{}{$1$}{}
+                \State $K^* \gets K$ \Compl{Fuchsia}{}{$n$}{}
+                \State $\delta_{max} \gets \delta(K)$ \Compl{Fuchsia}{}{$1$}{}
+                \State $sin\_mejorar \gets 0$ \Compl{Fuchsia}{}{$1$}{}
+                \Statex
+            \ElsIf{$%
+            \begin{pmatrix}
+                agregable\_mejor\_no\_tabu$ es v\'alido$\\
+                \lor\\
+                removible\_mejor\_no\_tabu$ es v\'alido$
+            \end{pmatrix}%
+            $} \Compl{Fuchsia}{}{$1$}{}
+                \Statex
+                \Statex
+                \If{$\delta(K) <
+                maximo\begin{pmatrix}
+                    \delta(K+agregable\_mejor\_no\_tabu)\\
+                    \delta(K+removible\_mejor\_no\_tabu)
+                \end{pmatrix}
+                $} \Compl{YellowOrange}{}{$1$}{}
+                    \Statex
+                    \State $sin\_mejorar \gets 0$ \Compl{YellowOrange}{}{$1$}{}
+                \Else
+                    \State $sin\_mejorar \gets sin\_mejorar+1$ \Compl{YellowOrange}{}{$1$}{}
+                \EndIf \Compl{Fuchsia}{Costo del \emph{si}: }{$1$}{}
+                \Statex
+                \If{$
+                \begin{pmatrix}
+                    \delta(K+agregable\_mejor\_no\_tabu)\\
+                    >\\
+                    \delta(K+removible\_mejor\_no\_tabu)
+                \end{pmatrix}$} \Compl{YellowOrange}{}{$1$}{}
+                    \Statex
+                    \State
+                    $\begin{matrix}
+                        tabu\_agregar[agregable\_mejor\_no\_tabu] \gets\\
+                        contador\_global+TIEMPO\_TABU
+                    \end{matrix}$ \Compl{YellowOrange}{}{$1$}{}
+                    \Statex
+                    \State $push\_back(K,agregable\_mejor\_no\_tabu)$ \Compl{YellowOrange}{}{$1$}{}
+                    \State $\delta(K) \gets \delta(K) + d(agregable\_mejor\_no\_tabu) - 2|K|$ \Compl{YellowOrange}{}{$1$}{}
+                    \Statex
+                \Else
+                    \State
+                    $\begin{matrix}
+                        tabu\_quitar[removible\_mejor\_no\_tabu] \gets\\
+                        contador\_global+TIEMPO\_TABU
+                    \end{matrix}$ \Compl{YellowOrange}{}{$1$}{}
+                    \Statex
+                    \State $remover(K,removible\_mejor\_no\_tabu)$ \Compl{YellowOrange}{}{$n$}{}
+                    \State $\delta(K) \gets \delta(K) - d(removible\_mejor\_no\_tabu) + 2(|K|-1)$ \Compl{YellowOrange}{}{$1$}{}
+                    \Statex
+                \EndIf \Compl{Fuchsia}{Costo del \emph{si}: }{$n$}{}
+                \Statex
+                \If{$\delta_{max} < \delta(K)$} \Compl{YellowOrange}{}{$1$}{}
+                    \State $K^* \gets K$ \Compl{YellowOrange}{}{$n$}{}
+                    \State $\delta_{max} \gets \delta(K)$ \Compl{YellowOrange}{}{$1$}{}
+                \EndIf \Compl{Fuchsia}{Costo del \emph{si}: }{$n$}{}
+                \Statex
+            \ElsIf{$%
+            \begin{pmatrix}
+                tabu\_agregar[agregable\_mejor\_tabu]\\
+                <\\
+                tabu\_remover[removible\_mejor\_tabu]
+            \end{pmatrix}%
+            $} \Compl{Fuchsia}{}{$1$}{}
+                \Statex
+                \State $tabu\_agregar[agregable\_mejor\_tabu] \gets contador\_global+TIEMPO\_TABU$ \Compl{Fuchsia}{}{$1$}{}
+                \State $push\_back(K,agregable\_mejor\_tabu)$ \Compl{Fuchsia}{}{$1$}{}
+                \State $\delta(K) \gets \delta(K) + d(agregable\_mejor\_tabu) - 2|K|$ \Compl{Fuchsia}{}{$1$}{}
+                \Statex
+            \Else
+                \State $tabu\_quitar[removible\_mejor\_tabu] \gets contador\_global+TIEMPO\_TABU$ \Compl{Fuchsia}{}{$1$}{}
+                \State $remover(K,removible\_mejor\_tabu)$ \Compl{Fuchsia}{}{$n$}{}
+                \State $\delta(K) \gets \delta(K) - d(removible\_mejor\_tabu) + 2(|K|-1)$ \Compl{Fuchsia}{}{$1$}{}
+                \Statex
+            \EndIf \Compl{Red}{Costo del \emph{si}: }{$n$}{}
+        \EndWhile \Compl{Blue}{Costo del \emph{mientras}: }{$MAX\_GLOBAL \cdot n^2$}{}
+    \EndIf \Compl{Brown}{Costo del \emph{si}: }{$MAX\_GLOBAL \cdot n^2 + n$}{$= \mathcal O(MAX\_GLOBAL \cdot n^2)$ }
+    \State \Return{$\delta_{max}$, $K^*$} \Compl{Brown}{}{$1$\label{bl:return}}{}
+    \Statex
+    \Statex \Compl{Brown}{Costo Total de la Heur\'istica: }{$MAX\_GLOBAL \cdot n^2 + n$}{$= \mathcal O(MAX\_GLOBAL \cdot n^2)$ }
+\end{pseudocodigo}
+
+\bigskip
+
+\par
+
+\subsubsection{Complejidad de las Variantes\label{tabu:compl:variantes}}

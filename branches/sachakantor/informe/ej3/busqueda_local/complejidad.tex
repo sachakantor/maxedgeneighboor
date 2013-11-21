@@ -64,8 +64,8 @@
         \Statex
     \Else
         \State $K \gets$ Primer nodo de grado mayor o igual al grado promedio \Compl{Blue}{}{$n$}{}
-        \State $\delta(K) \gets d(v)$ \Compl{Blue}{}{$1$}{}
-        \If{$\exists v \in vecinos(v)$ tal que $d(v) > 2|K|$} \Compl{Red}{}{$n$}{}
+        \State $\delta(K) \gets d(top(K))$ \Compl{Blue}{}{$1$}{}
+        \If{$\exists v \in vecinos(top(K))$ tal que $d(v) > 2|K|$} \Compl{Red}{}{$n$}{}
             \State $v_{add} \gets v$ \Compl{Red}{}{$1$}{}
             \State $\delta(K+v_{add}) \gets \delta(K) + d(v_{add}) - 2|K|$ \Compl{Red}{}{$1$}{}
         \EndIf \Compl{Blue}{Costo del \emph{si}: }{$n$}{}
@@ -398,8 +398,8 @@
         \Statex
     \Else
         \State $K \gets$ Primer nodo de grado mayor o igual al grado promedio \Compl{Blue}{}{$n$}{}
-        \State $\delta(K) \gets d(v)$ \Compl{Blue}{}{$1$}{}
-        \If{$\exists v \in vecinos(v)$ tal que $d(v) > 2|K|$} \Compl{Red}{}{$n$}{}
+        \State $\delta(K) \gets d(top(K))$ \Compl{Blue}{}{$1$}{}
+        \If{$\exists v \in vecinos(top(K))$ tal que $d(v) > 2|K|$} \Compl{Red}{}{$n$}{}
             \State $v_{add} \gets v$ \Compl{Red}{}{$1$}{}
             \State $\delta(K+v_{add}) \gets \delta(K) + d(v_{add}) - 2|K|$ \Compl{Red}{}{$1$}{}
         \EndIf \Compl{Blue}{Costo del \emph{si}: }{$n$}{}

@@ -128,7 +128,7 @@
     \Statex
 
     \If{$G$ es un grafo completo $K_n$}
-        \State $K \gets \lfloor\sfrac{n}{2}\rfloor$ nodos distintos de $V(G)$ cualesquiera.
+        \State $K^* \gets \lfloor\sfrac{n}{2}\rfloor$ nodos distintos de $V(G)$ cualesquiera.
         \Statex
 
     \Else
@@ -225,7 +225,8 @@
 
     \item \textbf{Entrada Golosa: } En lugar de utilizar un nodo de grado
         al menos promedio, se alimenta a la b\'usqueda tab\'u con el resultado
-        de la heur\'istica golosa\footnote{Secci\'on~\ref{golosa}.}.
+        de la heur\'istica golosa\footnote{Secci\'on~\ref{golosa},
+        \emph{\nameref{golosa}}.}.
 
     \item \textbf{Los movimientos tab\'u que mejoren la soluci\'on parcial
         reestablecen el contandor de iteraciones sin mejorar: } Esta variante
