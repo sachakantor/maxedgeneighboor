@@ -1,4 +1,5 @@
 #include<iostream>
+#include<string>
 #include<vector>
 #include<algo3InputParser.hpp>
 #include<graph.hpp>
@@ -11,7 +12,14 @@ int main(int argc,char* argv[]){
     /* Variables Locales */
     algo3InputParser<parameter,vector<parameter> > parser(std::cin);
     vector<parameter> input;
+    vector<parameter>::const_iterator it_param;
     parameter quant_nodes,quant_edges,terminator_char=0;
+    #ifndef _OPENMP
+    vector<node_id> clique;
+    uint frontera;
+    #else
+    vector<graph*> problems;
+    #endif//_OPENMP
 
     /* Leemos toda la entrada hasta encontrar
      * a "terminator" (definido arriba) y guardamos cada
@@ -25,22 +33,70 @@ int main(int argc,char* argv[]){
      * input, y luego llamo a sus metodos que resuelven el
      * problema dado
      */
-
-    for(vector<parameter>::const_iterator it_param = input.cbegin();
-        it_param < input.cend();
-        ++it_param)
+    for(uint i = 0; i<input.size(); i += 2*(quant_edges+1))
     {
-        quant_nodes = *it_param;
-        ++it_param;
-        quant_edges = *it_param;
-        ++it_param;
+        quant_nodes = input[i];
+        quant_edges = input[i+1];
+        it_param = input.cbegin()+i+2;
 
+    #ifndef _OPENMP
+        /*Instanciamos el grafo*/
         graph grafo(quant_nodes,quant_edges,it_param);
-        cout << grafo << endl;;
-        --it_param; //Esto se debe a que el constructor de grafo
-                    //deja it_param ya incrementado (que luego indrementa
-                    //el for)
+        //cout << grafo << endl;;
+
+        /*Calculamos su frontera maxima por busqueda local*/
+        clique.clear();
+        #ifdef _GOLOSA
+        grafo.cmf_golosa(clique);
+        #endif//_GOLOSA
+        frontera = grafo.cmf_busqueda_local(clique);
+
+        /*Imprimimos el resultado por pantallas*/
+        cout << frontera << ' ' << clique.size();
+        for(vector<node_id>::const_iterator it = clique.cbegin();
+            it<clique.cend();
+            ++it)
+        {
+            cout << ' ' << *it;
+        }
+        cout << endl;
+
     }
+
+    #else
+        /*Instanciamos el grafo y nos guardamos un puntero al mismo*/
+        problems.push_back(new graph(quant_nodes,quant_edges,it_param));
+    }
+    vector<string> results(problems.size());
+    /*Resuelvo el CMF para todos los problemas con distintos threads*/
+    #pragma omp parallel for schedule(dynamic) default(none) collapse(1)\
+        shared(results,problems)
+    for(uint i = 0; i<problems.size(); ++i){
+        vector<node_id>* clique_ptr = new vector<node_id>;
+        #ifdef _GOLOSA
+        problems[i]->cmf_golosa(*clique_ptr);
+        #endif//_GOLOSA
+        results[i] = to_string(problems[i]->cmf_busqueda_local(*clique_ptr));
+        results[i] += ' '+to_string(clique_ptr->size());
+        for(vector<node_id>::const_iterator it = clique_ptr->cbegin();
+            it<clique_ptr->cend();
+            ++it)
+        {
+            results[i]+= ' '+to_string(*it);
+        }
+
+        delete clique_ptr;
+        delete problems[i];
+    }
+
+    /*Imprimo los resultados*/
+    for(vector<string>::const_iterator it = results.cbegin();
+        it != results.cend();
+        ++it)
+    {
+        cout << *it << endl;
+    }
+    #endif//_OPENMP
 
     return 0;
 }

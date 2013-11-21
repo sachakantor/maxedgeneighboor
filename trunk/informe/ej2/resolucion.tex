@@ -1,3 +1,292 @@
+\subsubsection{G\'enesis del algoritmo propuesto}
+\par A la hora de pensar un algoritmo que pudiese resolver el problema presentado
+    por el enunciado de este TP, comenzamos a investigar por trabajos previos que
+    resolvieran problem\'aticas similares.
+
+\par La resoluci\'on propuesta se bas\'o en un algoritmo desarrollado para encontrar
+    todas las cliques maximales de un grafo no dirigido\footnote{%
+    Bron C. y Kerbosch J. Finding All Cliques of an Undirected Graph. \emph{Journal
+    of the ACM}, vol:16 575-579, 1973.}. El mismo planteaba un algoritmo basado en
+    3 conjuntos (nodos candidatos, procesados y clique en construcci\'on) con los
+    cuales iba generando las cliques de un grafo hasta no poder agregarle m\'as nodos
+    sin que este dejase de ser clique, con lo cual se llegaba a una clique maximal.
+
+\par Este algorimo claramente no resuelve el problema de la \emph{CMF}, pero esta
+    estrechamente ligado al mismo, ya que la \emph{CMF} es una clique dentro del
+    del grafo, y si tenemos un algoritmo que forma todas las cliques (formar todas
+    las cliques maximales implica formar todas las cliques) podr\'iamos, en una
+    primera versi\'on un tanto rudimentaria, calcular la frontera de cada una
+    de ellas y luego quedarnos con la de mayor frontera.
+
+\subsubsection{El algoritmo exacto}\label{backtracking:explicacion}
+\par Partiendo de la secci\'on anterior, dise\~namos nuestro algorimo, que lo que hace es
+    ir construyendo cliques siempre y cuando determine que es posible, para la
+    clique que se est\'a construyendo, superar la mejor frontera encontrada hasta
+    el momento.
+
+\par En esencia, nuestro algoritmo propuesto es un algoritmo de \emph{backtracking}
+    como lo es el algoritmo de Bron y Kerbosch, pero adaptado nuestro problema
+    particular, mediante el calculo de la frontera de las cliques que se van
+    construyendo y guardando la clique de mayor frontera encontrada/constru\'ida.
+
+\par Para la construcci\'on de las cliques, b\'asicamente la idea es comenzar por
+    una clique (que inicialmente es un \'unico nodo/v\'ertice) y luego ver del conjunto
+    de nodos restantes cuales nodos podr\'ian ser agregados a esta clique y mantener
+    su propiedad de clique en el grafo. Luego, por cada uno de estos nodos \emph{%
+    candidatos}, se agregar\'ian a la clique y se repetir\'ia el proceso hasta no tener
+    m\'as nodos candidatos. De esta manera, se generar\'ian todas las cliques del grafo.
+
+\par Ahora bien, hacer esto \'ultimo y calcular la frontera en cada paso puede ser
+    muy costoso (m\'as all\'a de que estemos planteando un algoritmo de \emph{backtracking})
+    e innecesario. Es por ello que se implementaron a su vez las siguientes podas
+    que mejoran la eficiencia, y en algunos casos hasta la complejidad asint\'otica del
+    algoritmo.
+
+\subsubsection{Podas del algoritmo exacto}
+\begin{description}
+    \item[Tama\~no m\'aximo CMF\label{backtracking:poda:tam_max_cmf}]
+        Dado cualquier grafo $G$ conexo, proponemos
+        que la \emph{CMF} tendr\'a a lo sumo $\left\lceil\frac{n}{2}\right\rceil$ nodos.
+        Luego, en el algoritmo, podemos utilizar esto como l\'imite en las cliques que
+        vamos construyendo. Si en el proceso de construcci\'on de la clique ya tenemos
+        esta cantidad de v\'ertices, podemos considerar que no tiene m\'as sentido
+        seguir agregando nodos a la clique, ya que seguro la \emph{CMF} no tendr\'a
+        m\'as nodos que $\lceil\frac{n}{2}\rceil$ nodos.
+
+        \par A continuaci\'on, y sin entrar en detalles formales, justificaremos
+            esta proposici\'on.
+
+        \par Sea una clique $K$ de m\'as de $\lceil\frac{n}{2}\rceil$ nodos en $G$%
+            \footnote{$G$ es un grafo no trivial. El problema de \emph{CMF} no tiene
+            mucho sentido ni conlleva dificultad alguna para grafos triviales.}
+
+        \begin{enumerate}
+            \item Supongamos primero que $n$ es par.
+                \begin{enumerate}
+                    \item Como $n$ es par, $K$ pasar\'ia a tener al menos $\frac{n}{2} + 1$
+                        nodos. Luego, nos quedan $n - |K|$ nodos de $G$ que no son parte de $K$.
+                        \label{tam_min_k_par}
+
+                    \item Luego, sabemos que lo m\'aximo que un nodo $v \in K$  puede
+                        sumarle a $\delta(K)$ es $n - |K|$ y lo m\'inimo es $1$\footnote{%
+                        Si no sumase no tendr\'ia sentido tenerlo en $K$, ya que
+                        se perder\'ian $|K|-1$ aristas para incluirlo en $K$ (ya que
+                        debe ser clique) que podr\'ian ser parte de $\delta(K)$ si el
+                        nodo no fuera parte de $K$.}.
+
+                    \item Ahora, consideremos $K' = K-v$. $K'$ seguir\'a siendo clique
+                        (pues $K$ era clique y se le quit\'o un nodo) y su frontera
+                        ganar\'a $|K|-1$ aristas (las que "un\'ian" $v$ a $K$) y perder\'a
+                        , a lo sumo, $n - |K|$. Es decir:
+                        \par\bigskip
+                        $\delta(K') \geq \delta(K) + (|K| - 1) - (n - |K|)$\footnote{%
+                        Se puede observar que $|K|$ tiene siempre signo positivo en esta
+                        inecuaci\'on.}
+                        \bigskip
+
+                    \item Ahora bien, sabemos por hip\'otesis que $|K| \geq \frac{n}{2} + 1$
+                        (\ref{tam_min_k_par}), entonces:
+                        \bigskip\par$
+                            \delta(K') \geq \delta(K) + (\frac{n}{2}+1 - 1) - (n - (\frac{n}{2}+1))\\
+                            \delta(K') \geq \delta(K) + \frac{n}{2} - n + \frac{n}{2} + 1\\
+                            \delta(K') \geq \delta(K) + 1$
+                \end{enumerate}\bigskip
+
+            \item Supongamos ahora que $n$ es impar.
+                \begin{enumerate}
+                    \item Como $n$ es impar, $K$ pasar\'ia a tener al menos $\frac{n-1}{2} + 2$
+                        nodos. Luego, nos quedan $n - |K|$ nodos de $G$ que no son parte de $K$.
+                        \label{tam_min_k_impar}
+
+                    \item Luego, sabemos que lo m\'aximo que un nodo $v \in K$  puede
+                        sumarle a $\delta(K)$ es $n - |K|$ y lo m\'inimo es $1$.
+
+                    \item Consideremos $K' = K-v$. $K'$ seguir\'a siendo clique
+                        (pues $K$ era clique y se le quit\'o un nodo) y su frontera
+                        ganar\'a $|K|-1$ aristas (las que "un\'ian" $v$ a $K$) y perder\'a
+                        , a lo sumo, $n - |K|$. Es decir:
+                        \par\bigskip
+                        $\delta(K') \geq \delta(K) + (|K| - 1) - (n - |K|)$
+                        \bigskip
+
+                    \item Ahora bien, sabemos por hip\'otesis que $|K| \geq \frac{n-1}{2} + 2$
+                        (\ref{tam_min_k_impar}), entonces:
+                        \bigskip\par$
+                            \delta(K') \geq \delta(K) + (\frac{n-1}{2}+2 - 1) - (n - (\frac{n-1}{2}+2))\\
+                            \delta(K') \geq \delta(K) + \frac{n-1}{2}+1 - n + \frac{n-1}{2} + 2\\
+                            \delta(K') \geq \delta(K) + 2$
+                \end{enumerate}\bigskip
+
+            \item Entonces, demostramos que efectivamente, tener una clique de m\'as de
+                $\lceil\frac{n}{2}\rceil$ nodos no ser\'a una \emph{CMF}, ya que quit\'andole
+                un nodo podemos incrementar su frontera.
+
+        \end{enumerate}
+
+    \item[Grafos completos\label{backtracking:poda:grafo_completo}]
+        De los datos de entrada de un grafo sabemos ya $n$
+        y $m$, por lo cual determinar si el grafo dado es un grafo completo tiene
+        una complejidad $\mathcal O(1)$ (verificar si $m = \frac{n \cdot (n-1)}{2}$).
+
+        \par Entonces, a modo de mejorar la eficiencia (pero no la complejidad temporal
+            asint\'otica), podemos verificar esto al comienzo del algoritmo, y en caso
+            de ser la entrada un grafo completo, podemos asegurar que la \emph{CMF} tendr\'a
+            $\lfloor\sfrac{n}{2}\rfloor$ cualesquiera nodos, y por lo tanto una frontera de
+            $\lfloor\sfrac{n}{2}\rfloor \cdot \lceil\sfrac{n}{2}\rceil$.
+
+        \par Para justificar esto \'ultimo, afirmamos que la \emph{CMF} de cualquier grafo
+            completo tendr\'a al menos $\lfloor\sfrac{n}{2}\rfloor$ nodos\footnote{La
+            demostraci\'on de esta afirmaci\'on es similar (sino casi id\'entica)
+            a la ya expuesta en la poda anterior, con la salvedad que se puede asegurar
+            exactamente cuanto suma cada nodo a la frontera de $K$ y que la cota que se
+            desea ver es la cota inferior y no la superior. Por lo tanto, se omite esta
+            demostraci\'on por ser trivial.}. Asumiendo esto como
+            correcto, y sumado a la propiedad ya demostrada en la poda anterior, nos quedar\'ia
+            lo siguiente:
+
+        \bigskip
+        \par $\lfloor\sfrac{n}{2}\rfloor \leq |CMF| \leq \lceil\sfrac{n}{2}\rceil$
+
+        \bigskip
+        \par Por lo cual se deduce que $|CMF| = \lfloor\sfrac{n}{2}\rfloor$ o 
+        $|CMF| = \lceil\sfrac{n}{2}\rceil$, pues la $|CMF| \in \mathbb{N}$ 
+
+        \bigskip
+        \par Luego, como la $|CMF|$ en un grafo completo es el tama\~no de la clique CMF
+            por la cantidad de nodos que no est\'an en la clique, nos queda que, para
+            cualquiera de los dos posibles tama\~nos de la \emph{CMF}:
+
+        \par $|CMF| = \lfloor\sfrac{n}{2}\rfloor \cdot \lceil\sfrac{n}{2}\rceil$.
+
+        \par Por lo cual, tomar $\lfloor\sfrac{n}{2}\rfloor$ cualesquiera nodos de $V(G)$
+            es lo mismo que tomar $\lceil\sfrac{n}{2}\rceil$, ya que su frontera ser\'a
+            la misma.
+
+    \item[M\'axima frontera de la rama\label{backtracking:poda:cota_frontera_max}]
+        Al comenzar a construir las cliques de $G$,
+        lo que se hace es considerar el conjunto de nodos \emph{candidatos} que podr\'ian
+        ser agregados preservando la caracter\'istica de "clique" (subgrafo completo
+        inducido). Por lo tanto, teniendo ya una clique $K_k$ y un conjunto de nodos
+        $candidatos$, se puede calcular una cota para la m\'axima frontera que
+        se puede constru\'ir con $K_k$ y el conjunto $candidatos$ en un tiempo
+        lineal respecto de $|candidatos|$.
+
+        \par La idea es suponer que todos los nodos podr\'ian ser agregados a $K_k$
+            al mismo tiempo manteniendo la propiedad de "clique" de $K$ (esto podr\'ia
+            no ser posible, ya que al agregar un nodo a cualquier clique, sus nodos
+            $candidatos$ podr\'ian verse reducidos ya que podr\'ian no ser adyacentes
+            al nuevo nodo). Entonces, podr\'iamos comenzar a calcular cuanto sumar\'ia
+            cada nodo $candidato$ a la clique si fuera, hipot\'eticamente, a\~nadido.
+
+        \par De todos los nodos $candidatos$, el nodo de mayor grado ser\'a el que m\'as
+            incremente a la frontera (suena razonable, y puede ser demostrado a partir
+            de las \emph{Notas Preliminares} de este mismo documento). Consideremos
+            cual ser\'ia la frontera si dicho nodo fuese agregado a $K_k$ (f\'acilmente
+            calculable siguiendo las \emph{Notas Preliminares}).
+
+        \par Supusimos que la lista de $candidatos$ no variar\'ia (salvo el nodo que
+            pas\'o a ser parte de $K$). Entonces ahora tenemos una clique $K_{k+1}$
+            (su tama\~no se increment\'o en uno). Repetimos este proceso de considerar
+            agregar candidatos (el de mayor grado) a $K$ hasta que la frontera no se
+            incremente m\'as. Esto ocurrir\'a seguro ya que la cantidad de nodos de $G$
+            es finita, y por lo tanto tambien lo es $candidatos$ (puede que esto ocurra
+            antes de quedarnos sin candidatos, ya que el tama\~no de $K$ se va incrementando
+            en $1$ en cada "consideraci\'on", y como el grado del nodo candidato que se
+            considera decrece, puede ocurrir que en algun momento el nodo candidato de
+            mayor grado no tenga suficientes aristas para unirse a $K$ e incrementar
+            la frontera).
+
+        \par Al no incrementarse m\'as la frontera, habremos llegado a una cota superior
+            para la frontera que se podr\'ia llegar a formar con $K_k$ y sus $candidatos$.
+            Si esta no supera la frontera m\'axima encontrada hasta el momento (recordemos
+            que el algoritmo de \emph{backtracking} va construyendo cliques y recordando
+            cual es aquella de mayor frontera que pudo formar hasta el momento), podemos
+            comenzar el \emph{backtracking}, ya que seguro no podremos mejorar la mejor
+            soluci\'on encontrada hasta el momento con este $K_k$ y sus $candidatos$
+            asociados.
+
+    \item[Frontera m\'inima] Al comenzar a construir las cliques de $G$, la idea pasa
+        por encontrar aquella clique que tenga la m\'axima frontera. La idea de esta
+        poda es tratar de mejorar la frontera parcial inicial con la que comienza el
+        algoritmo, para de esta manera poder cortar ramas del \emph{backtracking} mediante
+        la poda anterior.
+
+        \par Para poder hacer esto nos basamos en el \emph{N\'umero de Tur\'an}\footnote{%
+            Bondy, J.A. y Murty U.S.R. Tur\'an's Theorem. \emph{Graph Theory With Applications}.
+            7(3):109-111, 1976} \footnote{%
+            Aigner, M. y Ziegler G. Tur\'an's Graph Theorem. \emph{Proofs from THE BOOK}.
+            36:235-239, 1998}, que nos asegura la siguiente implicaci\'on:
+
+        \par Sea $G$ un grafo libre de cliques $K_{r+1}$ $\implies$
+            $m \leq \dfrac{r-1}{r}\cdot\dfrac{n^2}{2}$
+        \bigskip
+
+        \par Por el contra-rec\'iproco, podemos asegurar lo siguiente:
+        \par Si $m > \dfrac{r-1}{r}\cdot\dfrac{n^2}{2}$ $\implies$
+            $G$ tiene al menos una clique $K_{r+1}$ 
+        \bigskip
+
+        \par Trabajando un poco sobre esta implicaci\'on, llegamos a:
+        \par Si $r < \dfrac{n^2}{-2m + n^2}$ $\implies$
+            $G$ tiene al menos una clique $K_{r+1}$
+        \bigskip
+
+        \par Entonces, mediante una cantidad acotada de cuentas matem\'atica ($\mathcal O(1)$)
+            podemos encontrar el m\'aximo $r$ para el cual esta \'ultima implicaci\'on nos
+            asegura que existe un $K_{r+1}$, y con esto tenemos una cota inferior del tama\~no
+            de una clique que seguro existe en $G$.
+
+            \par Luego, utilizando el mismo concepto de la poda \emph{Grafos Completos}, podemos
+            asegurar que en $G$ habr\'a, como m\'inimo, una clique de frontera
+            $\lfloor\frac{r+1}{2}\rfloor \cdot \lceil\frac{r+1}{2}\rceil$, que en grafos con una
+            relacion $\frac{m}{n}$ alta, es una cota un tanto mejor que empezar con 0.
+
+    \item[Candidatos que sumen frontera\label{backtracking:poda:candidatos_que_sumen}]
+        En cada paso nuestro algorimo tiene
+        una clique $K$ y su $\delta(K)$. A su vez, calcula su conjunto de $candidatos$
+        asociados, es decir, el conjunto de nodos de $G$ que no forman parte de $K$ y
+        que podr\'ian ser a\~nadidos a este manteniendo su caracter\'istica de clique%
+        \footnote{Y que no fueron ya a\~nadidos a $K$ en otra permutaci\'on del backtracking
+        (recordemos que estamos hablando de conjuntos y estos no tienen orden asociado, por
+        lo cual si se consider\'o ya la clique \{1;2;3\}, y ahora se est\'a trabajando con
+        la clique \{2;3\}, no tiene sentido considerar al $1$ como candidato).}.
+
+        \par Ahora bien, ¿tiene sentido considerar como nodos $candidatos$ aquellos que,
+            a pesar de poder ser a\~nadidos a $K$, no incrementar\'ian su frontera? Claramente
+            no. Esto se deduce de que ningun nodo que se agregue a una clique nos incrementar\'a
+            la lista de $candidatos$, a lo sumo la mantendr\'a igual (es decir, al menos la reducir\'a
+            en 1 nodo: el mismo). Por lo tanto, si agregasemos dicho nodo (llamemoslo $v$), y
+            luego otro ($w$) que mantenga la propiedad de clique de $K+v+w$,
+            quitando $v$ (que no incrementaba la frontera), habremos ganado respecto de $\delta(K)$
+            al menos 1 arista para la frontera: aquella que ten\'ia en un extremo a $w$ y en
+            el otro a $v$.
+
+        \par Por lo tanto, s\'olo tiene sentido considerar como nodos candidatos aquellos que
+            de ser agregados mantienen la caracter\'istica de clique y que a la vez incrementan
+            la frontera.
+
+        \par Matem\'aticamente, concluyendo a partir de las \emph{Notas Preliminares}, consideramos
+            aquellos candidatos cuyo grado supere estrictamente el doble de la cantidad
+            de nodos de la clique parcial\footnote{Sea $K$ una clique, al agregar un nodo $v$, se pierden
+            $|K|$ aristas de la frontera, y se ganan $d(v) - |K|$}. Es decir:
+
+        \bigskip
+        \par Sea $v \in V(G)$ y $K$ la clique parcial que se est\'a construyendo,
+        \par $v$ ser\'a candidato $\iff$ $K+v$ es clique y si $d(v) > 2|K|$.
+
+        \bigskip
+        \par De esta manera, quitamos de la lista de candidatos nodos que no nos
+            llevar\'an seguro a resultados que mejoren la frontera parcial, reduciendo
+            as\'i ramas del \emph{backtracking}
+
+\end{description}
+
+\subsubsection{Pseudoc\'odigo descriptivo}
+\par Se presenta a continuaci\'on un pseudoc\'odigo que describe los pasos que sigue
+    nuestro algoritmo propuesto. El mismo no contempla estructuras de datos sobre
+    los cuales se implement\'o (cosa que se realiza en el c\'alculo de complejidad),
+    simplemente tiene como objetivo describir el algoritmo.
+
 \begin{pseudocodigo}[Algoritmo Exacto para \emph{CMF} - Descriptivo]
     \Require\Statex
         \begin{itemize}
@@ -13,8 +302,8 @@
             \item Una funci\'on $\delta(K)$, que dada una \emph{clique} $K$\footnote{Una
                 \emph{clique} no es otra cosa que un conjunto de v\'ertices, con la
                 caracter\'istica de inducir un grafo completo en $G$.} en $G$, calcula
-                el cardinal de su frontera\footnote{Como ya se explic\'o, sea $K$ una
-                \emph{clique} de $G$, entonces: $\delta(K) = - |K|(|K|-1) +
+                el cardinal de su frontera\footnote{Como ya se explic\'o en las notas preliminares,
+                sea $K$ una \emph{clique} de $G$, entonces: $\delta(K) = - |K|(|K|-1) +
                 \displaystyle\sum_{v \in K} d(v)$}.
 
             \item Una funci\'on $\delta_{cota}(K)$, que dada una \emph{clique} $K$
@@ -28,8 +317,9 @@
 
     \Statex
 
-    \If{$m = \dfrac{n(n-1)}{2}$} \Comment{Si $G$ es un $K_n$}
-        \State $K \gets \left\{1;\dots;\left\lfloor\dfrac{n}{2}\right\rfloor\right\}$
+    \If{$G$ es un grafo completo $K_n$}
+        \State $K \gets \lfloor\sfrac{n}{2}\rfloor$ nodos distintos de $V(G)$ cualesquiera.
+        \Statex
 
     \Else
         \State $\delta_{max} \gets \left\lfloor\dfrac{r+1}{2}\right\rfloor\cdot
@@ -54,19 +344,26 @@
             de notaci\'on, ya que $candidatos(K')$ es una secuencia y $YaProcesados(K')$
             es un conjunto. Se asume que es la secuencia sin los elementos del conjunto.}$
             \neq \emptyset$ $\lor$ $K' \neq \emptyset$}
-
-            \If{$candidatos(K') \setminus YaProcesados(K') \neq \emptyset$ $\land$ $\delta_{max} < \delta_{cota}(K')$%
-                \footnote{Si $K'$ es vac\'io, $\delta_{cota}(K')$ es $m$.}}
-
+            \Statex
+            \If{$\begin{pmatrix}
+                    \text{\Huge$\bigwedge$} &
+                    \begin{matrix}
+                        candidatos(K') \setminus YaProcesados(K') \neq \emptyset\\
+                        \delta_{max} < \delta_{cota}(K')\footnote{Si $K'$ es vac\'io, $\delta_{cota}(K')$ es $m$.}\\
+                        |K'| < \sfrac{n}{2}
+                    \end{matrix}
+                \end{pmatrix}$
+            }
+                \Statex
                 \State $v \gets cabeza(candidatos(K') \setminus YaProcesados(K'))$
                 \State $K' \gets K' \cup \{v'\}$
-                \If{$candidatos(K') = \emptyset$ $\land$ $\delta_{max} < \delta(K')$}
-                    %\Comment{Llegu\'e al final de la rama y obtuve una mejor solucion}
+                \Statex
+            \ElsIf{$K' \neq \emptyset$} \Comment{Llegu\'e al final de la rama}
+                \If{$\delta_{max} < \delta(K')$}
+                    \Comment{Si encontr\'e una mejor soluci\'on \'optima parcial}
                     \State $\delta_{max} \gets \delta(K')$
                     \State $K \gets K'$
                 \EndIf
-
-            \ElsIf{$K' \neq \emptyset$} \Comment{\emph{Backtracking}}
                 \State $v \gets ultimo(K')$\footnote{Donde $ultimo(K')$
                     es el \'ulitmo v\'ertice agregado a $K'$.}
                 \State $K' \gets K' \setminus \{v'\}$
