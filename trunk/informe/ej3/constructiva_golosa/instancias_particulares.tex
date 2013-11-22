@@ -58,12 +58,33 @@ resultados sub-\'optimos).
 		\end{tabular}
 	\end{center}
 
+	Todos los algoritmos implementados tienen como uno de sus pasos
+	iniciales chequear si el grafo de entrada es un grafo completo, 
+	como ya se mencion\'o esto se hace ya que dicho chequeo es $O(1)$
+	y la construcci\'on de una $CMF$ toma tiempo $O(n)$, esto si 
+	bien no mejora en absoluto la complejidad temporal asint\'otica
+	de ninguno de los algoritmos presentados, s\'i permite acortar
+	los tiempos de ejecuci\'on lo que sobre un batch de testeo 
+	extenso es muy deseable.
+
+	El an\'alisis que se presenta a continuaci\'on es el an\'alisis
+	de como se comportar\'ia la heur\'istica de no estar implementada
+	esa mejora, se efect\'ua el mismo dado que en familias que 
+	veremos m\'as adelante los subgrafos completos juegan un 
+	papel importante y su explicaci\'on descansar\'a fuertemente
+	sobre las ideas y resultados de este an\'alisis.
+	
+	Ejemplos de grafos de este tipo y de c\'omo se formar\'ia
+	la $CMF$ de no estar implementada la mejora pueden verse
+	en el diagrama al principio de esta secci\'on.
+
 	En estos grafos como ya se mencion\'o anteriormente, el algoritmo
-	escoge nodos y va haciendo crecer una clique hasta llegar a una 
+	escoger\'ia nodos e ir\'ia haciendo crecer una clique hasta llegar 
+	a una 
 	clique de tama\~no $n/2$, notes\'e que todos los nodos en los 
 	grafos de esta familia tienen grado $d(i) = n - 1$, por lo
 	tanto la selecci\'on en cada paso del siguiente nodo de la
-	clique es dependiente de la implementaci\'on
+	clique ser\'ia dependiente de la implementaci\'on
 
 	Tambi\'en anal\'iticamente puede verse que las CMF para esta 
 	familia de grafos son tanto las $K_{\left \lfloor{n/2}\right \rfloor}$ 
@@ -102,7 +123,7 @@ resultados sub-\'optimos).
 %\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/K7_st0.png}
 %\end{figure}
 
-\subsection{\'Arboles}
+\subsubsection{\'Arboles}
 La familia de los \'arboles es una de las familias en las que la heur\'istica
 se puede romper y no devolver el resultado correcto. 
 
@@ -161,7 +182,7 @@ heur\'istica
 
 An\'alizando lo mucho que se puede apartar la soluci\'on \'optima de una soluci\'on sub-\'optima
 podemos ver que si llamamos $v$ al nodo de mayor grado en el arbol y tomamos $d(v) = \Delta$, la
-mayor frontera que puede tener la $CMF$ (o sea la soluci\'on \'optime) es
+mayor frontera que puede tener la $CMF$ (o sea la soluci\'on \'optima) es
 \[ \delta(CMF) = \Delta -1 + \Delta -1 = 2 \Delta -2 \]
 esto sucede cuando $v$ (el primer nodo elegido por el algoritmo) es adyacente a otro nodo de grado
 $\Delta$ ($v'$ en el gr\'afico). Mientras que la soluci\'on menos \'optima que se puede obtener es 
@@ -169,11 +190,33 @@ cuando el nodo de mayor grado adyacente a $v$ es de grado menor a 3
 (de este modo, la clique calculada no crece del nodo original) dandonos una soluci\'on sub-\'optima
 \[ \delta(SH) = \Delta \]
 
+	\begin{figure}[H]
+	\caption{Un ejemplo extremo para \'arboles}
+	\label{fig:extremo_arboles}
+	\begin{center}
+		\begin{tabular}{|c||c||c||c|}
+		\hline
+		& Grafo de entrada & Paso 1 & Paso 2 \\ 
+			\hline
+			resultado sub-\'optimo &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/extremetree_st0.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/extremetree_st11.png} & \\
+			\hline
+			resultado \'optimo &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/extremetree_st0.png} &
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/extremetree_st01.png} & 
+			\includegraphics[scale = 0.2]{img/ej3/constructiva_golosa/extremetree_st02.png} \\
+		\hline
+		\end{tabular}
+	\end{center}
+	\end{figure}
+	
 Con esto se puede ver que la soluci\'on calculada por la heur\'istica ($\delta(SH)$) es $O(\Delta)$ 
 y la soluci\'on \'optima ($\delta(CMF)$) tambi\'en es $O(\Delta)$ con lo que la raz\'on entre ambas 
 es constante.
 			
-\subsection{Grafos bipartitos}
+\subsubsection{Grafos bipartitos}
+\label{subsub:bipartitos}
 	Para los grafos bipartitos tenemos un problema similar que el que tenemos para los \'arboles.
 	Cuando el grafo es bipartito completo al tener todos los nodos de cada una de las particiones
 	el mismo grado, la heur\'istica funciona bien. Cuando esto no pasa, puede suceder que la 
@@ -224,6 +267,9 @@ es constante.
 	que no sea el nodo distinguido. Los nodos restantes de la partici\'on que contiene a los de 
 	grado m\'aximo solo estar\'an conectados con el nodo distinguido de la partici\'on contraria.
 
+	\begin{figure}[H]
+	\caption{Un ejemplo extremo para bipartitos}
+	\label{fig:extremo_bipartito}
 	\begin{center}
 		\begin{tabular}{|c||c||c||c|}
 		\hline
@@ -240,6 +286,7 @@ es constante.
 		\hline
 		\end{tabular}
 	\end{center}
+	\end{figure}
 
 	Aqu\'i se puede ver que por construcci\'on, si llamamos a los nodos de grado m\'aximo en el grafo
 	$v$ y $v'$, definimos $d(v) = d(v') = \Delta$ y llamamos al nodo distinguido de la partici\'on
@@ -254,7 +301,8 @@ es constante.
 	Con esto, haciendo abuso de notacion tenemos $\delta(SH) = O(\Delta)$ y $\delta(CMF) = O(\Delta)$ con 
 	lo que nuevamente la raz\'on entre entre ambas es constante.
 
-\subsection{Grafos circulares}
+\subsubsection{Grafos circulares}
+\label{subsub:circulares}
 	En este tipo de grafos, si bien nos encontramos con el problema de empate en el 
 	grado de los nodos, tenemos la ventaja (como la ten\'iamos para los grafos completos)
 	que el grado de todos los nodos es el mismo, con lo cual tenemos asegurado que 
@@ -270,7 +318,8 @@ es constante.
 		\end{tabular}
 	\end{center}
 
-\subsection{Estrellas/Ruedas}
+\subsubsection{Estrellas/Ruedas}
+\label{subsub:ruedas}
 	Para esta familia nos encontramos con el problema del empate en el grado cuando 
 	el algoritmo llega a la selecci\'on del segundo nodo para formar la $CMF$, aqu\'i
 	tambi\'en el alto grado de simetr\'ia radial de esta famil\'ia viene en nuestra 
@@ -300,7 +349,8 @@ es constante.
 		\end{tabular}
 	\end{center}
 
-\subsection{Banana tree}
+\subsubsection{Banana tree}
+\label{subsub:banana}
 	Para est\'a familia tambi\'en nos encontramos con un caso de empate entre todos los 
 	nodos seleccionables (cuando el nodo de lo que ser\'ia la ra\'iz en caso de ser
 	un \'arbol dirigido es uno de los nodos de mayor grafo), o en el caso de que
@@ -435,7 +485,7 @@ es constante.
 %			
 %\end{tikzpicture}
 
-\subsection{Construcci\'on de familias que rompen siempre la heur\'istica}
+\subsection{Construcci\'on de familias que provocan siempre soluciones sub-\'optimas en la heur\'istica}
 
 Intentando construir familias que siempre van a romper la heur\'istica llegamos a las siguientes
 (en lo siguiente llamaremos $v$ al \'unico nodo de grado m\'aximo en un grafo):
@@ -448,7 +498,7 @@ Por construcci\'on estaremos viendo familias en las que existe un \'unico nodo d
 
 Construyamos la primera familia que rompe la heur\'istica
 
-\subsubsection{$v \notin CMF$}
+\subsubsection{Estrella + Puente + CMF ($v$ no en $CMF$)}
 
 Estamos buscando una familia de grafos en los que el nodo de grado m\'aximo no forme parte de la 
 frontera, con esto en mente, partimos de un nodo de grado m\'aximo: $v$, para lograr esto $v$ ser\'a
@@ -472,9 +522,13 @@ el l\'imite impuesto, siempre y cuando $v'$ no tenga aristas adicionales a las q
 parte de la clique, excepto la que lo conecta al puente.
 
 Gr\'aficamente:
+\begin{figure}[H]
+\caption{Estrella + Puente + CMF}
+\label{fig:epcmf_carac}
 \begin{center} 
 	\includegraphics[scale = 0.6]{img/ej3/constructiva_golosa/vnotincmf_carac1.png} 
 \end{center}
+\end{figure}
 
 Ahora analicemos cual es la frontera de la $CMF$: $\delta (CMF)$
 
@@ -572,7 +626,7 @@ todos los nodos de la $CMF$ sino que en el extremo basta tener la suficiente can
 de nodos conectados s\'olo con alg\'un nodo de la $CMF$, l\'ogicamente, esto significa
 que esa cantidad de nodos ser\'a mayor a $\left\lceil \frac{\Delta -1}{2} \right\rceil$ 
 la relaci\'on es, a grandes rasgos, un nodo extra por cada arista removida, quedando 
-un grafo de la pinta del siguiente ejemplo (en el que tambi\'en se removio $x$):
+un grafo de la pinta del siguiente ejemplo (en el que tambi\'en se removi\'o $x$, con lo que es un caso muy borde para la familia):
 
 \begin{center} 
 	\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/faulty_st0.png} 
@@ -584,7 +638,7 @@ de la $CMF$ (esto es la soluci\'on \'optima del problema) es $O(\Delta^2)$, mien
 que la soluci\'on obtenida por la heur\'istica golosa constructiva es $O(\Delta)$
 
 
-\subsubsection{$v \in CMF$}
+\subsubsection{Estrella + CMF ($v$ en $CMF$)}
 
 Otra de las familias que podemos construir para siempre romper la heur\'istica 
 es una familia en la que partimos de la condici\'on que el nodo de mayor grado
@@ -603,11 +657,14 @@ En este punto, todavia nos queda un grado libre de $v$ que lo conectaremos con u
 nodo distinto a todos los hasta ahora especificados por simplicidad.
 
 Con esto nos queda un grafo con la siguiente pinta:
-
-
+\begin{figure}[H]
+\caption{Estrella + CMF}
+\label{fig:ecmf_carac}
 \begin{center} 
 	\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/vincmf_carac.png} 
 \end{center}
+\end{figure}
+
 
 Si investigamos con esta caracterizaci\'on cual es la $CMF$, por lo visto anteriormente
 sabemos que es la clique $K_{\left\lfloor \frac{\Delta -1}{2} \right\rfloor}$, 
@@ -643,6 +700,12 @@ y con $\Delta$ impar
 Y juntando los dos resultados obtenidos tenemos que para poder construir un 
 grafo de esta familia, necesitamos $\Delta \geq 8 $.
 
+El grafo de m\'inima cantidad de nodos que se puede generar para esta 
+familia ser\'a uno an\'alogo al siguiente
+\begin{center} 
+	\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/estrellaCMF_st0.png} 
+\end{center}
+
 Nuevamente la raz\'on entre la frontera calculada por la heur\'istica y la frontera 
 \'optima para esta familia es tan grande como uno quiera. Sabemos por construcci\'on 
 que la frontera de la $CMF$ (esto es la soluci\'on \'optima del problema) es 
@@ -650,13 +713,8 @@ $O(\Delta^2)$, mientras que la soluci\'on obtenida por la heur\'istica golosa
 constructiva es $O(\Delta)$.
 
 De la misma manera que hicimos con la otra familia podemos ir relajando condiciones
-tales como exigir que exista $K_{\Delta -1}$ o convertir a la estrella en una rueda, 
+tales como no exigir que exista $K_{\Delta -1}$ o convertir a la estrella en una rueda, 
 esto generaliza la familia construida, pero el procedimiento es completamente an\'alogo
 al realizado con la otra familia y el agregado del procedimiento detallado no aporta 
 demasiado.
 
-%\[ K_{\Delta -1} \]
-%\[ d(v) = \Delta \]
-%\[ d(v') = \Delta -1 \]
-%\[ K_{\left\lfloor \frac{\Delta -1}{2} \right\rfloor} \]
-%\[ C.I._{\left\lceil \frac{\Delta -1}{2} \right\rceil} \]
