@@ -58,12 +58,33 @@ resultados sub-\'optimos).
 		\end{tabular}
 	\end{center}
 
+	Todos los algoritmos implementados tienen como uno de sus pasos
+	iniciales chequear si el grafo de entrada es un grafo completo, 
+	como ya se mencion\'o esto se hace ya que dicho chequeo es $O(1)$
+	y la construcci\'on de una $CMF$ toma tiempo $O(n)$, esto si 
+	bien no mejora en absoluto la complejidad temporal asint\'otica
+	de ninguno de los algoritmos presentados, s\'i permite acortar
+	los tiempos de ejecuci\'on lo que sobre un batch de testeo 
+	extenso es muy deseable.
+
+	El an\'alisis que se presenta a continuaci\'on es el an\'alisis
+	de como se comportar\'ia la heur\'istica de no estar implementada
+	esa mejora, se efect\'ua el mismo dado que en familias que 
+	veremos m\'as adelante los subgrafos completos juegan un 
+	papel importante y su explicaci\'on descansar\'a fuertemente
+	sobre las ideas y resultados de este an\'alisis.
+	
+	Ejemplos de grafos de este tipo y de c\'omo se formar\'ia
+	la $CMF$ de no estar implementada la mejora pueden verse
+	en el diagrama al principio de esta secci\'on.
+
 	En estos grafos como ya se mencion\'o anteriormente, el algoritmo
-	escoge nodos y va haciendo crecer una clique hasta llegar a una 
+	escoger\'ia nodos e ir\'ia haciendo crecer una clique hasta llegar 
+	a una 
 	clique de tama\~no $n/2$, notes\'e que todos los nodos en los 
 	grafos de esta familia tienen grado $d(i) = n - 1$, por lo
 	tanto la selecci\'on en cada paso del siguiente nodo de la
-	clique es dependiente de la implementaci\'on
+	clique ser\'ia dependiente de la implementaci\'on
 
 	Tambi\'en anal\'iticamente puede verse que las CMF para esta 
 	familia de grafos son tanto las $K_{\left \lfloor{n/2}\right \rfloor}$ 

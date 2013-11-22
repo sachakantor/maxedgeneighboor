@@ -165,9 +165,89 @@ el nodo identificado como $3$ en el ejemplo es elegible como
 primer nodo de $K$ pues $2 > 1,8$.
 
 \subsubsection{Estrella + Puente + CMF}
+
 En esta familia, siguiendo con la idea de las \'ultimas dos analizadas
 podemos ver que que para llegar a la soluci\'on \'optima hay muchos 
 m\'as puntos de inicio que en la golosa constructiva. Por ejemplo
 el primer nodo puede estar en $K_{\Delta -1}$ y no ser siquiera $v'$ 
-(ver Figura \ref{fig:epcmf_carac}), 
+(ver Figura \ref{fig:epcmf_carac}), en los casos en los que esto 
+suceda, en la variante b\'asica, la busqueda local elegir\'a
+$\left\lfloor \frac{\Delta -1}{2} \right\rfloor$ nodos de $K_{\Delta -1}$. 
+Si estos nodos incluyen a $v'$, termina pues no quedan candidatos que
+hagan crecer la soluci\'on parcial, si no lo incluyen hay dos posibilidades:
+
+\begin{itemize}
+	\item $\Delta$ par: La cantidad de nodos en $K_{\Delta -1}$ ser\'a impar 
+	y entonces la soluci\'on crece hasta alcanzar
+	$\left\lfloor \frac{\Delta -1}{2} \right\rfloor$ nodos que por hip\'otesis
+	no incluyen a $v'$, en el siguiente paso el \'unico candidato restante
+	que hace crecer la soluci\'on en una arista es $v'$ y por ello lo agrega 
+	a la soluci\'on, terminando con una soluci\'on \'optima.
+	\begin{center}
+	\begin{tabular}{|c||c|}
+		\hline
+		Grafo entrada & 
+		\includegraphics[scale = 0.2]{img/ej3/busqueda_local/estrellaPuenteCMFImpar.png} \\
+		\hline
+		Primer paso &
+		\includegraphics[scale = 0.2]{img/ej3/busqueda_local/estrellaPuenteCMFImpar_st01.png} \\
+		\hline
+		Segundo paso &
+		\includegraphics[scale = 0.2]{img/ej3/busqueda_local/estrellaPuenteCMFImpar_st02.png} \\
+		\hline
+		Tercer paso &
+		\includegraphics[scale = 0.2]{img/ej3/busqueda_local/estrellaPuenteCMFImpar_st03.png} \\
+		\hline
+
+	\end{tabular}
+	\end{center}
+
+
+	\item $\Delta$ impar: La cantidad de nodos en $K_{\Delta -1}$ ser\'a par, 
+	en este caso la soluci\'on crece hasta alcanzar $\frac{\Delta -1}{2}$ nodos
+	que no incluyen a $v'$, llegados a este punto la soluci\'on no puede crecer
+	para incluir a $v'$ ya que de hacerlo la frontera de la soluci\'on ser\'ia
+	la misma que en el paso anterior y el algoritmo no se comporta de esta manera.
+	Por ende la soluci\'on devuelta es sub-\'optima.
+	\begin{center}
+	\begin{tabular}{|c||c|}
+		\hline
+		Grafo entrada & 
+		\includegraphics[scale = 0.2]{img/ej3/busqueda_local/estrellaPuenteCMFPar.png} \\
+		\hline
+		Primer paso &
+		\includegraphics[scale = 0.2]{img/ej3/busqueda_local/estrellaPuenteCMFPar_st01.png} \\
+		\hline
+		Segundo paso &
+		\includegraphics[scale = 0.2]{img/ej3/busqueda_local/estrellaPuenteCMFPar_st02.png} \\
+		\hline
+		Tercer paso &
+		\includegraphics[scale = 0.2]{img/ej3/busqueda_local/estrellaPuenteCMFPar_st03.png} \\
+		\hline
+
+	\end{tabular}
+	\end{center}
+
+
+\end{itemize}
+
+Notar que en la variante \emph{Mejor Vecino} evita el resultado sub-\'optimo en 
+el \'ultimo caso (bajo las hip\'otesis del mismo).
+
+Hay otros posibles comportamientos de la heur\'istica sobre la misma familia de
+grafos, que el algoritmo comience la soluci\'on en uno de los nodos del puente o
+que la comience en el centro de la estrella.
+
+Que comience la soluci\'on sobre el puente es un caso que t\'ipicamente no va a 
+suceder, si es un puente simple (camino simple) la \'unica forma de que sucediera
+ser\'ia si el puente es lo suficientemente largo para bajar el grado promedio a
+un valor menor a dos, si el puente no es un camino simple y en cambio tiene nodos
+extra, el puente no tendr\'a que ser tan largo pero siempre se deber\'a cumplir
+que el nodo inicial de la soluci\'on tenga grado mayor al grado promedio del grafo.
+
+Cuando la soluci\'on se inicia en el centro de la estrella, la busqueda local 
+se estanca en el m\'aximo local debido al puente que une la estrella con $K_{\Delta -1}$,
+de hecho, esta familia fue dise\~nada con el objetivo de asegurar precisamente
+este estancamiento.
+		
 
