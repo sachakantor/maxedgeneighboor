@@ -78,16 +78,16 @@
     clique, es decir que un nodo $v \in K$ le suma a $\delta(K)$ una cantidad
     de aristas expresable como $d(v)-(|K|-1)$.
 
-\bigskip
-\par Entonces, $\delta(K)$, es expresable como $\displaystyle\sum_{v \in K}d(v) - (|K|-1)$.
-\bigskip
+\par Entonces, $\delta(K)$, es expresable como:
+\begin{equation*}
+    \displaystyle\sum_{v \in K}d(v) - (|K|-1)
+\end{equation*}
 
 \par Como la cantidad de nodos en $K$ es justamente $|K|$, la expresi\'on
     que nos queda es:
-
-\bigskip
-\par $\delta(K) = -|K|(|K|-1)\displaystyle\sum_{v \in K}d(v)$
-\bigskip
+\begin{equation*}
+    \delta(K) = -|K|(|K|-1)\displaystyle\sum_{v \in K}d(v)
+\end{equation*}
 
 \par M\'as a\'un, de aqu\'i podemos tambi\'en calcular cuantas aristas
     incrementar\'ia un nodo al ser a\~nadido a una clique $|K|$. Supongamos
@@ -103,10 +103,10 @@
     en funci\'on de la frontera de $K$, las aristas que se pierden y ganan por agregar
     a $v$:
 
-\bigskip
-
-\par $\delta(K+v) = \delta(K) + \underbrace{d(v)-|K|}_{\text{Lo que se gana}}
-    - \underbrace{|K|}_{\text{Lo que se pierde}} = \delta(K) + d(v) - 2|K|$
+\begin{equation*}
+    \delta(K+v) = \delta(K) + \underbrace{d(v)-|K|}_{\text{Lo que se gana}}
+    - \underbrace{|K|}_{\text{Lo que se pierde}} = \delta(K) + d(v) - 2|K|
+\end{equation*}
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre la complejidad de instanciar un grafo en la implementaci\'on}
@@ -205,7 +205,7 @@
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre los generadores de instancias aleatorias}
-\subsection*{Sobre los generadores de instancias aleatorias}
+\subsection*{Sobre los generadores de instancias aleatorias\label{notas:datasets}}
 \par Una vez que se implementaron los algoritmos que resuelven los problemas
     presentados por el enunciado de este trabajo, se llega a la etapa de
     an\'alisis/experimentaci\'on donde se quieren verificar los resultados
@@ -264,7 +264,7 @@
 
 \phantomsection
 \addcontentsline{toc}{subsection}{Sobre la experimentaci\'on}
-\subsection*{Sobre la experimentaci\'on}
+\subsection*{Sobre la experimentaci\'on\label{notas:experimentacion}}
 \par Llegados a esta instancia del ejercicio, lo que nos importa es poder
     comprobar emp\'iricamente las conclusiones te\'oricas, particularmente
     las relacionadas con la complejidad temporal y "cuan bueno" son los

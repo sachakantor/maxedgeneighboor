@@ -1,0 +1,143 @@
+% GNUPLOT: LaTeX picture with Postscript
+\begingroup
+  \makeatletter
+  \providecommand\color[2][]{%
+    \GenericError{(gnuplot) \space\space\space\@spaces}{%
+      Package color not loaded in conjunction with
+      terminal option `colourtext'%
+    }{See the gnuplot documentation for explanation.%
+    }{Either use 'blacktext' in gnuplot or load the package
+      color.sty in LaTeX.}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\includegraphics[2][]{%
+    \GenericError{(gnuplot) \space\space\space\@spaces}{%
+      Package graphicx or graphics not loaded%
+    }{See the gnuplot documentation for explanation.%
+    }{The gnuplot epslatex terminal needs graphicx.sty or graphics.sty.}%
+    \renewcommand\includegraphics[2][]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \@ifundefined{ifGPcolor}{%
+    \newif\ifGPcolor
+    \GPcolortrue
+  }{}%
+  \@ifundefined{ifGPblacktext}{%
+    \newif\ifGPblacktext
+    \GPblacktexttrue
+  }{}%
+  % define a \g@addto@macro without @ in the name:
+  \let\gplgaddtomacro\g@addto@macro
+  % define empty templates for all commands taking text:
+  \gdef\gplbacktext{}%
+  \gdef\gplfronttext{}%
+  \makeatother
+  \ifGPblacktext
+    % no textcolor at all
+    \def\colorrgb#1{}%
+    \def\colorgray#1{}%
+  \else
+    % gray or color?
+    \ifGPcolor
+      \def\colorrgb#1{\color[rgb]{#1}}%
+      \def\colorgray#1{\color[gray]{#1}}%
+      \expandafter\def\csname LTw\endcsname{\color{white}}%
+      \expandafter\def\csname LTb\endcsname{\color{black}}%
+      \expandafter\def\csname LTa\endcsname{\color{black}}%
+      \expandafter\def\csname LT0\endcsname{\color[rgb]{1,0,0}}%
+      \expandafter\def\csname LT1\endcsname{\color[rgb]{0,1,0}}%
+      \expandafter\def\csname LT2\endcsname{\color[rgb]{0,0,1}}%
+      \expandafter\def\csname LT3\endcsname{\color[rgb]{1,0,1}}%
+      \expandafter\def\csname LT4\endcsname{\color[rgb]{0,1,1}}%
+      \expandafter\def\csname LT5\endcsname{\color[rgb]{1,1,0}}%
+      \expandafter\def\csname LT6\endcsname{\color[rgb]{0,0,0}}%
+      \expandafter\def\csname LT7\endcsname{\color[rgb]{1,0.3,0}}%
+      \expandafter\def\csname LT8\endcsname{\color[rgb]{0.5,0.5,0.5}}%
+    \else
+      % gray
+      \def\colorrgb#1{\color{black}}%
+      \def\colorgray#1{\color[gray]{#1}}%
+      \expandafter\def\csname LTw\endcsname{\color{white}}%
+      \expandafter\def\csname LTb\endcsname{\color{black}}%
+      \expandafter\def\csname LTa\endcsname{\color{black}}%
+      \expandafter\def\csname LT0\endcsname{\color{black}}%
+      \expandafter\def\csname LT1\endcsname{\color{black}}%
+      \expandafter\def\csname LT2\endcsname{\color{black}}%
+      \expandafter\def\csname LT3\endcsname{\color{black}}%
+      \expandafter\def\csname LT4\endcsname{\color{black}}%
+      \expandafter\def\csname LT5\endcsname{\color{black}}%
+      \expandafter\def\csname LT6\endcsname{\color{black}}%
+      \expandafter\def\csname LT7\endcsname{\color{black}}%
+      \expandafter\def\csname LT8\endcsname{\color{black}}%
+    \fi
+  \fi
+  \setlength{\unitlength}{0.0500bp}%
+  \begin{picture}(7200.00,5040.00)%
+    \gplgaddtomacro\gplbacktext{%
+      \csname LTb\endcsname%
+      \put(1562,2244){\makebox(0,0)[r]{\strut{} 0.1}}%
+      \csname LTb\endcsname%
+      \put(1562,2458){\makebox(0,0)[r]{\strut{} 1}}%
+      \csname LTb\endcsname%
+      \put(1562,2671){\makebox(0,0)[r]{\strut{} 10}}%
+      \csname LTb\endcsname%
+      \put(1562,2885){\makebox(0,0)[r]{\strut{} 100}}%
+      \csname LTb\endcsname%
+      \put(1562,3098){\makebox(0,0)[r]{\strut{} 1000}}%
+      \csname LTb\endcsname%
+      \put(1562,3312){\makebox(0,0)[r]{\strut{} 10000}}%
+      \csname LTb\endcsname%
+      \put(1562,3525){\makebox(0,0)[r]{\strut{} 100000}}%
+      \csname LTb\endcsname%
+      \put(1562,3739){\makebox(0,0)[r]{\strut{} 1e+06}}%
+      \csname LTb\endcsname%
+      \put(1562,3952){\makebox(0,0)[r]{\strut{} 1e+07}}%
+      \csname LTb\endcsname%
+      \put(1562,4166){\makebox(0,0)[r]{\strut{} 1e+08}}%
+      \csname LTb\endcsname%
+      \put(1562,4379){\makebox(0,0)[r]{\strut{} 1e+09}}%
+      \csname LTb\endcsname%
+      \put(1694,2024){\makebox(0,0){\strut{} 0}}%
+      \csname LTb\endcsname%
+      \put(2205,2024){\makebox(0,0){\strut{} 500}}%
+      \csname LTb\endcsname%
+      \put(2716,2024){\makebox(0,0){\strut{} 1000}}%
+      \csname LTb\endcsname%
+      \put(3227,2024){\makebox(0,0){\strut{} 1500}}%
+      \csname LTb\endcsname%
+      \put(3738,2024){\makebox(0,0){\strut{} 2000}}%
+      \csname LTb\endcsname%
+      \put(4249,2024){\makebox(0,0){\strut{} 2500}}%
+      \csname LTb\endcsname%
+      \put(4759,2024){\makebox(0,0){\strut{} 3000}}%
+      \csname LTb\endcsname%
+      \put(5270,2024){\makebox(0,0){\strut{} 3500}}%
+      \csname LTb\endcsname%
+      \put(5781,2024){\makebox(0,0){\strut{} 4000}}%
+      \csname LTb\endcsname%
+      \put(6292,2024){\makebox(0,0){\strut{} 4500}}%
+      \csname LTb\endcsname%
+      \put(6803,2024){\makebox(0,0){\strut{} 5000}}%
+      \put(176,3311){\rotatebox{-270}{\makebox(0,0){\strut{}Tiempo (microsegundos)}}}%
+      \put(396,3311){\rotatebox{-270}{\makebox(0,0){\strut{}(Escala Logaritmica)}}}%
+      \put(4248,1694){\makebox(0,0){\strut{}Cantidad de Nodos}}%
+      \put(4248,1474){\makebox(0,0){\strut{}(Escala Lineal)}}%
+      \put(4248,4709){\makebox(0,0){\strut{}Tiempo de ejecucion conforme aumenta la cantidad de nodos}}%
+    }%
+    \gplgaddtomacro\gplfronttext{%
+      \csname LTb\endcsname%
+      \put(6131,1053){\makebox(0,0)[r]{\strut{}Algoritmo Exacto}}%
+      \csname LTb\endcsname%
+      \put(6131,833){\makebox(0,0)[r]{\strut{}Tabu(n,n,n/2,golosa,sin aspiracion)}}%
+      \csname LTb\endcsname%
+      \put(6131,613){\makebox(0,0)[r]{\strut{}Tabu(n,n,n/2)}}%
+      \csname LTb\endcsname%
+      \put(6131,393){\makebox(0,0)[r]{\strut{}BL(mejor vecino,intercambio)}}%
+      \csname LTb\endcsname%
+      \put(6131,173){\makebox(0,0)[r]{\strut{}Golosa}}%
+    }%
+    \gplbacktext
+    \put(0,0){\includegraphics{ej4_nodos_connected_sparse}}%
+    \gplfronttext
+  \end{picture}%
+\endgroup
