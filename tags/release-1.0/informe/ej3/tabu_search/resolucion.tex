@@ -1,0 +1,249 @@
+\subsubsection{La heur\'istica Tab\'u}\label{tabu:explicacion}
+\par Ya habiendo pasado por las dos heur\'isticas anteriores y un algoritmo exacto,
+    ahora deseamos ver si utilizando una heur\'istica m\'as parametrizada
+    se pueden encontrar buenas soluciones al problema en buenos tiempos. Es decir,
+    queremos ver si podemos mejorar los resultados sin afectar notablemente la
+    eficiencia del algoritmo.
+
+\par La b\'usqueda tab\'u tiene como objetivo tratar de superar los m\'aximos
+    (o m\'inimos, dependiendo de si se busca maximizar o minimizar) locales
+    que puede tener una vecindad de una b\'usqueda local.
+
+\par Sobre el esquema de la b\'usqueda tab\'u no pretendemos decir mucho, la misma
+    ya est\'a hecha y el model aplica a nuestro problema\footnote{\url{%
+    http://www.dc.uba.ar/materias/aed3/2013/2c/laboratorio/heuristicas.pdf}}.
+
+\par A modo de clarificaci\'on de terminolog\'ia, y para evitar confusiones,
+    se aclara que en el marco de este trabajo nos referimos como ``soluci\'on
+    actual'' o ``soluci\'on parcial'' a la soluci\'on que se tiene al entrar
+    en cada iteraci\'on del ciclo de b\'usqueda tab\'u. Y llamamos ``soluci\'on
+    \'optima parcial'', o por abuso de notaci\'on ``soluci\'on \'optima'' a la
+    mejor soluci\'on hallada hasta el momento desde que comenz\'o la b\'usqueda
+    tab\'u.
+
+\par En nuestro caso definimos las siguientes caracter\'isticas de nuestra
+    b\'usqueda tab\'u:
+
+\begin{itemize}
+    \item \textbf{Soluci\'on Inicial: } Proponemos las mismas 2 variantes que
+        se utilizaron en la b\'usqueda local\footnote{Secci\'on~\ref{busqueda},
+        \emph{\nameref{busqueda}}.};
+        comenzar con \textbf{alg\'un nodo de al menos grado promedio} o con
+        la \textbf{clique de la heur\'istica golosa}.
+
+    \item \textbf{Vecindad: } Decidimos utilizar la vecindad ``reducida'' de
+        la b\'usqueda local. La misma consiste en todas las cliques que tengan
+        un nodo m\'as o uno menos respecto de la clique/soluci\'on actual
+        que se tiene en la iteraci\'on.
+
+    \item \textbf{Lista Tab\'u: } M\'as all\'a de las estructuras de datos
+        que utilizamos para esta \emph{lista} (que se detallan m\'as adelante),
+        decidimos guardar los ``movimientos'' que se realizan durante el movimiento
+        entre vecinos. Estos movimientos ser\'ian agregar o quitar un nodo%
+        \footnote{No se decidi\'o considerar el movimiento/vecindad de intercambio
+        de nodos, ya que como ahora se permiten movimientos que no mejoren la
+        funci\'on objetivo, estos estar\'ian, de alguna manera, inclu\'idos en
+        estos 2 movimientos. Aunque claramente el criterio de selecci\'on no
+        es el mismo, ni los saltos de vecindad ser\'ian los mismos y por lo tanto
+        los resultados no ser\'ian necesariamente los mismos. Pero el coste
+        de recorrer esta vecindad es muy costoso, como ya se vi\'o en
+        \emph{\nameref{busqueda}}. A\'un as\'i, queda a criterio
+        del lector implementar dicha vecindad y experimentar para poder compara
+        los resultados obtenidos.}. Por lo tanto, una vez realizado un movimiento
+        (por ejemplo, agregar un nodo $v$ o quitar un nodo $w$) son marcados
+        en la lista como movimientos \emph{tabu} y se tratar\'a de evitar
+        de repetirlos mientras est\'en en dicha lista y haya otras opciones
+        no tab\'u v\'alidas. Queda a\'un pendiente especificar por cu\'anto
+        tiempo/iteraciones se considera a un movimiento tab\'u. Esto
+        se analizar\'a m\'as adelante.
+
+    \item \textbf{Funci\'on Objetivo: } Al igual que en la b\'usqueda local,
+        el criterio/par\'ametro que se desea maximizar es la frontera de
+        las cliques de un grafo $G$. Sin necesidad entonces de justificar
+        nuevamente, decidimos utilizar la misma funci\'on objetivo.
+
+    \item \textbf{Criterios de Terminaci\'on: } Existen varios criterios
+        de terminaci\'on implementables. En particular, decidimos utilizar
+        2 criterios:
+        \begin{enumerate}
+            \item \emph{Limite global de iteraciones de la b\'usqueda: } Simplemente
+                deseamos establecer un l\'imite global para el tiempo que puede
+                tardar esta heur\'istica. Esto se hace, ya que dependiendo de los
+                otros par\'ametros, se podr\'ia llegar a entrar en un ciclo
+                muy largo sin que termine la heur\'istica. O, podr\'iamos tener
+                una instancia del problema que se pueda mejorar mucho durante
+                un per\'iodo muy largo de iteraciones, y si la funci\'on objetivo
+                crece (virtualmente) constantemente, llega un punto donde tiene
+                m\'as sentido quedarnos con la soluci\'on obtenida hasta el momento
+                que iterar un per\'iodo de tiempo muy extendido para no mejorar
+                considerablemente la soluci\'on.
+
+            \item \emph{Cantidad de iteraciones sin mejorar la soluci\'on actual: } El
+                \'item en si mismo es descriptivo. A\'un asi, decidimos plantear
+                dos variantes de este criterio. Podemos considerar que la
+                soluci\'on no mejora si la soluci\'on actual no mejora mediante
+                decisiones no tab\'u (es decir, si se toma una decisi\'on tab\'u
+                ya que no hab\'ia otra opci\'on, y esta mejora la soluci\'on actual,
+                no se considera que efectivamente haya mejorado la soluci\'on) o
+                podemos considerar cualquier decisi\'on que incremente la
+                funci\'on objetivo de la soluci\'on parcial, sea tab\'u o no.%
+                \footnote{En particular, existe una alternativa que por falta de
+                tiempo no fue implementada, que es considerar a la soluci\'on optima
+                en lugar de la soluci\'on actual. O considerar ambas.}
+        \end{enumerate}
+\end{itemize}
+
+\bigskip
+
+\par En nuestra heur\'istica particular, decidimos inicialmente (antes de implementar
+    y experimentar con las variantes) utilizar una funci\'on de aspiraci\'on que nos
+    permita saltar a un vecino que mejore nuestra soluci\'on \'optima parcial aunque
+    sea este tab\'u. Tambi\'en, decidimos que el contador de iteraciones sin mejoras
+    de la soluci\'on actual ser\'ia reestablecido (es decir, volver\'ia cero, o
+    equivalemente, consideramos que mejor\'o la soluci\'on actual) solamente cuando
+    la funci\'on objetivo se viera incrementada mediante la funci\'on de aspiraci\'on
+    o mediante un movimiento \textbf{no} tab\'u. Es decir, si se tiene que realizar
+    un movimiento tab\'u que no sea parte de la funci\'on de aspiraci\'on, este contador
+    ser\'a incrementado aunque dicho movimiento haya incrementado la funci\'on objetivo.
+
+\subsubsection{Pseudoc\'odigo descriptivo}
+\par Se presenta a continuaci\'on un pseudoc\'odigo que describe los pasos que sigue
+    nuestra heur\'istica propuesta. El mismo no contempla estructuras de datos sobre
+    los cuales se implement\'o (cosa que se realiza en el c\'alculo de complejidad),
+    simplemente tiene como objetivo describir la heur\'istica.
+
+\bigskip
+
+\begin{pseudocodigo}[Heur\'istica de Busqueda Tab\'u para \emph{CMF} - Descriptivo]
+    \Require\Statex
+        \begin{itemize}
+            \item Un grafo $G$ de $n$ v\'ertices y $m$ aristas.
+
+            \item Una funci\'on $candidatos(K)$, que dado un conjunto de v\'ertices
+                $K$, devuelve el conjunto de v\'ertices de $G$ que son adjacentes
+                a todos los elementos de $K$, cuyo grado es mayor $2|K|$.
+
+            \item Una funci\'on $vecinos(K)$, que dada una clique $K$, representa
+                el conjunto de todas las cliques $K'$ que sean vecinas de $K$ para
+                nuestra vecindad.
+
+            \item Una funci\'on $tabu(K,K')$, que dada una clique $K$ y un vecino $K'$,
+                nos dice si el movimiento para pasar de $K$ a $K'$ es tabu.
+
+            \item Una funci\'on $movimiento(K,K')$ que nos devuelve el movimiento
+                para pasar de una clique $K$ a su vecina $K'$.
+        \end{itemize}
+    \Statex
+    \Ensure Una \emph{clique} $K$ de $G$ con una frontera $\delta(K)$ que se
+        espera que sea de cardinalidad cercana o igual a la de $\delta(K_{max})$,
+        siendo $K_{max}$ la \emph{clique} de m\'axima frontera de $G$.
+
+    \Statex
+
+    \If{$G$ es un grafo completo $K_n$}
+        \State $K^* \gets \lfloor\sfrac{n}{2}\rfloor$ nodos distintos de $V(G)$ cualesquiera.
+        \Statex
+
+    \Else
+        \State $K \gets v \in V(G)$ tal que $v$ es un nodo de, al menos, grado promedio.
+        \State $\delta(K) \gets d(v)$
+        \State $K^* \gets K$
+        \State $\delta(K^*) \gets \delta(K)$
+        \State $contador\_global \gets 0$, $sin\_mejorar \gets 0$
+        \Statex
+        \While{%
+        $\begin{pmatrix}
+            \text{\Huge{$\land$}} &
+            \begin{matrix}
+                contador\_global < MAX\_GLOBAL\\
+                sin\_mejorar < MAX\_SIN\_MEJORAR
+            \end{matrix}
+        \end{pmatrix}$%
+        }
+            \Statex
+            \State $contador\_global \gets contador\_global+1$
+            \Statex
+            \State $mejor\_tabu \gets s \in vecinos(K), tabu(K,s)$ tal que
+            \Statex\hspace{3cm}$(\forall s' \in vecinos(K))$ $tabu(K,s') \implies \delta(s) \geq \delta(s')$
+            \Statex
+            \State $mejor\_no\_tabu \gets s \in vecinos(K), \neg tabu(K,s)$ tal que
+            \Statex\hspace{3cm}$(\forall s' \in vecinos(K))$ $\neg tabu(K,s') \implies \delta(s) \geq \delta(s')$
+            \Statex
+            \State $menos\_tabu \gets s \in vecinos(K), tabu(K,s)$ tal que $s$ es la soluci\'on menos tabu%
+                \footnote{Donde entendemos por ``menos tabu'' aquella soluci\'on que fue marcada como
+                tabu hace m\'as tiempo que todas las dem\'as tab\'u.}
+            \Statex
+            \If{$%
+            \begin{pmatrix}
+                \delta(mejor\_tabu) > \delta(mejor\_no\_tabu)\\
+                \land\\
+                \delta(mejor\_tabu) > \delta(K^*)
+            \end{pmatrix}%
+            $} \Comment{Funcion de Aspiraci\'on}
+                \Statex
+                \State Actualizamos $movimiento(K,mejor\_tabu)$ en la lista tab\'u
+                \State $K^* \gets mejor\_tabu$
+                \State $K \gets mejor\_tabu$
+                \State $sin\_mejorar \gets 0$
+                \Statex
+            \ElsIf{$mejor\_no\_tabu$ es un movimiento v\'alido}
+                \If{$\delta(mejor\_no\_tabu) > \delta(K)$}
+                    \State $sin\_mejorar \gets 0$
+                \Else
+                    \State $sin\_mejorar \gets sin\_mejorar+1$
+                \EndIf
+                \State Actualizamos $movimiento(K,mejor\_no\_tabu)$ en la lista tab\'u
+                \State $K \gets mejor\_no\_tabu$
+                \Statex
+            \Else \Comment{Selecciono una opci\'on tab\'u}
+                \State Actualizamos $movimiento(K,menos\_tabu)$ en la lista tab\'u
+                \State $K \gets menos\_tabu$
+                \State $sin\_mejorar \gets sin\_mejorar+1$
+            \EndIf
+        \EndWhile
+
+    \EndIf
+
+    \State \Return{$K^*$}
+\end{pseudocodigo}
+
+\bigskip
+
+\subsubsection{Variantes\label{tabu:variantes}}
+\par Como se puede observar, esta heur\'istica tiene muchos par\'ametros
+    con los cuales se puede experimentar con la finalidad de afinar
+    la heur\'istica (por lo general, teniendo informaci\'on sobre las
+    instancias de entrada del problema).
+
+\par Entre estos par\'ametros es f\'acil distinguir los criterios
+    de terminaci\'on. Experimentando con el limite $MAX\_GLOBAL$ y
+    $MAX\_SIN\_MEJORAR$ se pueden conseguir distintos resultados (%
+    Secci\'on~\ref{tabu:experimentacion}). Tambi\'en, en sinton\'ia
+    con estos atributos se puede incluir al tiempo que se considera
+    que un movimiento es tab\'u una vez efectuado. Si bien el mismo
+    no aparece escenificado en el pseudoc\'odigo anterior, este
+    par\'ametro es de gran importancia.
+
+\par Dejando de lado las variantes seg\'un los valores de los
+    par\'ametros ya mencionados, planteamos algunas variantes (y
+    sus combinaciones) que modifican un poco el esquema de la
+    b\'usqueda tab\'u:
+
+\begin{itemize}
+    \item \textbf{Sin funci\'on de aspiracion: } Cuando se encuentra
+        un movimiento tab\'u que mejora la soluci\'on \'optima
+        parcial, esta se registra y se guarda, pero no se utiliza
+        como posible vecino\footnote{Excepto que no haya vecinos no tab\'u
+        y esta sea la opci\'on menos tab\'u.} esta opci\'on.
+
+    \item \textbf{Entrada Golosa: } En lugar de utilizar un nodo de grado
+        al menos promedio, se alimenta a la b\'usqueda tab\'u con el resultado
+        de la heur\'istica golosa\footnote{Secci\'on~\ref{golosa},
+        \emph{\nameref{golosa}}.}.
+
+    \item \textbf{Los movimientos tab\'u que mejoren la soluci\'on parcial
+        reestablecen el contandor de iteraciones sin mejorar: } Esta variante
+        es bastante descriptiva por si misma. La idea en si mismo trata
+        de considerar a los movimientos tab\'u como posibles buenos movimientos
+        previo de descubrir si sirven para mejorar a la soluci\'on \'optima.
+\end{itemize}
