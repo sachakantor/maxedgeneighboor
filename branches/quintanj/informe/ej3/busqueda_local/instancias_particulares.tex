@@ -183,6 +183,7 @@ hagan crecer la soluci\'on parcial, si no lo incluyen hay dos posibilidades:
 	no incluyen a $v'$, en el siguiente paso el \'unico candidato restante
 	que hace crecer la soluci\'on en una arista es $v'$ y por ello lo agrega 
 	a la soluci\'on, terminando con una soluci\'on \'optima.
+	Ejemplo (con $v = 0$, $v' = 7$):
 	\begin{center}
 	\begin{tabular}{|c||c|}
 		\hline
@@ -209,6 +210,7 @@ hagan crecer la soluci\'on parcial, si no lo incluyen hay dos posibilidades:
 	para incluir a $v'$ ya que de hacerlo la frontera de la soluci\'on ser\'ia
 	la misma que en el paso anterior y el algoritmo no se comporta de esta manera.
 	Por ende la soluci\'on devuelta es sub-\'optima.
+	Ejemplo (con $v = 0$, $v' = 13$):
 	\begin{center}
 	\begin{tabular}{|c||c|}
 		\hline
@@ -232,7 +234,8 @@ hagan crecer la soluci\'on parcial, si no lo incluyen hay dos posibilidades:
 \end{itemize}
 
 Notar que en la variante \emph{Mejor Vecino} evita el resultado sub-\'optimo en 
-el \'ultimo caso (bajo las hip\'otesis del mismo).
+el \'ultimo caso (bajo las hip\'otesis del mismo), esto tambi\'en se logra con
+la variante \emph{Vecindad Con Intercambio}.
 
 Hay otros posibles comportamientos de la heur\'istica sobre la misma familia de
 grafos, que el algoritmo comience la soluci\'on en uno de los nodos del puente o
@@ -250,4 +253,53 @@ se estanca en el m\'aximo local debido al puente que une la estrella con $K_{\De
 de hecho, esta familia fue dise\~nada con el objetivo de asegurar precisamente
 este estancamiento.
 		
+\subsubsection{Estrella + CMF}
 
+Para esta familia, nuevamente se tiene que cuando el el orden en el que el algoritmo
+construye la soluci\'on no coincide con el orden que utiliza la golosa constructiva, 
+la heur\'istica puede llegar a construir el resultado \'optimo.
+Supongamos que la busqueda local comienza por un nodo perteneciente a $K_{\Delta -1}$
+(ver figura \ref{fig:ecmf_carac}). El an\'alisis es completamente an\'alogo al
+realizado para la familia anterior bajo las mismas condiciones. La excepci\'on
+se da cuando comienza por $v$, ya que puede devolver o bien la misma soluci\'on que
+la golosa constructiva o bien una soluci\'on \'optima (esto en su versi\'on standard, 
+en la versi\'on de \emph{Mejor Vecino} devuelve el mismo resultado de la golosa).
+
+El caso notable para esta familia es cuando la soluci\'on empieza por $v'$, puesto 
+que la heur\'istica se estanca en el \'optimo local y no puede romperlo, ni siquiera
+en su variante \emph{Vecindad Con Intercambio}. Veamos c\'omo sucede esto: el 
+algoritmo comienza (por nuestra hip\'otesis) en el nodo $v'$, en el siguiente paso
+la vecindad esta dada por la clique de nodos $v, v'$ cuya frontera (llamemosle 
+$\delta(SBL)$) es mayor a la calculada en el paso anterior. Tenemos entonces
+\[ d(v') = \Delta -1 \]
+\[ d(v) = \Delta \]
+\[ \delta(SBL) = (\Delta -1) -1 + \Delta -1 = 2 \Delta -3 \]
+Ejemplo (con $v=3$ y $v'=8$):
+\begin{center}
+	\includegraphics[scale = 0.3]{img/ej3/busqueda_local/estrellaCMF_st02.png} \\
+\end{center}
+
+Queda claro que no puede agregar nodos por la naturaleza de la familia, 
+tampoco podr\'a reducir nodos ya que la frontera disminuir\'ia. La \'unica
+alternativa ser\'ia intercambiar nodos, con la idea de abandonar $v'$ y 
+reemplazarlo por alg\'un nodo de $K_{\Delta -1}$, llamesmole $x$. 
+Supongamos por un momento, 
+y solo a modo de an\'alisis que esto fuera posible, llamemos a la frontera
+de esta hipot\'etica soluci\'on parcial $\delta(SBL')$, tendr\'iamos
+
+\[ d(v) = \Delta \]
+\[ d(x) = \Delta -2 \]
+\[ \delta(SBL') = \Delta -1 + (\Delta -2) -1 = 2 \Delta -4 \]
+Ejemplo (con $v=3$ y $x=2$):
+\begin{center}
+	\includegraphics[scale = 0.3]{img/ej3/busqueda_local/estrellaCMF_st12.png} \\
+\end{center}
+
+Luego $\delta(SBL') < \delta(SBL)$ y entonces el cambio nodo a nodo no 
+mejorar\'ia la funci\'on objetivo, con lo cual el algoritmo jamas efectua
+el cambio y la soluci\'on no puede escapar a este estancamiento local.
+
+La soluci\'on \'optima tendr\'ia la siguiente forma:
+\begin{center}
+	\includegraphics[scale = 0.3]{img/ej3/busqueda_local/estrellaCMF_st22.png} \\
+\end{center}

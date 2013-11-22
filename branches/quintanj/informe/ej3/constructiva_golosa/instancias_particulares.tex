@@ -626,7 +626,7 @@ todos los nodos de la $CMF$ sino que en el extremo basta tener la suficiente can
 de nodos conectados s\'olo con alg\'un nodo de la $CMF$, l\'ogicamente, esto significa
 que esa cantidad de nodos ser\'a mayor a $\left\lceil \frac{\Delta -1}{2} \right\rceil$ 
 la relaci\'on es, a grandes rasgos, un nodo extra por cada arista removida, quedando 
-un grafo de la pinta del siguiente ejemplo (en el que tambi\'en se removio $x$):
+un grafo de la pinta del siguiente ejemplo (en el que tambi\'en se removi\'o $x$, con lo que es un caso muy borde para la familia):
 
 \begin{center} 
 	\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/faulty_st0.png} 
@@ -657,11 +657,14 @@ En este punto, todavia nos queda un grado libre de $v$ que lo conectaremos con u
 nodo distinto a todos los hasta ahora especificados por simplicidad.
 
 Con esto nos queda un grafo con la siguiente pinta:
-
-
+\begin{figure}[H]
+\caption{Estrella + CMF}
+\label{fig:ecmf_carac}
 \begin{center} 
 	\includegraphics[scale = 0.5]{img/ej3/constructiva_golosa/vincmf_carac.png} 
 \end{center}
+\end{figure}
+
 
 Si investigamos con esta caracterizaci\'on cual es la $CMF$, por lo visto anteriormente
 sabemos que es la clique $K_{\left\lfloor \frac{\Delta -1}{2} \right\rfloor}$, 
@@ -697,6 +700,12 @@ y con $\Delta$ impar
 Y juntando los dos resultados obtenidos tenemos que para poder construir un 
 grafo de esta familia, necesitamos $\Delta \geq 8 $.
 
+El grafo de m\'inima cantidad de nodos que se puede generar para esta 
+familia ser\'a uno an\'alogo al siguiente
+\begin{center} 
+	\includegraphics[scale = 0.3]{img/ej3/constructiva_golosa/estrellaCMF_st0.png} 
+\end{center}
+
 Nuevamente la raz\'on entre la frontera calculada por la heur\'istica y la frontera 
 \'optima para esta familia es tan grande como uno quiera. Sabemos por construcci\'on 
 que la frontera de la $CMF$ (esto es la soluci\'on \'optima del problema) es 
@@ -704,13 +713,8 @@ $O(\Delta^2)$, mientras que la soluci\'on obtenida por la heur\'istica golosa
 constructiva es $O(\Delta)$.
 
 De la misma manera que hicimos con la otra familia podemos ir relajando condiciones
-tales como exigir que exista $K_{\Delta -1}$ o convertir a la estrella en una rueda, 
+tales como no exigir que exista $K_{\Delta -1}$ o convertir a la estrella en una rueda, 
 esto generaliza la familia construida, pero el procedimiento es completamente an\'alogo
 al realizado con la otra familia y el agregado del procedimiento detallado no aporta 
 demasiado.
 
-%\[ K_{\Delta -1} \]
-%\[ d(v) = \Delta \]
-%\[ d(v') = \Delta -1 \]
-%\[ K_{\left\lfloor \frac{\Delta -1}{2} \right\rfloor} \]
-%\[ C.I._{\left\lceil \frac{\Delta -1}{2} \right\rceil} \]
