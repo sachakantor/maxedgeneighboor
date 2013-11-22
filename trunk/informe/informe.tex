@@ -22,18 +22,28 @@
 %\usepackage{framed}
 
 %Paquetes para opciones comunes
-\usepackage[pdftex]{graphicx}
+\usepackage{graphicx}
+%\usepackage[pdftex]{graphicx}
 \graphicspath{%
     {img/}%
     {img/caratula/}%
+    {img/ej1/}%
+    {img/ej2/}%
+    {img/ej3/}%
+    {img/ej3/constructiva_golosa/}%
+    {img/ej3/busqueda_local/}%
+    {img/ej3/tabu_search/}%
+    {img/ej4/}%
 }
 \usepackage[usenames,dvipsnames,table]{xcolor}
+\usepackage{longtable}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{enumerate}
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{mathtools}
 \usepackage{comment}
 \usepackage{xfrac}
 
@@ -68,6 +78,7 @@
 
 %Paquetes para hacer tablas especificas
 \usepackage{multirow}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 %Paquetes para dibujar grafos
 \usepackage{tikz}

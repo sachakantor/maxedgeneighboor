@@ -1,3 +1,169 @@
 \subsubsection{Resultados}
+\par Se presentan a continuaci\'on los resultados de la experimentaci\'on
+    de la heur\'istica de b\'usqueda tab\'u para \emph{CMF}. La experimentaci\'on se realiz\'o
+    con las instancias ya generadas (seg\'un se explica en \emph{\nameref{notas_preliminares},
+    \nameref{notas:datasets}} y \emph{\nameref{notas:experimentacion}}).
+
+\par Para recordar, se cuentan con 10 instancias aleatorias de cada tama\~no,
+    las cuales fueron resueltas 5 veces cada una y nos quedamos con el menor tiempo
+    requerido de esas 5 ejecuciones. Por \'ultimo, tomamos el promedio de este tiempo
+    requerido calculado entre las instancias del mismo tama\~no (10, como se ha
+    dicho).
+
+
+%Doble estrella
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_nlogn_star+bridge+double_star.tex}}
+    \caption{Complejidad temporal para grafos Estrella+Puente+Doble Estrella (Variante Max\_Iter=nlog(n))}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_n_star+bridge+double_star.tex}}
+    \caption{Complejidad temporal para grafos Estrella+Puente+Doble Estrella (Variante Max\_Iter=n)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_frontera_star_bridge_double_star.tex}}
+    \caption{Frontera de grafos Estrella+Puente+Doble Estrella}
+\end{figure}
+
+%Doble estrella sin aspiracion
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_nlogn_star+bridge+double_star_sin_aspiracion.tex}}
+    \caption{Complejidad temporal para grafos Estrella+Puente+Doble Estrella (Variante Max\_Iter=nlog(n),sin aspiraci\'on)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_n_star+bridge+double_star_sin_aspiracion.tex}}
+    \caption{Complejidad temporal para grafos Estrella+Puente+Doble Estrella (Variante Max\_Iter=n),sin aspiraci\'on)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_frontera_star_bridge_double_star_sin_aspiracion.tex}}
+    \caption{Frontera de grafos Estrella+Puente+Doble Estrella (sin aspiracion)}
+\end{figure}
+
+%Doble estrella sin aspiracion golosa
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_nlogn_star+bridge+double_star_sin_aspiracion_golosa.tex}}
+    \caption{Complejidad temporal para grafos Estrella+Puente+Doble Estrella (Variante Max\_Iter=nlog(n),sin aspiraci\'on,golosa)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_n_star+bridge+double_star_sin_aspiracion_golosa.tex}}
+    \caption{Complejidad temporal para grafos Estrella+Puente+Doble Estrella (Variante Max\_Iter=n),sin aspiraci\'on,golosa)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_frontera_star_bridge_double_star_sin_aspiracion_golosa.tex}}
+    \caption{Frontera de grafos Estrella+Puente+Doble Estrella (sin aspiracion, golosa)}
+\end{figure}
+
+%Bipartito Completo
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_nlogn_complete_bipartite.tex}}
+    \caption{Complejidad temporal para grafos Bipartito Completo (Variante Max\_Iter=nlog(n))}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_n_complete_bipartite.tex}}
+    \caption{Complejidad temporal para grafos Bipartito Completo (Variante Max\_Iter=n)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_frontera_complete_bipartite.tex}}
+    \caption{Frontera de grafos Bipartito Completo}
+\end{figure}
+
+%Bipartito Completo sin aspiracion
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_nlogn_complete_bipartite_sin_aspiracion.tex}}
+    \caption{Complejidad temporal para grafos Bipartito Completo (Variante Max\_Iter=nlog(n),sin aspiraci\'on)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_n_complete_bipartite_sin_aspiracion.tex}}
+    \caption{Complejidad temporal para grafos Bipartito Completo (Variante Max\_Iter=n),sin aspiraci\'on)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_frontera_complete_bipartite_sin_aspiracion.tex}}
+    \caption{Frontera de grafos Bipartito Completo (sin aspiracion)}
+\end{figure}
+
+%Bipartito Completo sin aspiracion golosa
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_nlogn_complete_bipartite_sin_aspiracion_golosa.tex}}
+    \caption{Complejidad temporal para grafos Bipartito Completo (Variante Max\_Iter=nlog(n),sin aspiraci\'on,golosa)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_nodos_n_complete_bipartite_sin_aspiracion_golosa.tex}}
+    \caption{Complejidad temporal para grafos Bipartito Completo (Variante Max\_Iter=n),sin aspiraci\'on,golosa)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \fontsize{8}{10}\selectfont
+    \resizebox{0.8\textwidth}{!}{\input{img/ej3/tabu_search/ej3_frontera_complete_bipartite_sin_aspiracion_golosa.tex}}
+    \caption{Frontera de grafos Bipartito Completo (sin aspiracion,golosa)}
+\end{figure}
 
 \subsubsection{Conclusiones}
+\par En los resultados exhibidos no se han encontrado cosas particularmente
+    destacables a\'un (esperamos encontrar estos resultados al comparar
+    la b\'usqueda tab\'u con las dem\'as heur\'isticas y el algoritmo exacto).
+
+\par En particular, nunca est\'a de m\'as advertir que las cotas de complejidad
+    de peor caso se cumplieron en los resultados emp\'iricos obtenidos.
+
+\par A\'un as\'i, los resultados expuestos no nos dicen demasiado sobre las
+    diferentes variantes. Vale la pena notar que las variantes con
+    funci\'on de aspiraci\'on requieren menos tiempo para terminar (esta
+    es una comparaci\'on que se debe hacer mirando las escalas de los gr\'aficos
+    correspondientes a las variantes con y sin funci\'on de aspiraci\'on).
+
+\par Tambi\'en se nota, comparando de la misma manera que se expuso en el
+    p\'arrafo anterior, como las variantes que tienen $MAX\_ITERACIONES$
+    con la variante $n\cdot log(n)$ requieren muchas m\'as iteraciones
+    para terminar con la b\'usqueda.
+
+\par Por \'ultimo, ya comparando finamente, se puede observar que la variante
+    con $n = MAX\_ITERACIONES$, $n/2 = SIN\_MEJORAR$ y $n/2 = TIEMPO\_TABU$
+    requiere en varias de las familias expuestas una cantidad considerable
+    menos de iteraciones para terminar, sin afectar negativametne (o no
+    demasiad) su valor retornado respecto de las dem\'as.
