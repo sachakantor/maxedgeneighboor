@@ -1,4 +1,16 @@
 \subsubsection{Resultados}
+\par Se presentan a continuaci\'on los resultados de la experimentaci\'on
+    de la heur\'istica golosa constructiva para \emph{CMF}. La experimentaci\'on se realiz\'o
+    con las instancias ya generadas (seg\'un se explica en \emph{\nameref{notas_preliminares},
+    \nameref{notas:datasets}} y \emph{\nameref{notas:experimentacion}}).
+
+\par Para recordar, se cuentan con 10 instancias aleatorias de cada tama\~no,
+    las cuales fueron resueltas 5 veces cada una y nos quedamos con el menor tiempo
+    requerido de esas 5 ejecuciones. Por \'ultimo, tomamos el promedio de este tiempo
+    requerido calculado entre las instancias del mismo tama\~no (10, como se ha
+    dicho).
+
+\bigskip
 
 \begin{figure}[H]
     \centering
@@ -22,3 +34,36 @@
 \end{figure}
 
 \subsubsection{Conclusiones}
+\par En los primeros 2 resultados se puede observar que la complejidad asint\'otica
+    para las familias ``simples''\footnote{Consideramos a los grafos completos
+    como una familia simple pues con los datos de entrada resolver el problema
+    de \emph{CMF} es trivial.} (pocas aristas y con estructuras muy restrictivas)
+    es similar. Si bien hay diferencias (en el orden de los nanosegundos), se
+    destaca que todas cumplen con la complejidad asint\'otica temporal te\'orica
+    calculada y a su vez se comportan de la misma manera en cuanto a crecimiento.
+
+\par En el segundo gr\'afico, tambi\'en se cuentan con una serie de familias
+    ``simples'', pero aqu\'i el comportamiento de nuestra heur\'istica resulta
+    un tanto m\'as err\'atico, si bien sigue estando en el orden de complejidad
+    calculado. Se puede observar que mientras que las familias de las 
+    Rueadas y las estrellas (de estructuras muy similares) se comportan pr\'acticamente
+    igual, para los grafos bipartitos se requiere menor tiempo para resolver
+    instancias del mismo tama\~no. Esto es un tanto raro, ya que en las 3 familias
+    (como ya se ha explicado) la \emph{CMF} tendr\'a el mismo tama\~no. S\'olo
+    nos queda hipotetizar\footnote{Viernes 22 de Noviembre, 17:58 hs GMT-3} sobre los motivos.
+
+\par En el caso de la familia de grafos \emph{Banana Tree}, suponemos que su comportamiento
+    se debe que seg\'un el tama\~no de las estrellas que tenga en sus extremos, el nodo
+    de mayor grado estar\'a en alguna estrella o en el nodo central que une a todas las estrellas.
+    Este dato tendr\'a una influencia inmediata en la elecci\'on de los nodos candidatos
+    a agregarse a la clique luego de haber encontrado el nodo de mayor grado del grafo (ya
+    que si las estrellas/extremidades son de tama\~no considerable, las mismas
+    deberan ser tenidas en cuenta, mientras que si solo se tiene una gran estrella (las
+    ``bananas'' son de taman\~o 1), esto ser\'a m\'as eficiente.
+
+\par Por \'ultimo, observamos que el comportamiento para las familias Estrella+CMF y
+    Estrella+Puente+CMF es muy estable a medida que crece el taman\~o de las instancias.
+    Quiz\'as lo m\'as interesantes de estas familias (aparte de comprobar que cumplen
+    con la complejidad asint\'otica te\'orica) es comparar los resultados otorgados
+    por la heur\'istica con el algoritmo exacto u las dem\'as heur\'isticas. Esto
+    se efectua en la Secci\'on~\ref{experimentacion} de este trabajo.
